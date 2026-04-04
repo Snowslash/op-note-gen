@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Operative Note Generator</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <header class="page-header">
+      <p class="kicker">Operative Note Generator</p>
+      <h1>Laparoscopic appendicectomy</h1>
+      <p class="intro">
+        Complete the structured fields below to generate a draft operative note.
+        Review the output carefully before use.
+      </p>
+    </header>
+
+    <main class="layout">
+      <section class="panel form-panel">
+        <form id="note-form" novalidate>
+          <section class="form-section">
+            <div class="section-header section-header-compact">
+              <h2>Admin details</h2>
+              <p>Core identifiers for the operative note.</p>
+            </div>
+
+            <div class="form-grid form-grid-admin">
+              <label class="field">
+                <span>Surgeon</span>
+                <input type="text" id="surgeon" name="surgeon" autocomplete="off">
+              </label>
+
+              <label class="field">
+                <span>Assistant</span>
+                <input type="text" id="assistant" name="assistant" autocomplete="off">
+              </label>
+
+              <label class="field">
+                <span>Supervising consultant</span>
+                <input type="text" id="supervisingConsultant" name="supervisingConsultant" autocomplete="off">
+              </label>
+
+              <label class="field">
+                <span>Anaesthetic</span>
+                <select id="anaesthetic" name="anaesthetic">
+                  <option value="">Select anaesthetic</option>
+                  <option value="GA">GA</option>
+                  <option value="regional">Regional</option>
+                  <option value="local">Local</option>
+                </select>
+              </label>
+
+              <label class="field">
+                <span>Anaesthetist</span>
+                <input type="text" id="anaesthetist" name="anaesthetist" autocomplete="off">
+              </label>
+            </div>
+
+            <div class="team-members-block">
+              <div class="team-members-header">
+                <div>
+                  <h3>Additional team members</h3>
+                  <p>Add extra surgeons or assistants if needed.</p>
+                </div>
+                <button type="button" id="addTeamMemberButton" class="secondary-button compact-button">Add team member</button>
+              </div>
+
+              <div id="teamMembersList" class="team-members-list"></div>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-header section-header-compact">
+              <h2>Clinical details</h2>
+              <p>Required clinical context plus optional extras.</p>
+            </div>
+
+            <div class="form-grid">
+              <label class="field field-wide">
+                <span>Indication</span>
+                <textarea id="indication" name="indication" rows="3" required></textarea>
+              </label>
+
+              <label class="field field-wide">
+                <span>Findings</span>
+                <textarea id="findings" name="findings" rows="4" required></textarea>
+              </label>
+
+              <label class="field">
+                <span>Specimen</span>
+                <input type="text" id="specimen" name="specimen" autocomplete="off">
+              </label>
+            </div>
+
+            <details class="disclosure">
+              <summary>Optional clinical fields</summary>
+              <div class="disclosure-content">
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Estimated blood loss</span>
+                    <input type="text" id="bloodLoss" name="bloodLoss" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Complications</span>
+                    <input type="text" id="complications" name="complications" autocomplete="off">
+                  </label>
+                </div>
+              </div>
+            </details>
+          </section>
+
+          <section class="form-section">
+            <div class="section-header section-header-compact">
+              <h2>Operative steps</h2>
+              <p>Only lap appendicectomy is available in this MVP.</p>
+            </div>
+
+            <div class="form-grid">
+              <label class="field">
+                <span>Laparoscopic entry technique</span>
+                <select id="entryTechnique" name="entryTechnique">
+                  <option value="">Select entry technique</option>
+                  <option value="Hasson">Hasson</option>
+                  <option value="Veress">Veress</option>
+                  <option value="Optical entry">Optical entry</option>
+                  <option value="Custom / other">Custom / other</option>
+                </select>
+              </label>
+
+              <label class="field" id="entryTechniqueCustomField" hidden>
+                <span>Custom entry technique</span>
+                <input type="text" id="entryTechniqueCustom" name="entryTechniqueCustom" autocomplete="off">
+              </label>
+
+              <label class="field field-wide">
+                <span>Ports used / port configuration</span>
+                <textarea id="portsUsed" name="portsUsed" rows="3"></textarea>
+              </label>
+
+              <div class="field">
+                <span>Perforation</span>
+                <div class="choice-row" role="radiogroup" aria-label="Perforation">
+                  <label><input type="radio" name="perforation" value="yes"> Yes</label>
+                  <label><input type="radio" name="perforation" value="no"> No</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <span>Contamination present</span>
+                <div class="choice-row" role="radiogroup" aria-label="Contamination present">
+                  <label><input type="radio" name="contaminationPresent" value="yes"> Yes</label>
+                  <label><input type="radio" name="contaminationPresent" value="no"> No</label>
+                </div>
+              </div>
+
+              <label class="field field-wide" id="contaminationDescriptionField" hidden>
+                <span>Contamination description</span>
+                <textarea id="contaminationDescription" name="contaminationDescription" rows="3"></textarea>
+              </label>
+
+              <label class="field">
+                <span>Mesoappendix division method</span>
+                <select id="mesoappendixDivision" name="mesoappendixDivision">
+                  <option value="">Select mesoappendix division method</option>
+                  <option value="Electrocautery">Electrocautery</option>
+                  <option value="LigaSure">LigaSure</option>
+                  <option value="Harmonic">Harmonic</option>
+                  <option value="Clips and division">Clips and division</option>
+                  <option value="Stapler">Stapler</option>
+                  <option value="Custom / other">Custom / other</option>
+                </select>
+              </label>
+
+              <label class="field" id="mesoappendixDivisionCustomField" hidden>
+                <span>Custom mesoappendix division method</span>
+                <input type="text" id="mesoappendixDivisionCustom" name="mesoappendixDivisionCustom" autocomplete="off">
+              </label>
+
+              <label class="field">
+                <span>Stump control method</span>
+                <select id="stumpControl" name="stumpControl" required>
+                  <option value="">Select stump control method</option>
+                  <option value="Endoloops">Endoloops</option>
+                  <option value="Stapler">Stapler</option>
+                  <option value="Clips">Clips</option>
+                  <option value="Suture ligature">Suture ligature</option>
+                  <option value="Custom / other">Custom / other</option>
+                </select>
+              </label>
+
+              <label class="field" id="stumpControlCustomField" hidden>
+                <span>Custom stump control method</span>
+                <input type="text" id="stumpControlCustom" name="stumpControlCustom" autocomplete="off">
+              </label>
+
+              <div class="field">
+                <span>Specimen removed in bag</span>
+                <div class="choice-row" role="radiogroup" aria-label="Specimen removed in bag">
+                  <label><input type="radio" name="specimenRemovedInBag" value="yes"> Yes</label>
+                  <label><input type="radio" name="specimenRemovedInBag" value="no"> No</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <span>Washout performed</span>
+                <div class="choice-row" role="radiogroup" aria-label="Washout performed">
+                  <label><input type="radio" name="washoutPerformed" value="yes"> Yes</label>
+                  <label><input type="radio" name="washoutPerformed" value="no"> No</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <span>Haemostasis confirmed</span>
+                <div class="choice-row" role="radiogroup" aria-label="Haemostasis confirmed">
+                  <label><input type="radio" name="haemostasisConfirmed" value="yes"> Yes</label>
+                  <label><input type="radio" name="haemostasisConfirmed" value="no"> No</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <span>Converted to open</span>
+                <div class="choice-row">
+                  <label><input type="checkbox" id="convertedToOpen" name="convertedToOpen"> Yes</label>
+                </div>
+              </div>
+
+              <label class="field field-wide" id="conversionReasonField" hidden>
+                <span>Reason for conversion</span>
+                <textarea id="conversionReason" name="conversionReason" rows="3"></textarea>
+              </label>
+
+              <label class="field field-wide">
+                <span>Additional operative details</span>
+                <textarea id="additionalOperativeDetails" name="additionalOperativeDetails" rows="3"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <section class="form-section">
+            <div class="section-header section-header-compact">
+              <h2>Completion details</h2>
+              <p>Drain, closure, and postoperative instructions.</p>
+            </div>
+
+            <div class="form-grid form-grid-thirds">
+              <div class="field">
+                <span>Drain placed?</span>
+                <div class="choice-row" role="radiogroup" aria-label="Drain placed">
+                  <label><input type="radio" name="drainStatus" value="yes"> Yes</label>
+                  <label><input type="radio" name="drainStatus" value="no"> No</label>
+                </div>
+              </div>
+
+              <label class="field" id="drainLocationField" hidden>
+                <span>Drain location</span>
+                <select id="drainLocation" name="drainLocation">
+                  <option value="">Select drain location</option>
+                  <option value="Pelvis">Pelvis</option>
+                  <option value="Right iliac fossa">Right iliac fossa</option>
+                  <option value="Right paracolic gutter">Right paracolic gutter</option>
+                  <option value="Left paracolic gutter">Left paracolic gutter</option>
+                  <option value="Morrison's pouch">Morrison's pouch</option>
+                  <option value="Custom / other">Custom / other</option>
+                </select>
+              </label>
+
+              <label class="field" id="drainLocationCustomField" hidden>
+                <span>Custom drain location</span>
+                <input type="text" id="drainLocationCustom" name="drainLocationCustom" autocomplete="off">
+              </label>
+            </div>
+
+            <div class="form-grid form-grid-thirds form-grid-tight-top">
+              <div class="field">
+                <span>Fascial closure performed?</span>
+                <div class="choice-row" role="radiogroup" aria-label="Fascial closure performed">
+                  <label><input type="radio" name="fascialClosurePerformed" value="yes"> Yes</label>
+                  <label><input type="radio" name="fascialClosurePerformed" value="no"> No</label>
+                </div>
+              </div>
+
+              <label class="field" id="fascialSutureField" hidden>
+                <span>Fascial suture material</span>
+                <input type="text" id="fascialSutureMaterial" name="fascialSutureMaterial" autocomplete="off">
+              </label>
+
+              <label class="field">
+                <span>Skin closure method</span>
+                <input type="text" id="skinClosureMethod" name="skinClosureMethod" autocomplete="off">
+              </label>
+            </div>
+
+            <div class="form-grid form-grid-tight-top">
+              <label class="field field-wide">
+                <span>Post-operative plan</span>
+                <textarea id="postOpPlan" name="postOpPlan" rows="3"></textarea>
+              </label>
+            </div>
+          </section>
+
+          <div class="form-actions">
+            <button type="submit" class="primary-button">Generate Note</button>
+          </div>
+        </form>
+      </section>
+
+      <aside class="panel note-panel">
+        <div class="section-header section-header-compact">
+          <h2>Generated note</h2>
+          <p>Warnings are advisory. Indication, findings, and stump control method are required before generation. Washout is required when contamination is present, and a reason is required if the procedure is converted to open.</p>
+        </div>
+
+        <div id="validationMessage" class="message message-error" hidden></div>
+
+        <div id="warningBox" class="message message-warning" hidden>
+          <h3>Checks</h3>
+          <ul id="warningList"></ul>
+        </div>
+
+        <div class="output-actions">
+          <button type="button" id="copyButton" class="secondary-button" disabled>Copy to Clipboard</button>
+          <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
+        </div>
+
+        <div id="noteOutput" class="note-output note-output-empty">
+          <p>Your operative note will appear here after generation.</p>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
