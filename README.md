@@ -51,7 +51,7 @@ This version supports **laparoscopic appendicectomy only**.
 
 ## How To Use
 
-1. Open [index.html](./index.html) in a browser.
+1. Open [docs/index.html](./docs/index.html) in a browser.
 2. Complete the form.
 3. Select **Generate Note**.
 4. Review the generated note.
@@ -82,11 +82,11 @@ The generated note can include:
 
 ## Project Files
 
-- [index.html](./index.html) - app structure and form fields
-- [styles.css](./styles.css) - layout and styling
-- [script.js](./script.js) - conditional UI logic and note generation
+- [docs/index.html](./docs/index.html) - app structure and form fields
+- [docs/styles.css](./docs/styles.css) - layout and styling
+- [docs/script.js](./docs/script.js) - conditional UI logic and note generation
 
 ## Notes
 
-- `SPEC.md` is intentionally ignored by git in this repository.
+- [SPEC.md](./SPEC.md) captures the MVP scope and generation rules.
 - This tool is for drafting assistance, not clinical decision-making.
