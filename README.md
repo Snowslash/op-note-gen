@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy** and **laparoscopic cholecystectomy**, built with:
 
 - HTML
 - CSS
@@ -10,7 +10,10 @@ The app is designed to speed up note drafting while keeping output structured, f
 
 ## Scope
 
-This version supports **laparoscopic appendicectomy only**.
+This version supports:
+
+- Laparoscopic appendicectomy
+- Laparoscopic cholecystectomy
 
 ## Features
 
@@ -29,6 +32,8 @@ This version supports **laparoscopic appendicectomy only**.
   - findings
   - ports
   - contamination description
+  - bile or stone spillage details
+  - cholangiogram findings
   - conversion reason
   - additional operative details
 - Rule-based operation narrative generation
@@ -37,6 +42,8 @@ This version supports **laparoscopic appendicectomy only**.
   - contamination
   - washout
   - conversion to open
+  - bile or stone spillage
+  - intraoperative cholangiogram
   - closure details
 - Non-blocking warnings for missing specimen, complications, and drain status
 

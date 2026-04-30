@@ -8,6 +8,11 @@ const DOM = {
   copyFeedback: document.getElementById("copyFeedback"),
   addTeamMemberButton: document.getElementById("addTeamMemberButton"),
   teamMembersList: document.getElementById("teamMembersList"),
+  procedureSelect: document.getElementById("procedureSelect"),
+  procedureTitle: document.getElementById("procedureTitle"),
+  procedureHint: document.getElementById("procedureHint"),
+  validationHint: document.getElementById("validationHint"),
+  procedureSections: document.querySelectorAll("[data-procedure-section]"),
 };
 
 const APP_STATE = {
@@ -237,6 +242,18 @@ function buildHaemostasisSentence(values) {
   return "";
 }
 
+function buildCriticalViewSentence(values) {
+  if (values.criticalViewAchieved === "yes") {
+    return "The critical view of safety was achieved.";
+  }
+
+  if (values.criticalViewAchieved === "no") {
+    return "The critical view of safety was not achieved.";
+  }
+
+  return "";
+}
+
 function buildDrainSentence(values) {
   if (values.drainStatus === "yes") {
     if (values.drainLocation.present) {
@@ -267,6 +284,74 @@ function buildAdditionalOperativeDetailsSentence(values) {
   }
 
   return `Additional operative details: ${values.additionalOperativeDetails.raw}`;
+}
+
+function buildGallbladderAppearanceSentence(values) {
+  if (!values.gallbladderAppearance.trimmed) {
+    return "";
+  }
+
+  return sentenceWithValue("Gallbladder appearance: ", values.gallbladderAppearance.raw);
+}
+
+function buildGallbladderRetrievalSentence(values) {
+  if (values.gallbladderRemovedInBag === "yes") {
+    return "The gallbladder was removed in a bag.";
+  }
+
+  if (values.gallbladderRemovedInBag === "no") {
+    return "The gallbladder was removed without a bag.";
+  }
+
+  return "";
+}
+
+function buildBileSpillageSentence(values) {
+  if (values.bileSpillage === "yes") {
+    if (values.bileSpillageDetails.trimmed) {
+      return sentenceWithValue("Bile spillage occurred: ", values.bileSpillageDetails.raw);
+    }
+
+    return "Bile spillage occurred.";
+  }
+
+  if (values.bileSpillage === "no") {
+    return "No bile spillage occurred.";
+  }
+
+  return "";
+}
+
+function buildStoneSpillageSentence(values) {
+  if (values.stoneSpillage === "yes") {
+    if (values.stoneSpillageDetails.trimmed) {
+      return sentenceWithValue("Stone spillage occurred: ", values.stoneSpillageDetails.raw);
+    }
+
+    return "Stone spillage occurred.";
+  }
+
+  if (values.stoneSpillage === "no") {
+    return "No stone spillage occurred.";
+  }
+
+  return "";
+}
+
+function buildCholangiogramSentence(values) {
+  if (values.cholangiogramPerformed === "yes") {
+    if (values.cholangiogramFindings.trimmed) {
+      return sentenceWithValue("Intraoperative cholangiogram was performed: ", values.cholangiogramFindings.raw);
+    }
+
+    return "Intraoperative cholangiogram was performed.";
+  }
+
+  if (values.cholangiogramPerformed === "no") {
+    return "Intraoperative cholangiogram was not performed.";
+  }
+
+  return "";
 }
 
 function joinOperationSegments(segments) {
@@ -365,6 +450,93 @@ function buildAppendicectomyOperationText(values) {
   }
 
   segments.push(...definitivePhase);
+
+  const additionalDetailsSentence = buildAdditionalOperativeDetailsSentence(values);
+  if (additionalDetailsSentence) {
+    segments.push({ text: additionalDetailsSentence, block: true });
+  }
+
+  return joinOperationSegments(segments);
+}
+
+function buildCholecystectomyOperationText(values) {
+  const segments = [];
+
+  if (values.entryTechnique.present) {
+    segments.push({
+      text: sentenceWithValue("Laparoscopic entry was obtained using ", values.entryTechnique.value),
+      block: false,
+    });
+  } else {
+    segments.push({ text: "Laparoscopic entry was obtained.", block: false });
+  }
+
+  segments.push({ text: "The gallbladder was identified and assessed.", block: false });
+
+  if (values.convertedToOpen) {
+    const conversionSentence = buildConversionSentence(values);
+    if (conversionSentence) {
+      segments.push({ text: conversionSentence, block: false });
+    }
+
+    segments.push({ text: "A laparotomy was performed.", block: false });
+  }
+
+  const gallbladderAppearanceSentence = buildGallbladderAppearanceSentence(values);
+  if (gallbladderAppearanceSentence) {
+    segments.push({ text: gallbladderAppearanceSentence, block: false });
+  }
+
+  const criticalViewSentence = buildCriticalViewSentence(values);
+  if (criticalViewSentence) {
+    segments.push({ text: criticalViewSentence, block: false });
+  }
+
+  if (values.cysticDuctControl.present) {
+    segments.push({
+      text: sentenceWithValue("The cystic duct was controlled with ", values.cysticDuctControl.value),
+      block: false,
+    });
+  }
+
+  if (values.cysticArteryControl.present) {
+    segments.push({
+      text: sentenceWithValue("The cystic artery was controlled with ", values.cysticArteryControl.value),
+      block: false,
+    });
+  }
+
+  segments.push({ text: "The gallbladder was dissected from the liver bed.", block: false });
+
+  const bileSpillageSentence = buildBileSpillageSentence(values);
+  if (bileSpillageSentence) {
+    segments.push({ text: bileSpillageSentence, block: false });
+  }
+
+  const stoneSpillageSentence = buildStoneSpillageSentence(values);
+  if (stoneSpillageSentence) {
+    segments.push({ text: stoneSpillageSentence, block: false });
+  }
+
+  const cholangiogramSentence = buildCholangiogramSentence(values);
+  if (cholangiogramSentence) {
+    segments.push({ text: cholangiogramSentence, block: false });
+  }
+
+  const gallbladderRetrievalSentence = buildGallbladderRetrievalSentence(values);
+  if (gallbladderRetrievalSentence) {
+    segments.push({ text: gallbladderRetrievalSentence, block: false });
+  }
+
+  const haemostasisSentence = buildHaemostasisSentence(values);
+  if (haemostasisSentence) {
+    segments.push({ text: haemostasisSentence, block: false });
+  }
+
+  const drainSentence = buildDrainSentence(values);
+  if (drainSentence) {
+    segments.push({ text: drainSentence, block: false });
+  }
 
   const additionalDetailsSentence = buildAdditionalOperativeDetailsSentence(values);
   if (additionalDetailsSentence) {
@@ -487,6 +659,59 @@ function buildClosureLine(values) {
   return `Closure: ${buildClosureText(values)}`;
 }
 
+function buildStandardOutputSections() {
+  return [
+    {
+      build: (values, procedure) => `Procedure: ${procedure.title}`,
+    },
+    {
+      build: buildPrimaryTeamLine,
+    },
+    {
+      build: buildAdditionalTeamMembersLine,
+    },
+    {
+      build: buildSupervisingConsultantLine,
+    },
+    {
+      build: buildAnaestheticLine,
+    },
+    {
+      build: buildAnaesthetistLine,
+    },
+    {
+      build: (values) => formatBlock("Indication", values.indication),
+    },
+    {
+      build: (values) => formatBlock("Findings", values.findings),
+    },
+    {
+      build: buildPortsSection,
+    },
+    {
+      build: buildOperationLine,
+    },
+    {
+      build: buildSpecimenLine,
+    },
+    {
+      build: buildDrainLine,
+    },
+    {
+      build: buildEstimatedBloodLossLine,
+    },
+    {
+      build: buildComplicationsLine,
+    },
+    {
+      build: buildClosureLine,
+    },
+    {
+      build: (values) => formatBlock("Post-operative plan", values.postOpPlan),
+    },
+  ];
+}
+
 function createTeamMemberRow(role = "Assistant", name = "") {
   const row = document.createElement("div");
   row.className = "team-member-row";
@@ -533,6 +758,8 @@ const PROCEDURES = {
   lapAppendicectomy: {
     id: "lapAppendicectomy",
     title: "Laparoscopic appendicectomy",
+    hint: "Appendicectomy-specific steps include perforation, contamination, mesoappendix division, stump control, and washout.",
+    validationHint: "Warnings are advisory. Indication, findings, and stump control method are required before generation. Washout is required when contamination is present, and a reason is required if the procedure is converted to open.",
     fields: {
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
@@ -649,78 +876,170 @@ const PROCEDURES = {
       (values) => (values.contaminationPresent === "yes" && !values.washoutPerformed ? "washout performed" : ""),
       (values) => (values.convertedToOpen && !values.conversionReason.trimmed ? "reason for conversion" : ""),
     ],
-    outputSections: [
+    outputSections: buildStandardOutputSections(),
+    buildOperationText: buildAppendicectomyOperationText,
+  },
+  lapCholecystectomy: {
+    id: "lapCholecystectomy",
+    title: "Laparoscopic cholecystectomy",
+    hint: "Cholecystectomy-specific steps include critical view, cystic duct and artery control, spillage, cholangiogram, and gallbladder retrieval.",
+    validationHint: "Warnings are advisory. Indication, findings, cystic duct control, and cystic artery control are required before generation. A reason is required if the procedure is converted to open.",
+    fields: {
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      portsUsed: { type: FIELD_TYPES.TEXT, id: "portsUsed" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      gallbladderAppearance: { type: FIELD_TYPES.TEXT, id: "gallbladderAppearance" },
+      bileSpillageDetails: { type: FIELD_TYPES.TEXT, id: "bileSpillageDetails" },
+      stoneSpillageDetails: { type: FIELD_TYPES.TEXT, id: "stoneSpillageDetails" },
+      cholangiogramFindings: { type: FIELD_TYPES.TEXT, id: "cholangiogramFindings" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      conversionReason: { type: FIELD_TYPES.TEXT, id: "conversionReason" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      criticalViewAchieved: { type: FIELD_TYPES.RADIO, name: "criticalViewAchieved" },
+      gallbladderRemovedInBag: { type: FIELD_TYPES.RADIO, name: "gallbladderRemovedInBag" },
+      bileSpillage: { type: FIELD_TYPES.RADIO, name: "bileSpillage" },
+      stoneSpillage: { type: FIELD_TYPES.RADIO, name: "stoneSpillage" },
+      cholangiogramPerformed: { type: FIELD_TYPES.RADIO, name: "cholangiogramPerformed" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      convertedToOpen: { type: FIELD_TYPES.CHECKBOX, id: "convertedToOpen" },
+      entryTechnique: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "entryTechnique",
+        customId: "entryTechniqueCustom",
+      },
+      cysticDuctControl: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "cysticDuctControl",
+        customId: "cysticDuctControlCustom",
+      },
+      cysticArteryControl: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "cysticArteryControl",
+        customId: "cysticArteryControlCustom",
+      },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
       {
-        build: (values, procedure) => `Procedure: ${procedure.title}`,
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
       },
       {
-        build: buildPrimaryTeamLine,
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
       },
       {
-        build: buildAdditionalTeamMembersLine,
+        targetId: "entryTechniqueCustomField",
+        isVisible: (values) => values.entryTechnique.selected === "Custom / other",
+        clearOnHide: ["entryTechniqueCustom"],
       },
       {
-        build: buildSupervisingConsultantLine,
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
       },
       {
-        build: buildAnaestheticLine,
+        targetId: "cysticDuctControlCustomField",
+        isVisible: (values) => values.cysticDuctControl.selected === "Custom / other",
+        clearOnHide: ["cysticDuctControlCustom"],
       },
       {
-        build: buildAnaesthetistLine,
+        targetId: "cysticArteryControlCustomField",
+        isVisible: (values) => values.cysticArteryControl.selected === "Custom / other",
+        clearOnHide: ["cysticArteryControlCustom"],
       },
       {
-        build: (values) => formatBlock("Indication", values.indication),
+        targetId: "bileSpillageDetailsField",
+        isVisible: (values) => values.bileSpillage === "yes",
       },
       {
-        build: (values) => formatBlock("Findings", values.findings),
+        targetId: "stoneSpillageDetailsField",
+        isVisible: (values) => values.stoneSpillage === "yes",
       },
       {
-        build: buildPortsSection,
+        targetId: "cholangiogramFindingsField",
+        isVisible: (values) => values.cholangiogramPerformed === "yes",
       },
       {
-        build: buildOperationLine,
-      },
-      {
-        build: buildSpecimenLine,
-      },
-      {
-        build: buildDrainLine,
-      },
-      {
-        build: buildEstimatedBloodLossLine,
-      },
-      {
-        build: buildComplicationsLine,
-      },
-      {
-        build: buildClosureLine,
-      },
-      {
-        build: (values) => formatBlock("Post-operative plan", values.postOpPlan),
+        targetId: "conversionReasonField",
+        isVisible: (values) => values.convertedToOpen,
+        clearOnHide: ["conversionReason"],
       },
     ],
-    buildOperationText: buildAppendicectomyOperationText,
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.specimen.trimmed
+        ? "No specimen entered. Confirm whether there was no specimen or add details."
+        : ""),
+      (values) => {
+        if (!values.drainStatus) {
+          return "No drain status entered. Confirm whether no drain was placed or add details.";
+        }
+
+        if (values.drainStatus === "yes" && !values.drainLocation.present) {
+          return "Drain marked as yes without a location. Add drain location if available.";
+        }
+
+        return "";
+      },
+      (values) => (values.criticalViewAchieved === "no"
+        ? "Critical view marked as not achieved. Ensure the operation narrative and plan are clinically reviewed."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+      (values) => (!values.cysticDuctControl.present ? "cystic duct control method" : ""),
+      (values) => (!values.cysticArteryControl.present ? "cystic artery control method" : ""),
+      (values) => (values.convertedToOpen && !values.conversionReason.trimmed ? "reason for conversion" : ""),
+    ],
+    outputSections: buildStandardOutputSections(),
+    buildOperationText: buildCholecystectomyOperationText,
   },
 };
 
-const ACTIVE_PROCEDURE = PROCEDURES[APP_STATE.activeProcedureId];
+function getActiveProcedure() {
+  return PROCEDURES[APP_STATE.activeProcedureId];
+}
 
-function collectValues(procedure = ACTIVE_PROCEDURE) {
+function collectValues(procedure = getActiveProcedure()) {
   return Object.entries(procedure.fields).reduce((values, [fieldName, definition]) => {
     values[fieldName] = readFieldValue(definition);
     return values;
   }, {});
 }
 
-function buildWarnings(values, procedure = ACTIVE_PROCEDURE) {
+function buildWarnings(values, procedure = getActiveProcedure()) {
   return runRuleSet(values, procedure.warningRules);
 }
 
-function validate(values, procedure = ACTIVE_PROCEDURE) {
+function validate(values, procedure = getActiveProcedure()) {
   return runRuleSet(values, procedure.validationRules);
 }
 
-function buildParagraphs(values, procedure = ACTIVE_PROCEDURE) {
+function buildParagraphs(values, procedure = getActiveProcedure()) {
   return procedure.outputSections
     .map((section) => section.build(values, procedure))
     .filter(Boolean);
@@ -746,7 +1065,7 @@ function renderNote(paragraphs) {
     .join("");
 }
 
-function generateNote(values, procedure = ACTIVE_PROCEDURE) {
+function generateNote(values, procedure = getActiveProcedure()) {
   const paragraphs = buildParagraphs(values, procedure);
   APP_STATE.latestNoteText = paragraphs.join("\n\n");
   return paragraphs;
@@ -767,18 +1086,31 @@ function showEmptyNoteState() {
   DOM.noteOutput.innerHTML = "<p>Your operative note will appear here after generation.</p>";
 }
 
-function syncConditionalFields(procedure = ACTIVE_PROCEDURE) {
+function syncProcedureUi(procedure = getActiveProcedure()) {
+  DOM.procedureTitle.textContent = procedure.title;
+  DOM.procedureHint.textContent = procedure.hint;
+  DOM.validationHint.textContent = procedure.validationHint;
+
+  DOM.procedureSections.forEach((section) => {
+    section.hidden = section.dataset.procedureSection !== procedure.id;
+  });
+}
+
+function syncConditionalFields(procedure = getActiveProcedure()) {
   const values = collectValues(procedure);
   applyVisibilityRules(procedure, values);
 }
 
 function handleFormState() {
+  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
+  const procedure = getActiveProcedure();
+  syncProcedureUi(procedure);
   syncConditionalFields();
 
-  const values = collectValues();
-  renderWarnings(buildWarnings(values));
+  const values = collectValues(procedure);
+  renderWarnings(buildWarnings(values, procedure));
 
-  if (!validate(values).length) {
+  if (!validate(values, procedure).length) {
     clearValidation();
   }
 }
@@ -787,11 +1119,14 @@ DOM.form.addEventListener("submit", (event) => {
   event.preventDefault();
 
   DOM.copyFeedback.textContent = "";
-  syncConditionalFields();
+  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
+  const procedure = getActiveProcedure();
+  syncProcedureUi(procedure);
+  syncConditionalFields(procedure);
 
-  const values = collectValues();
-  const missing = validate(values);
-  renderWarnings(buildWarnings(values));
+  const values = collectValues(procedure);
+  const missing = validate(values, procedure);
+  renderWarnings(buildWarnings(values, procedure));
 
   if (missing.length) {
     APP_STATE.latestNoteText = "";
@@ -802,12 +1137,20 @@ DOM.form.addEventListener("submit", (event) => {
   }
 
   clearValidation();
-  renderNote(generateNote(values));
+  renderNote(generateNote(values, procedure));
   DOM.copyButton.disabled = false;
 });
 
 DOM.form.addEventListener("input", handleFormState);
 DOM.form.addEventListener("change", handleFormState);
+
+DOM.procedureSelect.addEventListener("change", () => {
+  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
+  APP_STATE.latestNoteText = "";
+  DOM.copyButton.disabled = true;
+  DOM.copyFeedback.textContent = "";
+  showEmptyNoteState();
+});
 
 DOM.addTeamMemberButton.addEventListener("click", () => {
   DOM.teamMembersList.appendChild(createTeamMemberRow());
@@ -830,6 +1173,7 @@ DOM.teamMembersList.addEventListener("click", (event) => {
   row.remove();
 });
 
+syncProcedureUi();
 syncConditionalFields();
 renderWarnings(buildWarnings(collectValues()));
 

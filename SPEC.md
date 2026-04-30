@@ -13,10 +13,11 @@ This tool standardises and accelerates note-writing while maintaining accuracy.
 ---
 
 ## 3. Scope (MVP)
-Only implement:
+Current supported procedures:
 - Laparoscopic appendicectomy
+- Laparoscopic cholecystectomy
 
-No other procedures in version 1.
+Do not add other procedures unless explicitly scoped.
 
 ---
 
@@ -54,11 +55,20 @@ No other procedures in version 1.
 
 ### Procedure-specific (lap appendicectomy)
 - Perforated? (yes/no)
-- Base healthy? (yes/no)
 - Mesoappendix division method (text)
 - Stump control (text)
 - Washout performed? (yes/no)
-- Retrieval bag used? (yes/no)
+- Specimen removed in bag? (yes/no)
+
+### Procedure-specific (lap cholecystectomy)
+- Gallbladder appearance / operative findings (text)
+- Critical view of safety achieved? (yes/no)
+- Cystic duct control method (text)
+- Cystic artery control method (text)
+- Gallbladder removed in bag? (yes/no)
+- Bile spillage? (yes/no + details)
+- Stone spillage? (yes/no + details)
+- Intraoperative cholangiogram? (yes/no + findings)
 
 ---
 
@@ -88,7 +98,7 @@ The generated operative note must contain:
 - Insert only provided data
 - Do not assume or infer missing details
 
-### Operation section (example logic)
+### Operation section (lap appendicectomy example logic)
 - Always describe entry (generic acceptable)
 - Include appendix identification
 - Include mesoappendix division (if provided)
@@ -96,6 +106,18 @@ The generated operative note must contain:
 - Include retrieval bag usage if "yes"
 - Include washout if "yes"
 - Include perforation if "yes"
+
+### Operation section (lap cholecystectomy example logic)
+- Always describe entry (generic acceptable)
+- Include gallbladder identification
+- Include critical view of safety if specified
+- Include cystic duct control (if provided)
+- Include cystic artery control (if provided)
+- Include gallbladder dissection from liver bed
+- Include bile or stone spillage if specified
+- Include cholangiogram if specified
+- Include retrieval bag usage if specified
+- Include conversion to open if specified
 
 ### Conditional examples
 - If perforated = yes -> include "features consistent with perforation"
@@ -108,7 +130,8 @@ The generated operative note must contain:
 
 - Single-page layout
 - Structured form inputs
-- Procedure title displayed (lap appendicectomy)
+- Procedure selector displayed
+- Selected procedure title displayed
 - "Generate Note" button
 - Output displayed below form
 - "Copy to Clipboard" button
@@ -156,7 +179,7 @@ Warnings (non-blocking):
 
 ## 14. Out of Scope
 
-- Other procedures
+- Procedures other than laparoscopic appendicectomy and laparoscopic cholecystectomy
 - Voice input
 - EMR integration
 - AI-generated clinical decisions
@@ -166,7 +189,7 @@ Warnings (non-blocking):
 
 ## 15. Future Versions (Not MVP)
 
-- Additional procedures
+- Additional procedures beyond appendicectomy and cholecystectomy
 - Free-text shorthand parsing
 - Export to PDF/Word
 - Custom templates

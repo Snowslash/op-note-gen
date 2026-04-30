@@ -10,7 +10,7 @@
   <div class="page">
     <header class="page-header">
       <p class="kicker">Operative Note Generator</p>
-      <h1>Laparoscopic appendicectomy</h1>
+      <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
       <p class="intro">
         Complete the structured fields below to generate a draft operative note.
         Review the output carefully before use.
@@ -27,6 +27,14 @@
             </div>
 
             <div class="form-grid form-grid-admin">
+              <label class="field">
+                <span>Procedure</span>
+                <select id="procedureSelect" name="procedureSelect">
+                  <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
+                  <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
+                </select>
+              </label>
+
               <label class="field">
                 <span>Surgeon</span>
                 <input type="text" id="surgeon" name="surgeon" autocomplete="off">
@@ -115,7 +123,7 @@
           <section class="form-section">
             <div class="section-header section-header-compact">
               <h2>Operative steps</h2>
-              <p>Only lap appendicectomy is available in this MVP.</p>
+              <p id="procedureHint">Procedure-specific steps update when the selected operation changes.</p>
             </div>
 
             <div class="form-grid">
@@ -140,75 +148,177 @@
                 <textarea id="portsUsed" name="portsUsed" rows="3"></textarea>
               </label>
 
-              <div class="field">
-                <span>Perforation</span>
-                <div class="choice-row" role="radiogroup" aria-label="Perforation">
-                  <label><input type="radio" name="perforation" value="yes"> Yes</label>
-                  <label><input type="radio" name="perforation" value="no"> No</label>
+              <div class="procedure-fields field-wide" data-procedure-section="lapAppendicectomy">
+                <div class="form-grid">
+                  <div class="field">
+                    <span>Perforation</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Perforation">
+                      <label><input type="radio" name="perforation" value="yes"> Yes</label>
+                      <label><input type="radio" name="perforation" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <span>Contamination present</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Contamination present">
+                      <label><input type="radio" name="contaminationPresent" value="yes"> Yes</label>
+                      <label><input type="radio" name="contaminationPresent" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <label class="field field-wide" id="contaminationDescriptionField" hidden>
+                    <span>Contamination description</span>
+                    <textarea id="contaminationDescription" name="contaminationDescription" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Mesoappendix division method</span>
+                    <select id="mesoappendixDivision" name="mesoappendixDivision">
+                      <option value="">Select mesoappendix division method</option>
+                      <option value="Electrocautery">Electrocautery</option>
+                      <option value="LigaSure">LigaSure</option>
+                      <option value="Harmonic">Harmonic</option>
+                      <option value="Clips and division">Clips and division</option>
+                      <option value="Stapler">Stapler</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="mesoappendixDivisionCustomField" hidden>
+                    <span>Custom mesoappendix division method</span>
+                    <input type="text" id="mesoappendixDivisionCustom" name="mesoappendixDivisionCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Stump control method</span>
+                    <select id="stumpControl" name="stumpControl" required>
+                      <option value="">Select stump control method</option>
+                      <option value="Endoloops">Endoloops</option>
+                      <option value="Stapler">Stapler</option>
+                      <option value="Clips">Clips</option>
+                      <option value="Suture ligature">Suture ligature</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="stumpControlCustomField" hidden>
+                    <span>Custom stump control method</span>
+                    <input type="text" id="stumpControlCustom" name="stumpControlCustom" autocomplete="off">
+                  </label>
+
+                  <div class="field">
+                    <span>Specimen removed in bag</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Specimen removed in bag">
+                      <label><input type="radio" name="specimenRemovedInBag" value="yes"> Yes</label>
+                      <label><input type="radio" name="specimenRemovedInBag" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <div class="field">
+                    <span>Washout performed</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Washout performed">
+                      <label><input type="radio" name="washoutPerformed" value="yes"> Yes</label>
+                      <label><input type="radio" name="washoutPerformed" value="no"> No</label>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="field">
-                <span>Contamination present</span>
-                <div class="choice-row" role="radiogroup" aria-label="Contamination present">
-                  <label><input type="radio" name="contaminationPresent" value="yes"> Yes</label>
-                  <label><input type="radio" name="contaminationPresent" value="no"> No</label>
-                </div>
-              </div>
+              <div class="procedure-fields field-wide" data-procedure-section="lapCholecystectomy" hidden>
+                <div class="form-grid">
+                  <label class="field field-wide">
+                    <span>Gallbladder appearance / operative findings</span>
+                    <textarea id="gallbladderAppearance" name="gallbladderAppearance" rows="3"></textarea>
+                  </label>
 
-              <label class="field field-wide" id="contaminationDescriptionField" hidden>
-                <span>Contamination description</span>
-                <textarea id="contaminationDescription" name="contaminationDescription" rows="3"></textarea>
-              </label>
+                  <div class="field">
+                    <span>Critical view of safety achieved</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Critical view of safety achieved">
+                      <label><input type="radio" name="criticalViewAchieved" value="yes"> Yes</label>
+                      <label><input type="radio" name="criticalViewAchieved" value="no"> No</label>
+                    </div>
+                  </div>
 
-              <label class="field">
-                <span>Mesoappendix division method</span>
-                <select id="mesoappendixDivision" name="mesoappendixDivision">
-                  <option value="">Select mesoappendix division method</option>
-                  <option value="Electrocautery">Electrocautery</option>
-                  <option value="LigaSure">LigaSure</option>
-                  <option value="Harmonic">Harmonic</option>
-                  <option value="Clips and division">Clips and division</option>
-                  <option value="Stapler">Stapler</option>
-                  <option value="Custom / other">Custom / other</option>
-                </select>
-              </label>
+                  <label class="field">
+                    <span>Cystic duct control method</span>
+                    <select id="cysticDuctControl" name="cysticDuctControl">
+                      <option value="">Select cystic duct control method</option>
+                      <option value="Clips">Clips</option>
+                      <option value="Endoloop">Endoloop</option>
+                      <option value="Stapler">Stapler</option>
+                      <option value="Suture ligature">Suture ligature</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
 
-              <label class="field" id="mesoappendixDivisionCustomField" hidden>
-                <span>Custom mesoappendix division method</span>
-                <input type="text" id="mesoappendixDivisionCustom" name="mesoappendixDivisionCustom" autocomplete="off">
-              </label>
+                  <label class="field" id="cysticDuctControlCustomField" hidden>
+                    <span>Custom cystic duct control method</span>
+                    <input type="text" id="cysticDuctControlCustom" name="cysticDuctControlCustom" autocomplete="off">
+                  </label>
 
-              <label class="field">
-                <span>Stump control method</span>
-                <select id="stumpControl" name="stumpControl" required>
-                  <option value="">Select stump control method</option>
-                  <option value="Endoloops">Endoloops</option>
-                  <option value="Stapler">Stapler</option>
-                  <option value="Clips">Clips</option>
-                  <option value="Suture ligature">Suture ligature</option>
-                  <option value="Custom / other">Custom / other</option>
-                </select>
-              </label>
+                  <label class="field">
+                    <span>Cystic artery control method</span>
+                    <select id="cysticArteryControl" name="cysticArteryControl">
+                      <option value="">Select cystic artery control method</option>
+                      <option value="Clips">Clips</option>
+                      <option value="Diathermy">Diathermy</option>
+                      <option value="LigaSure">LigaSure</option>
+                      <option value="Suture ligature">Suture ligature</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
 
-              <label class="field" id="stumpControlCustomField" hidden>
-                <span>Custom stump control method</span>
-                <input type="text" id="stumpControlCustom" name="stumpControlCustom" autocomplete="off">
-              </label>
+                  <label class="field" id="cysticArteryControlCustomField" hidden>
+                    <span>Custom cystic artery control method</span>
+                    <input type="text" id="cysticArteryControlCustom" name="cysticArteryControlCustom" autocomplete="off">
+                  </label>
 
-              <div class="field">
-                <span>Specimen removed in bag</span>
-                <div class="choice-row" role="radiogroup" aria-label="Specimen removed in bag">
-                  <label><input type="radio" name="specimenRemovedInBag" value="yes"> Yes</label>
-                  <label><input type="radio" name="specimenRemovedInBag" value="no"> No</label>
-                </div>
-              </div>
+                  <div class="field">
+                    <span>Gallbladder removed in bag</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Gallbladder removed in bag">
+                      <label><input type="radio" name="gallbladderRemovedInBag" value="yes"> Yes</label>
+                      <label><input type="radio" name="gallbladderRemovedInBag" value="no"> No</label>
+                    </div>
+                  </div>
 
-              <div class="field">
-                <span>Washout performed</span>
-                <div class="choice-row" role="radiogroup" aria-label="Washout performed">
-                  <label><input type="radio" name="washoutPerformed" value="yes"> Yes</label>
-                  <label><input type="radio" name="washoutPerformed" value="no"> No</label>
+                  <div class="field">
+                    <span>Bile spillage</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Bile spillage">
+                      <label><input type="radio" name="bileSpillage" value="yes"> Yes</label>
+                      <label><input type="radio" name="bileSpillage" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <label class="field field-wide" id="bileSpillageDetailsField" hidden>
+                    <span>Bile spillage details</span>
+                    <textarea id="bileSpillageDetails" name="bileSpillageDetails" rows="3"></textarea>
+                  </label>
+
+                  <div class="field">
+                    <span>Stone spillage</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Stone spillage">
+                      <label><input type="radio" name="stoneSpillage" value="yes"> Yes</label>
+                      <label><input type="radio" name="stoneSpillage" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <label class="field field-wide" id="stoneSpillageDetailsField" hidden>
+                    <span>Stone spillage details</span>
+                    <textarea id="stoneSpillageDetails" name="stoneSpillageDetails" rows="3"></textarea>
+                  </label>
+
+                  <div class="field">
+                    <span>Intraoperative cholangiogram</span>
+                    <div class="choice-row" role="radiogroup" aria-label="Intraoperative cholangiogram">
+                      <label><input type="radio" name="cholangiogramPerformed" value="yes"> Yes</label>
+                      <label><input type="radio" name="cholangiogramPerformed" value="no"> No</label>
+                    </div>
+                  </div>
+
+                  <label class="field field-wide" id="cholangiogramFindingsField" hidden>
+                    <span>Cholangiogram findings</span>
+                    <textarea id="cholangiogramFindings" name="cholangiogramFindings" rows="3"></textarea>
+                  </label>
                 </div>
               </div>
 
@@ -310,7 +420,7 @@
       <aside class="panel note-panel">
         <div class="section-header section-header-compact">
           <h2>Generated note</h2>
-          <p>Warnings are advisory. Indication, findings, and stump control method are required before generation. Washout is required when contamination is present, and a reason is required if the procedure is converted to open.</p>
+          <p id="validationHint">Warnings are advisory. Required operative fields depend on the selected procedure.</p>
         </div>
 
         <div id="validationMessage" class="message message-error" hidden></div>
