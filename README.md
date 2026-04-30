@@ -31,12 +31,13 @@ This version supports:
   - indication
   - findings
   - ports
+  - appendix or gallbladder appearance
   - contamination description
   - bile or stone spillage details
   - cholangiogram findings
   - conversion reason
   - additional operative details
-- Rule-based operation narrative generation
+- Rule-based structured operation detail generation
 - Conditional handling for:
   - drain details
   - contamination
@@ -53,6 +54,7 @@ This version supports:
 - No AI rewriting layer
 - User-entered free text is preserved as typed
 - Missing fields are omitted or shown as `not specified` where appropriate
+- Unanswered structured operation fields are shown as `not specified`
 - Required fields must be completed before note generation
 - The generated note should always be reviewed by the clinician before use
 

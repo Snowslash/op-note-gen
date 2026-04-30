@@ -370,180 +370,121 @@ function joinOperationSegments(segments) {
   }, "");
 }
 
+function formatTextOperationValue(field) {
+  return field.trimmed ? field.raw : "not specified";
+}
+
+function formatSelectOperationValue(field) {
+  return field.present ? field.value : "not specified";
+}
+
+function formatYesNoOperationValue(value) {
+  if (value === "yes") {
+    return "yes";
+  }
+
+  if (value === "no") {
+    return "no";
+  }
+
+  return "not specified";
+}
+
+function formatAchievedOperationValue(value) {
+  if (value === "yes") {
+    return "achieved";
+  }
+
+  if (value === "no") {
+    return "not achieved";
+  }
+
+  return "not specified";
+}
+
+function formatNoneOrPresentOperationValue(value, detailsField) {
+  if (value === "yes") {
+    return detailsField && detailsField.trimmed ? detailsField.raw : "present";
+  }
+
+  if (value === "no") {
+    return "none";
+  }
+
+  return "not specified";
+}
+
+function formatPerformedOperationValue(value, detailsField) {
+  if (value === "yes") {
+    return detailsField && detailsField.trimmed ? `performed: ${detailsField.raw}` : "performed";
+  }
+
+  if (value === "no") {
+    return "not performed";
+  }
+
+  return "not specified";
+}
+
+function formatDrainOperationValue(values) {
+  if (values.drainStatus === "yes") {
+    return values.drainLocation.present ? values.drainLocation.value : "placed, location not specified";
+  }
+
+  if (values.drainStatus === "no") {
+    return "no drain placed";
+  }
+
+  return "not specified";
+}
+
+function formatConversionOperationValue(values) {
+  if (!values.convertedToOpen) {
+    return "no";
+  }
+
+  return values.conversionReason.trimmed ? values.conversionReason.raw : "yes, reason not specified";
+}
+
+function formatAdditionalDetailsOperationLine(values) {
+  return values.additionalOperativeDetails.trimmed
+    ? `Additional operative details: ${values.additionalOperativeDetails.raw}`
+    : "";
+}
+
 function buildAppendicectomyOperationText(values) {
-  const segments = [];
-  const laparoscopicPhase = [];
-  const definitivePhase = [];
-
-  if (values.entryTechnique.present) {
-    laparoscopicPhase.push({
-      text: sentenceWithValue("Laparoscopic entry was obtained using ", values.entryTechnique.value),
-      block: false,
-    });
-  } else {
-    laparoscopicPhase.push({
-      text: "Laparoscopic entry was obtained.",
-      block: false,
-    });
-  }
-
-  laparoscopicPhase.push({
-    text: "The appendix was identified and assessed.",
-    block: false,
-  });
-
-  const perforationSentence = buildPerforationSentence(values);
-  if (perforationSentence) {
-    laparoscopicPhase.push({ text: perforationSentence, block: false });
-  }
-
-  const contaminationSentence = buildContaminationSentence(values);
-  if (contaminationSentence) {
-    laparoscopicPhase.push({ text: contaminationSentence, block: false });
-  }
-
-  if (values.convertedToOpen) {
-    segments.push(...laparoscopicPhase);
-
-    const conversionSentence = buildConversionSentence(values);
-    if (conversionSentence) {
-      segments.push({ text: conversionSentence, block: false });
-    }
-
-    definitivePhase.push({ text: "A laparotomy was performed.", block: false });
-  } else {
-    definitivePhase.push(...laparoscopicPhase);
-  }
-
-  if (values.mesoappendixDivision.present) {
-    definitivePhase.push({
-      text: sentenceWithValue("The mesoappendix was divided using ", values.mesoappendixDivision.value),
-      block: false,
-    });
-  }
-
-  if (values.stumpControl.present) {
-    definitivePhase.push({
-      text: sentenceWithValue("The appendiceal stump was controlled with ", values.stumpControl.value),
-      block: false,
-    });
-  }
-
-  const specimenRemovalSentence = buildSpecimenRemovalSentence(values);
-  if (specimenRemovalSentence) {
-    definitivePhase.push({ text: specimenRemovalSentence, block: false });
-  }
-
-  const washoutSentence = buildWashoutSentence(values);
-  if (washoutSentence) {
-    definitivePhase.push({ text: washoutSentence, block: false });
-  }
-
-  const haemostasisSentence = buildHaemostasisSentence(values);
-  if (haemostasisSentence) {
-    definitivePhase.push({ text: haemostasisSentence, block: false });
-  }
-
-  const drainSentence = buildDrainSentence(values);
-  if (drainSentence) {
-    definitivePhase.push({ text: drainSentence, block: false });
-  }
-
-  segments.push(...definitivePhase);
-
-  const additionalDetailsSentence = buildAdditionalOperativeDetailsSentence(values);
-  if (additionalDetailsSentence) {
-    segments.push({ text: additionalDetailsSentence, block: true });
-  }
-
-  return joinOperationSegments(segments);
+  return [
+    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
+    `Appendix appearance: ${formatTextOperationValue(values.appendixAppearance)}`,
+    `Perforation: ${formatYesNoOperationValue(values.perforation)}`,
+    `Contamination: ${formatNoneOrPresentOperationValue(values.contaminationPresent, values.contaminationDescription)}`,
+    `Mesoappendix division: ${formatSelectOperationValue(values.mesoappendixDivision)}`,
+    `Stump control: ${formatSelectOperationValue(values.stumpControl)}`,
+    `Specimen removed in bag: ${formatYesNoOperationValue(values.specimenRemovedInBag)}`,
+    `Washout performed: ${formatYesNoOperationValue(values.washoutPerformed)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    `Drain: ${formatDrainOperationValue(values)}`,
+    `Converted to open: ${formatConversionOperationValue(values)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
 }
 
 function buildCholecystectomyOperationText(values) {
-  const segments = [];
-
-  if (values.entryTechnique.present) {
-    segments.push({
-      text: sentenceWithValue("Laparoscopic entry was obtained using ", values.entryTechnique.value),
-      block: false,
-    });
-  } else {
-    segments.push({ text: "Laparoscopic entry was obtained.", block: false });
-  }
-
-  segments.push({ text: "The gallbladder was identified and assessed.", block: false });
-
-  if (values.convertedToOpen) {
-    const conversionSentence = buildConversionSentence(values);
-    if (conversionSentence) {
-      segments.push({ text: conversionSentence, block: false });
-    }
-
-    segments.push({ text: "A laparotomy was performed.", block: false });
-  }
-
-  const gallbladderAppearanceSentence = buildGallbladderAppearanceSentence(values);
-  if (gallbladderAppearanceSentence) {
-    segments.push({ text: gallbladderAppearanceSentence, block: false });
-  }
-
-  const criticalViewSentence = buildCriticalViewSentence(values);
-  if (criticalViewSentence) {
-    segments.push({ text: criticalViewSentence, block: false });
-  }
-
-  if (values.cysticDuctControl.present) {
-    segments.push({
-      text: sentenceWithValue("The cystic duct was controlled with ", values.cysticDuctControl.value),
-      block: false,
-    });
-  }
-
-  if (values.cysticArteryControl.present) {
-    segments.push({
-      text: sentenceWithValue("The cystic artery was controlled with ", values.cysticArteryControl.value),
-      block: false,
-    });
-  }
-
-  segments.push({ text: "The gallbladder was dissected from the liver bed.", block: false });
-
-  const bileSpillageSentence = buildBileSpillageSentence(values);
-  if (bileSpillageSentence) {
-    segments.push({ text: bileSpillageSentence, block: false });
-  }
-
-  const stoneSpillageSentence = buildStoneSpillageSentence(values);
-  if (stoneSpillageSentence) {
-    segments.push({ text: stoneSpillageSentence, block: false });
-  }
-
-  const cholangiogramSentence = buildCholangiogramSentence(values);
-  if (cholangiogramSentence) {
-    segments.push({ text: cholangiogramSentence, block: false });
-  }
-
-  const gallbladderRetrievalSentence = buildGallbladderRetrievalSentence(values);
-  if (gallbladderRetrievalSentence) {
-    segments.push({ text: gallbladderRetrievalSentence, block: false });
-  }
-
-  const haemostasisSentence = buildHaemostasisSentence(values);
-  if (haemostasisSentence) {
-    segments.push({ text: haemostasisSentence, block: false });
-  }
-
-  const drainSentence = buildDrainSentence(values);
-  if (drainSentence) {
-    segments.push({ text: drainSentence, block: false });
-  }
-
-  const additionalDetailsSentence = buildAdditionalOperativeDetailsSentence(values);
-  if (additionalDetailsSentence) {
-    segments.push({ text: additionalDetailsSentence, block: true });
-  }
-
-  return joinOperationSegments(segments);
+  return [
+    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
+    `Gallbladder appearance: ${formatTextOperationValue(values.gallbladderAppearance)}`,
+    `Critical view of safety: ${formatAchievedOperationValue(values.criticalViewAchieved)}`,
+    `Cystic duct control: ${formatSelectOperationValue(values.cysticDuctControl)}`,
+    `Cystic artery control: ${formatSelectOperationValue(values.cysticArteryControl)}`,
+    `Gallbladder removed in bag: ${formatYesNoOperationValue(values.gallbladderRemovedInBag)}`,
+    `Bile spillage: ${formatNoneOrPresentOperationValue(values.bileSpillage, values.bileSpillageDetails)}`,
+    `Stone spillage: ${formatNoneOrPresentOperationValue(values.stoneSpillage, values.stoneSpillageDetails)}`,
+    `Intraoperative cholangiogram: ${formatPerformedOperationValue(values.cholangiogramPerformed, values.cholangiogramFindings)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    `Drain: ${formatDrainOperationValue(values)}`,
+    `Converted to open: ${formatConversionOperationValue(values)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
 }
 
 function buildDrainText(values) {
@@ -630,7 +571,7 @@ function buildPortsSection(values) {
 }
 
 function buildOperationLine(values, procedure) {
-  return `Operation: ${procedure.buildOperationText(values)}`;
+  return `Operation:\n${procedure.buildOperationText(values)}`;
 }
 
 function buildSpecimenLine(values) {
@@ -759,7 +700,7 @@ const PROCEDURES = {
     id: "lapAppendicectomy",
     title: "Laparoscopic appendicectomy",
     hint: "Appendicectomy-specific steps include perforation, contamination, mesoappendix division, stump control, and washout.",
-    validationHint: "Warnings are advisory. Indication, findings, and stump control method are required before generation. Washout is required when contamination is present, and a reason is required if the procedure is converted to open.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
@@ -773,6 +714,7 @@ const PROCEDURES = {
       bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
       complications: { type: FIELD_TYPES.TEXT, id: "complications" },
       postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      appendixAppearance: { type: FIELD_TYPES.TEXT, id: "appendixAppearance" },
       contaminationDescription: { type: FIELD_TYPES.TEXT, id: "contaminationDescription" },
       fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
       skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
@@ -868,13 +810,16 @@ const PROCEDURES = {
 
         return "";
       },
+      (values) => (values.contaminationPresent === "yes" && !values.washoutPerformed
+        ? "Contamination marked as present without washout status. Confirm whether washout was performed."
+        : ""),
+      (values) => (values.convertedToOpen && !values.conversionReason.trimmed
+        ? "Converted to open without a reason. Add the reason if available."
+        : ""),
     ],
     validationRules: [
       (values) => (!values.indication.trimmed ? "indication" : ""),
       (values) => (!values.findings.trimmed ? "findings" : ""),
-      (values) => (!values.stumpControl.present ? "stump control method" : ""),
-      (values) => (values.contaminationPresent === "yes" && !values.washoutPerformed ? "washout performed" : ""),
-      (values) => (values.convertedToOpen && !values.conversionReason.trimmed ? "reason for conversion" : ""),
     ],
     outputSections: buildStandardOutputSections(),
     buildOperationText: buildAppendicectomyOperationText,
@@ -883,7 +828,7 @@ const PROCEDURES = {
     id: "lapCholecystectomy",
     title: "Laparoscopic cholecystectomy",
     hint: "Cholecystectomy-specific steps include critical view, cystic duct and artery control, spillage, cholangiogram, and gallbladder retrieval.",
-    validationHint: "Warnings are advisory. Indication, findings, cystic duct control, and cystic artery control are required before generation. A reason is required if the procedure is converted to open.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
@@ -1007,13 +952,13 @@ const PROCEDURES = {
       (values) => (values.criticalViewAchieved === "no"
         ? "Critical view marked as not achieved. Ensure the operation narrative and plan are clinically reviewed."
         : ""),
+      (values) => (values.convertedToOpen && !values.conversionReason.trimmed
+        ? "Converted to open without a reason. Add the reason if available."
+        : ""),
     ],
     validationRules: [
       (values) => (!values.indication.trimmed ? "indication" : ""),
       (values) => (!values.findings.trimmed ? "findings" : ""),
-      (values) => (!values.cysticDuctControl.present ? "cystic duct control method" : ""),
-      (values) => (!values.cysticArteryControl.present ? "cystic artery control method" : ""),
-      (values) => (values.convertedToOpen && !values.conversionReason.trimmed ? "reason for conversion" : ""),
     ],
     outputSections: buildStandardOutputSections(),
     buildOperationText: buildCholecystectomyOperationText,
@@ -1146,9 +1091,14 @@ DOM.form.addEventListener("change", handleFormState);
 
 DOM.procedureSelect.addEventListener("change", () => {
   APP_STATE.activeProcedureId = DOM.procedureSelect.value;
+  const procedure = getActiveProcedure();
   APP_STATE.latestNoteText = "";
   DOM.copyButton.disabled = true;
   DOM.copyFeedback.textContent = "";
+  syncProcedureUi(procedure);
+  syncConditionalFields(procedure);
+  renderWarnings(buildWarnings(collectValues(procedure), procedure));
+  clearValidation();
   showEmptyNoteState();
 });
 

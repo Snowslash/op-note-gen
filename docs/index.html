@@ -17,6 +17,21 @@
       </p>
     </header>
 
+    <section class="panel procedure-panel" aria-labelledby="procedure-section-title">
+      <div class="section-header section-header-compact">
+        <h2 id="procedure-section-title">Procedure</h2>
+        <p>Select the operation before completing the procedure-specific fields.</p>
+      </div>
+
+      <label class="field procedure-selector-field">
+        <span>Operation type</span>
+        <select id="procedureSelect" name="procedureSelect">
+          <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
+          <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
+        </select>
+      </label>
+    </section>
+
     <main class="layout">
       <section class="panel form-panel">
         <form id="note-form" novalidate>
@@ -27,14 +42,6 @@
             </div>
 
             <div class="form-grid form-grid-admin">
-              <label class="field">
-                <span>Procedure</span>
-                <select id="procedureSelect" name="procedureSelect">
-                  <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
-                  <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
-                </select>
-              </label>
-
               <label class="field">
                 <span>Surgeon</span>
                 <input type="text" id="surgeon" name="surgeon" autocomplete="off">
@@ -150,6 +157,11 @@
 
               <div class="procedure-fields field-wide" data-procedure-section="lapAppendicectomy">
                 <div class="form-grid">
+                  <label class="field field-wide">
+                    <span>Appendix appearance / operative findings</span>
+                    <textarea id="appendixAppearance" name="appendixAppearance" rows="3"></textarea>
+                  </label>
+
                   <div class="field">
                     <span>Perforation</span>
                     <div class="choice-row" role="radiogroup" aria-label="Perforation">

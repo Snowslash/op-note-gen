@@ -54,6 +54,7 @@ Do not add other procedures unless explicitly scoped.
 - Post-operative plan (text)
 
 ### Procedure-specific (lap appendicectomy)
+- Appendix appearance / operative findings (text)
 - Perforated? (yes/no)
 - Mesoappendix division method (text)
 - Stump control (text)
@@ -100,24 +101,16 @@ The generated operative note must contain:
 
 ### Operation section (lap appendicectomy example logic)
 - Always describe entry (generic acceptable)
-- Include appendix identification
-- Include mesoappendix division (if provided)
-- Include stump control (if provided)
-- Include retrieval bag usage if "yes"
-- Include washout if "yes"
-- Include perforation if "yes"
+- Output structured labelled lines rather than a prose paragraph
+- Include appendix appearance
+- Include perforation, contamination, mesoappendix division, stump control, retrieval bag usage, washout, haemostasis, drain, and conversion status
+- Use `not specified` for unanswered structured operation fields
 
 ### Operation section (lap cholecystectomy example logic)
 - Always describe entry (generic acceptable)
-- Include gallbladder identification
-- Include critical view of safety if specified
-- Include cystic duct control (if provided)
-- Include cystic artery control (if provided)
-- Include gallbladder dissection from liver bed
-- Include bile or stone spillage if specified
-- Include cholangiogram if specified
-- Include retrieval bag usage if specified
-- Include conversion to open if specified
+- Output structured labelled lines rather than a prose paragraph
+- Include gallbladder appearance, critical view, cystic duct control, cystic artery control, retrieval bag usage, bile spillage, stone spillage, cholangiogram, haemostasis, drain, and conversion status
+- Use `not specified` for unanswered structured operation fields
 
 ### Conditional examples
 - If perforated = yes -> include "features consistent with perforation"
@@ -154,7 +147,7 @@ Warnings (non-blocking):
 ## 11. Output Behaviour
 
 - Clean, professional formatting
-- Paragraph structure
+- Paragraph structure with structured labelled operation lines
 - No bullet points in final note
 - No placeholders visible
 

@@ -59,6 +59,14 @@ body {
   box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
+.procedure-panel {
+  margin-bottom: 18px;
+}
+
+.procedure-selector-field {
+  max-width: 420px;
+}
+
 .form-panel {
   min-width: 0;
 }

@@ -21,6 +21,7 @@
 - `docs/script.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
 - Add or change form data by updating the relevant field definition, visibility rule, validation/warning rule, and output section together.
 - Operation narrative text is built by procedure-specific functions such as `buildAppendicectomyOperationText` and `buildCholecystectomyOperationText`; keep it rule-based and factual.
+- Operation output is structured as labelled lines; unanswered structured operation fields should render as `not specified`.
 - Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.
 
 ## Scope
