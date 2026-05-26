@@ -379,6 +379,17 @@ button:disabled {
   margin-bottom: 0;
 }
 
+.privacy-footer {
+  margin-top: 18px;
+  color: #52606d;
+  font-size: 0.86rem;
+  text-align: center;
+}
+
+.privacy-footer p {
+  margin: 0;
+}
+
 @media (max-width: 1080px) {
   .layout {
     grid-template-columns: minmax(0, 1fr) 360px;
