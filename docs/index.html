@@ -28,6 +28,7 @@
         <select id="procedureSelect" name="procedureSelect">
           <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
           <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
+          <option value="diagnosticLaparoscopy">Diagnostic laparoscopy +/- washout / adhesiolysis</option>
           <option value="incisionAndDrainage">Incision and drainage of abscess</option>
         </select>
       </label>
@@ -135,7 +136,7 @@
             </div>
 
             <div class="form-grid">
-              <label class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy">
+              <label class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
                 <span>Laparoscopic entry technique</span>
                 <select id="entryTechnique" name="entryTechnique">
                   <option value="">Select entry technique</option>
@@ -146,12 +147,12 @@
                 </select>
               </label>
 
-              <label class="field" id="entryTechniqueCustomField" data-procedure-section="lapAppendicectomy lapCholecystectomy" hidden>
+              <label class="field" id="entryTechniqueCustomField" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy" hidden>
                 <span>Custom entry technique</span>
                 <input type="text" id="entryTechniqueCustom" name="entryTechniqueCustom" autocomplete="off">
               </label>
 
-              <label class="field field-wide" data-procedure-section="lapAppendicectomy lapCholecystectomy">
+              <label class="field field-wide" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
                 <span>Ports used / port configuration</span>
                 <textarea id="portsUsed" name="portsUsed" rows="3"></textarea>
               </label>
@@ -335,6 +336,35 @@
                 </div>
               </div>
 
+              <div class="procedure-fields field-wide" data-procedure-section="diagnosticLaparoscopy" hidden>
+                <div class="form-grid">
+                  <label class="field field-wide">
+                    <span>Abdominal survey / key findings</span>
+                    <textarea id="abdominalSurvey" name="abdominalSurvey" rows="3"></textarea>
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Procedure performed</span>
+                    <input type="text" id="procedurePerformed" name="procedurePerformed" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Washout / irrigation details</span>
+                    <input type="text" id="washoutFluid" name="washoutFluid" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Adhesiolysis details</span>
+                    <textarea id="adhesiolysisDetails" name="adhesiolysisDetails" rows="3"></textarea>
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Source control / intra-abdominal pathology dealt with</span>
+                    <textarea id="sourceControl" name="sourceControl" rows="3"></textarea>
+                  </label>
+                </div>
+              </div>
+
               <div class="procedure-fields field-wide" data-procedure-section="incisionAndDrainage" hidden>
                 <div class="form-grid">
                   <label class="field field-wide">
@@ -438,14 +468,14 @@
                 </div>
               </div>
 
-              <div class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy">
+              <div class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
                 <span>Converted to open</span>
                 <div class="choice-row">
                   <label><input type="checkbox" id="convertedToOpen" name="convertedToOpen"> Yes</label>
                 </div>
               </div>
 
-              <label class="field field-wide" id="conversionReasonField" data-procedure-section="lapAppendicectomy lapCholecystectomy" hidden>
+              <label class="field field-wide" id="conversionReasonField" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy" hidden>
                 <span>Reason for conversion</span>
                 <textarea id="conversionReason" name="conversionReason" rows="3"></textarea>
               </label>

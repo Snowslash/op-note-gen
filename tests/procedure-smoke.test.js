@@ -196,6 +196,50 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
   assertIncludes(note, "Complications: No immediate complications.");
 }
 
+function testDiagnosticLaparoscopyGeneratesStructuredNote() {
+  const note = generateNote({
+    values: {
+      procedureSelect: "diagnosticLaparoscopy",
+      surgeon: "Dr A",
+      assistant: "Dr B",
+      anaesthetic: "GA",
+      indication: "Generalised abdominal pain with CT concern for intra-abdominal sepsis",
+      findings: "Turbid pelvic fluid and fibrinous adhesions in the right iliac fossa",
+      portsUsed: "10 mm umbilical port, 5 mm suprapubic port, 5 mm left iliac fossa port",
+      abdominalSurvey: "Small bowel run from terminal ileum proximally; no perforation identified",
+      procedurePerformed: "Diagnostic laparoscopy, washout and adhesiolysis",
+      washoutFluid: "Warm saline until clear",
+      adhesiolysisDetails: "Blunt adhesiolysis to free small bowel loops from right iliac fossa",
+      sourceControl: "No drainable collection or perforated viscus identified",
+      specimen: "Peritoneal fluid for microbiology",
+      bloodLoss: "Minimal",
+      complications: "none",
+      postOpPlan: "Ward care, IV antibiotics and review cultures",
+      packingOrDrain: "stale I&D packing text from previous procedure",
+      drainLocation: "Pelvis",
+    },
+    radios: {
+      drainStatus: "yes",
+      haemostasisConfirmed: "yes",
+      fascialClosurePerformed: "yes",
+    },
+  });
+
+  assertIncludes(note, "Procedure: Diagnostic laparoscopy +/- washout / adhesiolysis");
+  assertIncludes(note, "Ports:\n10 mm umbilical port, 5 mm suprapubic port, 5 mm left iliac fossa port");
+  assertIncludes(note, "Abdominal survey: Small bowel run from terminal ileum proximally; no perforation identified");
+  assertIncludes(note, "Procedure performed: Diagnostic laparoscopy, washout and adhesiolysis");
+  assertIncludes(note, "Washout/irrigation: Warm saline until clear");
+  assertIncludes(note, "Adhesiolysis: Blunt adhesiolysis to free small bowel loops from right iliac fossa");
+  assertIncludes(note, "Source control: No drainable collection or perforated viscus identified");
+  assertIncludes(note, "Drain: Pelvis");
+  assertIncludes(note, "Complications: No immediate complications.");
+  assert.ok(
+    !note.includes("Packing/drain"),
+    `Expected diagnostic laparoscopy not to include stale I&D packing field. Actual note:\n${note}`,
+  );
+}
+
 function testAppendicectomyStillGenerates() {
   const note = generateNote({
     values: {
@@ -244,5 +288,6 @@ function testBlankComplicationsAreNotInvented() {
 
 testAppendicectomyStillGenerates();
 testIncisionAndDrainageGeneratesStructuredNote();
+testDiagnosticLaparoscopyGeneratesStructuredNote();
 testBlankComplicationsAreNotInvented();
 console.log("procedure smoke tests passed");

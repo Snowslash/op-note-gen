@@ -33,6 +33,20 @@ function buildCholecystectomyOperationText(values) {
   ].filter(Boolean).join("\n");
 }
 
+function buildDiagnosticLaparoscopyOperationText(values) {
+  return [
+    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
+    `Abdominal survey: ${formatTextOperationValue(values.abdominalSurvey)}`,
+    `Procedure performed: ${formatTextOperationValue(values.procedurePerformed)}`,
+    `Washout/irrigation: ${formatTextOperationValue(values.washoutFluid)}`,
+    `Adhesiolysis: ${formatTextOperationValue(values.adhesiolysisDetails)}`,
+    `Source control: ${formatTextOperationValue(values.sourceControl)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    `Converted to open: ${formatConversionOperationValue(values)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
+}
+
 function formatSentStatus(value) {
   if (value === "yes") {
     return "sent";
@@ -552,6 +566,106 @@ const PROCEDURES = {
     ],
     outputSections: buildStandardOutputSections(),
     buildOperationText: buildCholecystectomyOperationText,
+  },
+  diagnosticLaparoscopy: {
+    id: "diagnosticLaparoscopy",
+    title: "Diagnostic laparoscopy +/- washout / adhesiolysis",
+    hint: "Diagnostic laparoscopy-specific steps include laparoscopic access, abdominal survey, procedure performed, washout, adhesiolysis, source control, haemostasis, drain, and conversion status.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
+    fields: {
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      portsUsed: { type: FIELD_TYPES.TEXT, id: "portsUsed" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      abdominalSurvey: { type: FIELD_TYPES.TEXT, id: "abdominalSurvey" },
+      procedurePerformed: { type: FIELD_TYPES.TEXT, id: "procedurePerformed" },
+      washoutFluid: { type: FIELD_TYPES.TEXT, id: "washoutFluid" },
+      adhesiolysisDetails: { type: FIELD_TYPES.TEXT, id: "adhesiolysisDetails" },
+      sourceControl: { type: FIELD_TYPES.TEXT, id: "sourceControl" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      conversionReason: { type: FIELD_TYPES.TEXT, id: "conversionReason" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      convertedToOpen: { type: FIELD_TYPES.CHECKBOX, id: "convertedToOpen" },
+      entryTechnique: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "entryTechnique",
+        customId: "entryTechniqueCustom",
+      },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
+      {
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
+      },
+      {
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
+      },
+      {
+        targetId: "entryTechniqueCustomField",
+        isVisible: (values) => values.entryTechnique.selected === "Custom / other",
+        clearOnHide: ["entryTechniqueCustom"],
+      },
+      {
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
+      },
+      {
+        targetId: "conversionReasonField",
+        isVisible: (values) => values.convertedToOpen,
+        clearOnHide: ["conversionReason"],
+      },
+    ],
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.specimen.trimmed
+        ? "No specimen entered. Confirm whether there was no specimen or add details."
+        : ""),
+      (values) => {
+        if (!values.drainStatus) {
+          return "No drain status entered. Confirm whether no drain was placed or add details.";
+        }
+
+        if (values.drainStatus === "yes" && !values.drainLocation.present) {
+          return "Drain marked as yes without a location. Add drain location if available.";
+        }
+
+        return "";
+      },
+      (values) => (values.convertedToOpen && !values.conversionReason.trimmed
+        ? "Converted to open without a reason. Add the reason if available."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+    ],
+    outputSections: buildStandardOutputSections(),
+    buildOperationText: buildDiagnosticLaparoscopyOperationText,
   },
   incisionAndDrainage: {
     id: "incisionAndDrainage",

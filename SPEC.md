@@ -16,6 +16,7 @@ This tool standardises and accelerates note-writing while maintaining accuracy.
 Current supported procedures:
 - Laparoscopic appendicectomy
 - Laparoscopic cholecystectomy
+- Diagnostic laparoscopy +/- washout / adhesiolysis
 - Incision and drainage of abscess
 
 Do not add other procedures unless explicitly scoped.
@@ -72,6 +73,13 @@ Do not add other procedures unless explicitly scoped.
 - Stone spillage? (yes/no + details)
 - Intraoperative cholangiogram? (yes/no + findings)
 
+### Procedure-specific (diagnostic laparoscopy +/- washout / adhesiolysis)
+- Abdominal survey / key findings (text)
+- Procedure performed (text)
+- Washout / irrigation details (text)
+- Adhesiolysis details (text)
+- Source control / intra-abdominal pathology dealt with (text)
+
 ### Procedure-specific (incision and drainage of abscess)
 - Abscess / wound site (text)
 - Incision type (select/custom)
@@ -123,9 +131,15 @@ The generated operative note must contain:
 - Include gallbladder appearance, critical view, cystic duct control, cystic artery control, retrieval bag usage, bile spillage, stone spillage, cholangiogram, haemostasis, drain, and conversion status
 - Use `not specified` for unanswered structured operation fields
 
+### Operation section (diagnostic laparoscopy +/- washout / adhesiolysis logic)
+- Output structured labelled lines rather than a prose paragraph
+- Include laparoscopic entry, abdominal survey, procedure performed, washout/irrigation, adhesiolysis, source control, haemostasis, and conversion status
+- Use `not specified` for unanswered structured operation fields
+- Do not infer pathology/source control beyond the user's entered findings
+
 ### Operation section (incision and drainage of abscess logic)
 - Output structured labelled lines rather than a prose paragraph
-- Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, skin/wound management, haemostasis, and drain status
+- Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, skin/wound management, and haemostasis
 - Use `not specified` for unanswered structured operation fields
 - Preserve `not applicable` where explicitly selected
 
@@ -192,7 +206,7 @@ Warnings (non-blocking):
 
 ## 14. Out of Scope
 
-- Procedures other than laparoscopic appendicectomy, laparoscopic cholecystectomy, and incision and drainage of abscess
+- Procedures other than laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, and incision and drainage of abscess
 - Voice input
 - EMR integration
 - AI-generated clinical decisions
@@ -202,7 +216,7 @@ Warnings (non-blocking):
 
 ## 15. Future Versions (Not MVP)
 
-- Additional procedures beyond appendicectomy, cholecystectomy, and incision and drainage
+- Additional procedures beyond appendicectomy, cholecystectomy, diagnostic laparoscopy, and incision and drainage
 - Free-text shorthand parsing
 - Export to PDF/Word
 - Custom templates

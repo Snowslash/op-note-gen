@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, and **incision and drainage of abscess**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, and **incision and drainage of abscess**, built with:
 
 - HTML
 - CSS
@@ -14,6 +14,7 @@ This version supports:
 
 - Laparoscopic appendicectomy
 - Laparoscopic cholecystectomy
+- Diagnostic laparoscopy +/- washout / adhesiolysis
 - Incision and drainage of abscess
 
 ## Features
@@ -32,10 +33,10 @@ This version supports:
   - indication
   - findings
   - ports
-  - appendix or gallbladder appearance
+  - appendix, gallbladder, abdominal survey, or abscess/wound appearance
   - contamination description
   - bile or stone spillage details
-  - abscess site, contents, packing, and wound management
+  - washout, adhesiolysis, source control, abscess site, contents, packing, and wound management
   - cholangiogram findings
   - conversion reason
   - additional operative details
