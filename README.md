@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy** and **laparoscopic cholecystectomy**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, and **incision and drainage of abscess**, built with:
 
 - HTML
 - CSS
@@ -14,6 +14,7 @@ This version supports:
 
 - Laparoscopic appendicectomy
 - Laparoscopic cholecystectomy
+- Incision and drainage of abscess
 
 ## Features
 
@@ -34,6 +35,7 @@ This version supports:
   - appendix or gallbladder appearance
   - contamination description
   - bile or stone spillage details
+  - abscess site, contents, packing, and wound management
   - cholangiogram findings
   - conversion reason
   - additional operative details
@@ -93,7 +95,9 @@ The generated note can include:
 
 - [docs/index.html](./docs/index.html) - app structure and form fields
 - [docs/styles.css](./docs/styles.css) - layout and styling
-- [docs/script.js](./docs/script.js) - conditional UI logic and note generation
+- [docs/js/core.js](./docs/js/core.js) - shared DOM/state helpers and formatting utilities
+- [docs/js/procedures.js](./docs/js/procedures.js) - procedure-specific configs and operation text generation
+- [docs/js/app.js](./docs/js/app.js) - validation, rendering, event listeners, and app initialisation
 
 ## Notes
 

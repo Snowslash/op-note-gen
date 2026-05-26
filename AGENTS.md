@@ -2,7 +2,7 @@
 
 ## Project Shape
 - Static single-page app; there is no backend, package manifest, build step, or test runner.
-- Runtime files live in `docs/` for GitHub Pages: `docs/index.html`, `docs/styles.css`, `docs/script.js`.
+- Runtime files live in `docs/` for GitHub Pages: `docs/index.html`, `docs/styles.css`, and the classic no-build scripts under `docs/js/`.
 - `README.md` is the usage overview; `SPEC.md` is the source for MVP scope and clinical generation rules.
 
 ## Running And Verifying
@@ -17,13 +17,13 @@
 - The generated note must remain clinician-reviewed drafting assistance, not decision-making.
 
 ## Code Orientation
-- `docs/index.html` owns form fields and output containers; field IDs must match `docs/script.js`.
-- `docs/script.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
+- `docs/index.html` owns form fields and output containers; field IDs must match the definitions under `docs/js/`.
+- `docs/js/procedures.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
 - Add or change form data by updating the relevant field definition, visibility rule, validation/warning rule, and output section together.
-- Operation narrative text is built by procedure-specific functions such as `buildAppendicectomyOperationText` and `buildCholecystectomyOperationText`; keep it rule-based and factual.
+- Operation text is built by procedure-specific functions such as `buildAppendicectomyOperationText` and `buildCholecystectomyOperationText`; keep it rule-based, labelled, and factual.
 - Operation output is structured as labelled lines; unanswered structured operation fields should render as `not specified`.
 - Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.
 
 ## Scope
-- Current supported procedures are laparoscopic appendicectomy and laparoscopic cholecystectomy.
+- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, and incision and drainage of abscess.
 - Do not add further procedures unless explicitly asked; update `SPEC.md`, the procedure selector, and `PROCEDURES` together.

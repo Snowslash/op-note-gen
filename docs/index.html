@@ -28,6 +28,7 @@
         <select id="procedureSelect" name="procedureSelect">
           <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
           <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
+          <option value="incisionAndDrainage">Incision and drainage of abscess</option>
         </select>
       </label>
     </section>
@@ -134,7 +135,7 @@
             </div>
 
             <div class="form-grid">
-              <label class="field">
+              <label class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy">
                 <span>Laparoscopic entry technique</span>
                 <select id="entryTechnique" name="entryTechnique">
                   <option value="">Select entry technique</option>
@@ -145,12 +146,12 @@
                 </select>
               </label>
 
-              <label class="field" id="entryTechniqueCustomField" hidden>
+              <label class="field" id="entryTechniqueCustomField" data-procedure-section="lapAppendicectomy lapCholecystectomy" hidden>
                 <span>Custom entry technique</span>
                 <input type="text" id="entryTechniqueCustom" name="entryTechniqueCustom" autocomplete="off">
               </label>
 
-              <label class="field field-wide">
+              <label class="field field-wide" data-procedure-section="lapAppendicectomy lapCholecystectomy">
                 <span>Ports used / port configuration</span>
                 <textarea id="portsUsed" name="portsUsed" rows="3"></textarea>
               </label>
@@ -203,7 +204,7 @@
 
                   <label class="field">
                     <span>Stump control method</span>
-                    <select id="stumpControl" name="stumpControl" required>
+                    <select id="stumpControl" name="stumpControl">
                       <option value="">Select stump control method</option>
                       <option value="Endoloops">Endoloops</option>
                       <option value="Stapler">Stapler</option>
@@ -334,6 +335,101 @@
                 </div>
               </div>
 
+              <div class="procedure-fields field-wide" data-procedure-section="incisionAndDrainage" hidden>
+                <div class="form-grid">
+                  <label class="field field-wide">
+                    <span>Abscess / wound site</span>
+                    <input type="text" id="incisionSite" name="incisionSite" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Incision type</span>
+                    <select id="incisionType" name="incisionType">
+                      <option value="">Select incision type</option>
+                      <option value="Linear incision">Linear incision</option>
+                      <option value="Cruciate incision">Cruciate incision</option>
+                      <option value="Elliptical incision">Elliptical incision</option>
+                      <option value="Wound opened along previous scar">Wound opened along previous scar</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="incisionTypeCustomField" hidden>
+                    <span>Custom incision type</span>
+                    <input type="text" id="incisionTypeCustom" name="incisionTypeCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Contents drained</span>
+                    <select id="abscessContents" name="abscessContents">
+                      <option value="">Select contents drained</option>
+                      <option value="Pus">Pus</option>
+                      <option value="Seropurulent fluid">Seropurulent fluid</option>
+                      <option value="Haematoma">Haematoma</option>
+                      <option value="Necrotic material">Necrotic material</option>
+                      <option value="No pus encountered">No pus encountered</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="abscessContentsCustomField" hidden>
+                    <span>Custom contents drained</span>
+                    <input type="text" id="abscessContentsCustom" name="abscessContentsCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Microbiology swab sent</span>
+                    <select id="pusSwabSent" name="pusSwabSent">
+                      <option value="">Select swab status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>Loculations broken down</span>
+                    <select id="loculationsBrokenDown" name="loculationsBrokenDown">
+                      <option value="">Select loculation status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                      <option value="not applicable">Not applicable</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>Cavity irrigated / washed out</span>
+                    <select id="cavityIrrigated" name="cavityIrrigated">
+                      <option value="">Select washout status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Packing or drain details</span>
+                    <input type="text" id="packingOrDrain" name="packingOrDrain" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Skin / wound management</span>
+                    <select id="skinManagement" name="skinManagement">
+                      <option value="">Select wound management</option>
+                      <option value="Left open">Left open</option>
+                      <option value="Packed open">Packed open</option>
+                      <option value="Partially closed">Partially closed</option>
+                      <option value="Closed primarily">Closed primarily</option>
+                      <option value="Dressing applied">Dressing applied</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="skinManagementCustomField" hidden>
+                    <span>Custom skin / wound management</span>
+                    <input type="text" id="skinManagementCustom" name="skinManagementCustom" autocomplete="off">
+                  </label>
+                </div>
+              </div>
+
               <div class="field">
                 <span>Haemostasis confirmed</span>
                 <div class="choice-row" role="radiogroup" aria-label="Haemostasis confirmed">
@@ -342,14 +438,14 @@
                 </div>
               </div>
 
-              <div class="field">
+              <div class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy">
                 <span>Converted to open</span>
                 <div class="choice-row">
                   <label><input type="checkbox" id="convertedToOpen" name="convertedToOpen"> Yes</label>
                 </div>
               </div>
 
-              <label class="field field-wide" id="conversionReasonField" hidden>
+              <label class="field field-wide" id="conversionReasonField" data-procedure-section="lapAppendicectomy lapCholecystectomy" hidden>
                 <span>Reason for conversion</span>
                 <textarea id="conversionReason" name="conversionReason" rows="3"></textarea>
               </label>
@@ -454,6 +550,8 @@
     </main>
   </div>
 
-  <script src="script.js"></script>
+  <script src="js/core.js"></script>
+  <script src="js/procedures.js"></script>
+  <script src="js/app.js"></script>
 </body>
 </html>

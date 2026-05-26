@@ -1,457 +1,3 @@
-const DOM = {
-  form: document.getElementById("note-form"),
-  validationMessage: document.getElementById("validationMessage"),
-  warningBox: document.getElementById("warningBox"),
-  warningList: document.getElementById("warningList"),
-  noteOutput: document.getElementById("noteOutput"),
-  copyButton: document.getElementById("copyButton"),
-  copyFeedback: document.getElementById("copyFeedback"),
-  addTeamMemberButton: document.getElementById("addTeamMemberButton"),
-  teamMembersList: document.getElementById("teamMembersList"),
-  procedureSelect: document.getElementById("procedureSelect"),
-  procedureTitle: document.getElementById("procedureTitle"),
-  procedureHint: document.getElementById("procedureHint"),
-  validationHint: document.getElementById("validationHint"),
-  procedureSections: document.querySelectorAll("[data-procedure-section]"),
-};
-
-const APP_STATE = {
-  activeProcedureId: "lapAppendicectomy",
-  latestNoteText: "",
-  teamMemberIdCounter: 0,
-};
-
-const FIELD_TYPES = {
-  TEXT: "text",
-  SELECT: "select",
-  RADIO: "radio",
-  CHECKBOX: "checkbox",
-  SELECT_OR_CUSTOM: "selectOrCustom",
-  CUSTOM: "custom",
-};
-
-function getElement(id) {
-  return document.getElementById(id);
-}
-
-function getRawValue(id) {
-  return getElement(id).value;
-}
-
-function getTextData(id) {
-  const raw = getRawValue(id);
-
-  return {
-    raw,
-    trimmed: raw.trim(),
-  };
-}
-
-function getRadioValue(name) {
-  const selected = document.querySelector(`input[name="${name}"]:checked`);
-  return selected ? selected.value : "";
-}
-
-function getSelectValue(id) {
-  return getElement(id).value;
-}
-
-function getCheckboxValue(id) {
-  return getElement(id).checked;
-}
-
-function escapeHtml(value) {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/\"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
-
-function resolveSelectOrCustom(selectId, customId) {
-  const selected = getSelectValue(selectId);
-
-  if (!selected) {
-    return {
-      selected: "",
-      value: "",
-      present: false,
-    };
-  }
-
-  if (selected !== "Custom / other") {
-    return {
-      selected,
-      value: selected,
-      present: true,
-    };
-  }
-
-  const custom = getTextData(customId);
-
-  return {
-    selected,
-    value: custom.trimmed ? custom.raw : "",
-    present: Boolean(custom.trimmed),
-  };
-}
-
-function readFieldValue(definition) {
-  if (definition.type === FIELD_TYPES.TEXT) {
-    return getTextData(definition.id);
-  }
-
-  if (definition.type === FIELD_TYPES.SELECT) {
-    return getSelectValue(definition.id);
-  }
-
-  if (definition.type === FIELD_TYPES.RADIO) {
-    return getRadioValue(definition.name);
-  }
-
-  if (definition.type === FIELD_TYPES.CHECKBOX) {
-    return getCheckboxValue(definition.id);
-  }
-
-  if (definition.type === FIELD_TYPES.SELECT_OR_CUSTOM) {
-    return resolveSelectOrCustom(definition.selectId, definition.customId);
-  }
-
-  if (definition.type === FIELD_TYPES.CUSTOM) {
-    return definition.read();
-  }
-
-  return "";
-}
-
-function clearControlValue(id) {
-  const element = getElement(id);
-
-  if (!element) {
-    return;
-  }
-
-  if ("checked" in element && (element.type === "checkbox" || element.type === "radio")) {
-    element.checked = false;
-  }
-
-  if ("value" in element) {
-    element.value = "";
-  }
-}
-
-function setFieldVisibility(id, visible) {
-  const element = getElement(id);
-  element.hidden = !visible;
-  element.style.display = visible ? "" : "none";
-}
-
-function applyVisibilityRules(procedure, values) {
-  procedure.visibilityRules.forEach((rule) => {
-    const visible = rule.isVisible(values);
-    setFieldVisibility(rule.targetId, visible);
-
-    if (!visible && rule.clearOnHide) {
-      rule.clearOnHide.forEach(clearControlValue);
-    }
-  });
-}
-
-function sentenceWithValue(prefix, value) {
-  const suffix = /[.!?]$/.test(value.trim()) ? "" : ".";
-  return `${prefix}${value}${suffix}`;
-}
-
-function sentenceWithFullStop(prefix, value) {
-  const suffix = value.trim().endsWith(".") ? "" : ".";
-  return `${prefix}${value}${suffix}`;
-}
-
-function formatInlineValue(value, fallback = "not specified") {
-  return value || fallback;
-}
-
-function formatBlock(label, field, fallback = "not specified") {
-  return `${label}:\n${field.trimmed ? field.raw : fallback}`;
-}
-
-function runRuleSet(values, rules) {
-  return rules
-    .map((rule) => rule(values))
-    .filter(Boolean);
-}
-
-function buildPerforationSentence(values) {
-  if (values.perforation === "yes") {
-    return "Perforation was present.";
-  }
-
-  return "";
-}
-
-function buildContaminationSentence(values) {
-  if (values.contaminationPresent === "yes") {
-    if (values.contaminationDescription.trimmed) {
-      return sentenceWithValue("Contamination was noted: ", values.contaminationDescription.raw);
-    }
-
-    return "Contamination was present.";
-  }
-
-  if (values.contaminationPresent === "no") {
-    return "No contamination was noted.";
-  }
-
-  return "";
-}
-
-function buildSpecimenRemovalSentence(values) {
-  if (values.specimenRemovedInBag === "yes") {
-    return "The specimen was removed in a bag.";
-  }
-
-  if (values.specimenRemovedInBag === "no") {
-    return "The specimen was removed without a bag.";
-  }
-
-  return "";
-}
-
-function buildWashoutSentence(values) {
-  if (values.washoutPerformed === "yes") {
-    return "Washout was performed.";
-  }
-
-  if (values.washoutPerformed === "no") {
-    return "Washout was not performed.";
-  }
-
-  return "";
-}
-
-function buildHaemostasisSentence(values) {
-  if (values.haemostasisConfirmed === "yes") {
-    return "Haemostasis was confirmed.";
-  }
-
-  if (values.haemostasisConfirmed === "no") {
-    return "Haemostasis was not confirmed.";
-  }
-
-  return "";
-}
-
-function buildCriticalViewSentence(values) {
-  if (values.criticalViewAchieved === "yes") {
-    return "The critical view of safety was achieved.";
-  }
-
-  if (values.criticalViewAchieved === "no") {
-    return "The critical view of safety was not achieved.";
-  }
-
-  return "";
-}
-
-function buildDrainSentence(values) {
-  if (values.drainStatus === "yes") {
-    if (values.drainLocation.present) {
-      return sentenceWithValue("Drain was placed in ", values.drainLocation.value);
-    }
-
-    return "A drain was placed.";
-  }
-
-  if (values.drainStatus === "no") {
-    return "No drain was placed.";
-  }
-
-  return "";
-}
-
-function buildConversionSentence(values) {
-  if (!values.convertedToOpen || !values.conversionReason.trimmed) {
-    return "";
-  }
-
-  return sentenceWithFullStop("The procedure was converted to an open approach due to ", values.conversionReason.raw);
-}
-
-function buildAdditionalOperativeDetailsSentence(values) {
-  if (!values.additionalOperativeDetails.trimmed) {
-    return "";
-  }
-
-  return `Additional operative details: ${values.additionalOperativeDetails.raw}`;
-}
-
-function buildGallbladderAppearanceSentence(values) {
-  if (!values.gallbladderAppearance.trimmed) {
-    return "";
-  }
-
-  return sentenceWithValue("Gallbladder appearance: ", values.gallbladderAppearance.raw);
-}
-
-function buildGallbladderRetrievalSentence(values) {
-  if (values.gallbladderRemovedInBag === "yes") {
-    return "The gallbladder was removed in a bag.";
-  }
-
-  if (values.gallbladderRemovedInBag === "no") {
-    return "The gallbladder was removed without a bag.";
-  }
-
-  return "";
-}
-
-function buildBileSpillageSentence(values) {
-  if (values.bileSpillage === "yes") {
-    if (values.bileSpillageDetails.trimmed) {
-      return sentenceWithValue("Bile spillage occurred: ", values.bileSpillageDetails.raw);
-    }
-
-    return "Bile spillage occurred.";
-  }
-
-  if (values.bileSpillage === "no") {
-    return "No bile spillage occurred.";
-  }
-
-  return "";
-}
-
-function buildStoneSpillageSentence(values) {
-  if (values.stoneSpillage === "yes") {
-    if (values.stoneSpillageDetails.trimmed) {
-      return sentenceWithValue("Stone spillage occurred: ", values.stoneSpillageDetails.raw);
-    }
-
-    return "Stone spillage occurred.";
-  }
-
-  if (values.stoneSpillage === "no") {
-    return "No stone spillage occurred.";
-  }
-
-  return "";
-}
-
-function buildCholangiogramSentence(values) {
-  if (values.cholangiogramPerformed === "yes") {
-    if (values.cholangiogramFindings.trimmed) {
-      return sentenceWithValue("Intraoperative cholangiogram was performed: ", values.cholangiogramFindings.raw);
-    }
-
-    return "Intraoperative cholangiogram was performed.";
-  }
-
-  if (values.cholangiogramPerformed === "no") {
-    return "Intraoperative cholangiogram was not performed.";
-  }
-
-  return "";
-}
-
-function joinOperationSegments(segments) {
-  return segments.reduce((output, segment, index) => {
-    if (!segment.text) {
-      return output;
-    }
-
-    if (index === 0) {
-      return segment.text;
-    }
-
-    const previous = segments[index - 1];
-    const separator = segment.block || previous.block ? "\n" : " ";
-    return `${output}${separator}${segment.text}`;
-  }, "");
-}
-
-function formatTextOperationValue(field) {
-  return field.trimmed ? field.raw : "not specified";
-}
-
-function formatSelectOperationValue(field) {
-  return field.present ? field.value : "not specified";
-}
-
-function formatYesNoOperationValue(value) {
-  if (value === "yes") {
-    return "yes";
-  }
-
-  if (value === "no") {
-    return "no";
-  }
-
-  return "not specified";
-}
-
-function formatAchievedOperationValue(value) {
-  if (value === "yes") {
-    return "achieved";
-  }
-
-  if (value === "no") {
-    return "not achieved";
-  }
-
-  return "not specified";
-}
-
-function formatNoneOrPresentOperationValue(value, detailsField) {
-  if (value === "yes") {
-    return detailsField && detailsField.trimmed ? detailsField.raw : "present";
-  }
-
-  if (value === "no") {
-    return "none";
-  }
-
-  return "not specified";
-}
-
-function formatPerformedOperationValue(value, detailsField) {
-  if (value === "yes") {
-    return detailsField && detailsField.trimmed ? `performed: ${detailsField.raw}` : "performed";
-  }
-
-  if (value === "no") {
-    return "not performed";
-  }
-
-  return "not specified";
-}
-
-function formatDrainOperationValue(values) {
-  if (values.drainStatus === "yes") {
-    return values.drainLocation.present ? values.drainLocation.value : "placed, location not specified";
-  }
-
-  if (values.drainStatus === "no") {
-    return "no drain placed";
-  }
-
-  return "not specified";
-}
-
-function formatConversionOperationValue(values) {
-  if (!values.convertedToOpen) {
-    return "no";
-  }
-
-  return values.conversionReason.trimmed ? values.conversionReason.raw : "yes, reason not specified";
-}
-
-function formatAdditionalDetailsOperationLine(values) {
-  return values.additionalOperativeDetails.trimmed
-    ? `Additional operative details: ${values.additionalOperativeDetails.raw}`
-    : "";
-}
-
 function buildAppendicectomyOperationText(values) {
   return [
     `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
@@ -487,6 +33,42 @@ function buildCholecystectomyOperationText(values) {
   ].filter(Boolean).join("\n");
 }
 
+function formatSentStatus(value) {
+  if (value === "yes") {
+    return "sent";
+  }
+
+  if (value === "no") {
+    return "not sent";
+  }
+
+  return "not specified";
+}
+
+function formatYesNoNotApplicableOperationValue(value) {
+  if (value === "not applicable") {
+    return "not applicable";
+  }
+
+  return formatYesNoOperationValue(value);
+}
+
+function buildIncisionAndDrainageOperationText(values) {
+  return [
+    `Incision site: ${formatTextOperationValue(values.incisionSite)}`,
+    `Incision: ${formatSelectOperationValue(values.incisionType)}`,
+    `Contents drained: ${formatSelectOperationValue(values.abscessContents)}`,
+    `Microbiology swab: ${formatSentStatus(values.pusSwabSent)}`,
+    `Loculations broken down: ${formatYesNoNotApplicableOperationValue(values.loculationsBrokenDown)}`,
+    `Cavity irrigation/washout: ${formatYesNoOperationValue(values.cavityIrrigated)}`,
+    `Packing/drain: ${formatTextOperationValue(values.packingOrDrain)}`,
+    `Skin management: ${formatSelectOperationValue(values.skinManagement)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    `Drain: ${formatDrainOperationValue(values)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
+}
+
 function buildDrainText(values) {
   if (values.drainStatus === "no") {
     return "No drain placed";
@@ -504,7 +86,11 @@ function buildComplicationsText(values) {
     .toLowerCase()
     .replace(/[.!]+$/, "");
 
-  if (!values.complications.trimmed || normalisedComplications === "nil" || normalisedComplications === "none") {
+  if (!values.complications.trimmed) {
+    return "not specified";
+  }
+
+  if (normalisedComplications === "nil" || normalisedComplications === "none") {
     return "No immediate complications.";
   }
 
@@ -691,6 +277,11 @@ function collectAdditionalTeamMembers() {
       };
     })
     .filter((member) => member.trimmedName);
+}
+
+function buildIncisionAndDrainageOutputSections() {
+  return buildStandardOutputSections()
+    .filter((section) => section.build !== buildPortsSection);
 }
 
 // Procedure configs keep procedure-specific rules in one place so additional
@@ -963,179 +554,108 @@ const PROCEDURES = {
     outputSections: buildStandardOutputSections(),
     buildOperationText: buildCholecystectomyOperationText,
   },
+  incisionAndDrainage: {
+    id: "incisionAndDrainage",
+    title: "Incision and drainage of abscess",
+    hint: "Incision and drainage-specific steps include abscess site, incision, contents drained, microbiology swab, loculations, washout, packing or drain, and wound management.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
+    fields: {
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      incisionSite: { type: FIELD_TYPES.TEXT, id: "incisionSite" },
+      packingOrDrain: { type: FIELD_TYPES.TEXT, id: "packingOrDrain" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      incisionType: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "incisionType",
+        customId: "incisionTypeCustom",
+      },
+      abscessContents: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "abscessContents",
+        customId: "abscessContentsCustom",
+      },
+      skinManagement: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "skinManagement",
+        customId: "skinManagementCustom",
+      },
+      pusSwabSent: { type: FIELD_TYPES.SELECT, id: "pusSwabSent" },
+      loculationsBrokenDown: { type: FIELD_TYPES.SELECT, id: "loculationsBrokenDown" },
+      cavityIrrigated: { type: FIELD_TYPES.SELECT, id: "cavityIrrigated" },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
+      {
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
+      },
+      {
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
+      },
+      {
+        targetId: "incisionTypeCustomField",
+        isVisible: (values) => values.incisionType.selected === "Custom / other",
+        clearOnHide: ["incisionTypeCustom"],
+      },
+      {
+        targetId: "abscessContentsCustomField",
+        isVisible: (values) => values.abscessContents.selected === "Custom / other",
+        clearOnHide: ["abscessContentsCustom"],
+      },
+      {
+        targetId: "skinManagementCustomField",
+        isVisible: (values) => values.skinManagement.selected === "Custom / other",
+        clearOnHide: ["skinManagementCustom"],
+      },
+      {
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
+      },
+    ],
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.specimen.trimmed && values.pusSwabSent !== "yes"
+        ? "No specimen or microbiology swab entered. Confirm whether a swab/specimen was sent."
+        : ""),
+      (values) => (!values.drainStatus && !values.packingOrDrain.trimmed
+        ? "No drain status or packing details entered. Confirm whether the cavity was packed, drained, or left without either."
+        : ""),
+      (values) => (values.pusSwabSent === "yes" && !values.specimen.trimmed
+        ? "Microbiology swab marked as sent. Consider documenting the specimen/swab in the specimen field."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+    ],
+    outputSections: buildIncisionAndDrainageOutputSections(),
+    buildOperationText: buildIncisionAndDrainageOperationText,
+  },
 };
-
-function getActiveProcedure() {
-  return PROCEDURES[APP_STATE.activeProcedureId];
-}
-
-function collectValues(procedure = getActiveProcedure()) {
-  return Object.entries(procedure.fields).reduce((values, [fieldName, definition]) => {
-    values[fieldName] = readFieldValue(definition);
-    return values;
-  }, {});
-}
-
-function buildWarnings(values, procedure = getActiveProcedure()) {
-  return runRuleSet(values, procedure.warningRules);
-}
-
-function validate(values, procedure = getActiveProcedure()) {
-  return runRuleSet(values, procedure.validationRules);
-}
-
-function buildParagraphs(values, procedure = getActiveProcedure()) {
-  return procedure.outputSections
-    .map((section) => section.build(values, procedure))
-    .filter(Boolean);
-}
-
-function renderWarnings(warnings) {
-  if (!warnings.length) {
-    DOM.warningBox.hidden = true;
-    DOM.warningList.innerHTML = "";
-    return;
-  }
-
-  DOM.warningList.innerHTML = warnings
-    .map((warning) => `<li>${escapeHtml(warning)}</li>`)
-    .join("");
-  DOM.warningBox.hidden = false;
-}
-
-function renderNote(paragraphs) {
-  DOM.noteOutput.classList.remove("note-output-empty");
-  DOM.noteOutput.innerHTML = paragraphs
-    .map((paragraph) => `<p class="note-paragraph">${escapeHtml(paragraph)}</p>`)
-    .join("");
-}
-
-function generateNote(values, procedure = getActiveProcedure()) {
-  const paragraphs = buildParagraphs(values, procedure);
-  APP_STATE.latestNoteText = paragraphs.join("\n\n");
-  return paragraphs;
-}
-
-function clearValidation() {
-  DOM.validationMessage.hidden = true;
-  DOM.validationMessage.textContent = "";
-}
-
-function showValidation(missing) {
-  DOM.validationMessage.textContent = `Please complete the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`;
-  DOM.validationMessage.hidden = false;
-}
-
-function showEmptyNoteState() {
-  DOM.noteOutput.classList.add("note-output-empty");
-  DOM.noteOutput.innerHTML = "<p>Your operative note will appear here after generation.</p>";
-}
-
-function syncProcedureUi(procedure = getActiveProcedure()) {
-  DOM.procedureTitle.textContent = procedure.title;
-  DOM.procedureHint.textContent = procedure.hint;
-  DOM.validationHint.textContent = procedure.validationHint;
-
-  DOM.procedureSections.forEach((section) => {
-    section.hidden = section.dataset.procedureSection !== procedure.id;
-  });
-}
-
-function syncConditionalFields(procedure = getActiveProcedure()) {
-  const values = collectValues(procedure);
-  applyVisibilityRules(procedure, values);
-}
-
-function handleFormState() {
-  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
-  const procedure = getActiveProcedure();
-  syncProcedureUi(procedure);
-  syncConditionalFields();
-
-  const values = collectValues(procedure);
-  renderWarnings(buildWarnings(values, procedure));
-
-  if (!validate(values, procedure).length) {
-    clearValidation();
-  }
-}
-
-DOM.form.addEventListener("submit", (event) => {
-  event.preventDefault();
-
-  DOM.copyFeedback.textContent = "";
-  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
-  const procedure = getActiveProcedure();
-  syncProcedureUi(procedure);
-  syncConditionalFields(procedure);
-
-  const values = collectValues(procedure);
-  const missing = validate(values, procedure);
-  renderWarnings(buildWarnings(values, procedure));
-
-  if (missing.length) {
-    APP_STATE.latestNoteText = "";
-    DOM.copyButton.disabled = true;
-    showValidation(missing);
-    showEmptyNoteState();
-    return;
-  }
-
-  clearValidation();
-  renderNote(generateNote(values, procedure));
-  DOM.copyButton.disabled = false;
-});
-
-DOM.form.addEventListener("input", handleFormState);
-DOM.form.addEventListener("change", handleFormState);
-
-DOM.procedureSelect.addEventListener("change", () => {
-  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
-  const procedure = getActiveProcedure();
-  APP_STATE.latestNoteText = "";
-  DOM.copyButton.disabled = true;
-  DOM.copyFeedback.textContent = "";
-  syncProcedureUi(procedure);
-  syncConditionalFields(procedure);
-  renderWarnings(buildWarnings(collectValues(procedure), procedure));
-  clearValidation();
-  showEmptyNoteState();
-});
-
-DOM.addTeamMemberButton.addEventListener("click", () => {
-  DOM.teamMembersList.appendChild(createTeamMemberRow());
-});
-
-DOM.teamMembersList.addEventListener("click", (event) => {
-  if (!(event.target instanceof HTMLElement)) {
-    return;
-  }
-
-  if (!event.target.classList.contains("remove-team-member")) {
-    return;
-  }
-
-  const row = event.target.closest(".team-member-row");
-  if (!row) {
-    return;
-  }
-
-  row.remove();
-});
-
-syncProcedureUi();
-syncConditionalFields();
-renderWarnings(buildWarnings(collectValues()));
-
-DOM.copyButton.addEventListener("click", async () => {
-  if (!APP_STATE.latestNoteText) {
-    return;
-  }
-
-  try {
-    await navigator.clipboard.writeText(APP_STATE.latestNoteText);
-    DOM.copyFeedback.textContent = "Operative note copied to clipboard.";
-  } catch (error) {
-    DOM.copyFeedback.textContent = "Clipboard copy failed. Please copy the note manually.";
-  }
-});

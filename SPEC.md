@@ -16,6 +16,7 @@ This tool standardises and accelerates note-writing while maintaining accuracy.
 Current supported procedures:
 - Laparoscopic appendicectomy
 - Laparoscopic cholecystectomy
+- Incision and drainage of abscess
 
 Do not add other procedures unless explicitly scoped.
 
@@ -71,6 +72,16 @@ Do not add other procedures unless explicitly scoped.
 - Stone spillage? (yes/no + details)
 - Intraoperative cholangiogram? (yes/no + findings)
 
+### Procedure-specific (incision and drainage of abscess)
+- Abscess / wound site (text)
+- Incision type (select/custom)
+- Contents drained (select/custom)
+- Microbiology swab sent? (yes/no)
+- Loculations broken down? (yes/no/not applicable)
+- Cavity irrigated / washed out? (yes/no)
+- Packing or drain details (text)
+- Skin / wound management (select/custom)
+
 ---
 
 ## 7. Output Format (Fixed)
@@ -112,10 +123,17 @@ The generated operative note must contain:
 - Include gallbladder appearance, critical view, cystic duct control, cystic artery control, retrieval bag usage, bile spillage, stone spillage, cholangiogram, haemostasis, drain, and conversion status
 - Use `not specified` for unanswered structured operation fields
 
+### Operation section (incision and drainage of abscess logic)
+- Output structured labelled lines rather than a prose paragraph
+- Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, skin/wound management, haemostasis, and drain status
+- Use `not specified` for unanswered structured operation fields
+- Preserve `not applicable` where explicitly selected
+
 ### Conditional examples
 - If perforated = yes -> include "features consistent with perforation"
 - If drain = no -> include "No drain placed"
-- If complications empty -> "No immediate complications"
+- If complications is empty -> "not specified"
+- If complications is entered as "none" or "nil" -> "No immediate complications"
 
 ---
 
@@ -157,7 +175,9 @@ Warnings (non-blocking):
 
 /docs/index.html
 /docs/styles.css
-/docs/script.js
+/docs/js/core.js
+/docs/js/procedures.js
+/docs/js/app.js
 
 ---
 
@@ -172,7 +192,7 @@ Warnings (non-blocking):
 
 ## 14. Out of Scope
 
-- Procedures other than laparoscopic appendicectomy and laparoscopic cholecystectomy
+- Procedures other than laparoscopic appendicectomy, laparoscopic cholecystectomy, and incision and drainage of abscess
 - Voice input
 - EMR integration
 - AI-generated clinical decisions
@@ -182,7 +202,7 @@ Warnings (non-blocking):
 
 ## 15. Future Versions (Not MVP)
 
-- Additional procedures beyond appendicectomy and cholecystectomy
+- Additional procedures beyond appendicectomy, cholecystectomy, and incision and drainage
 - Free-text shorthand parsing
 - Export to PDF/Word
 - Custom templates
