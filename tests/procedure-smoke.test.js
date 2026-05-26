@@ -142,6 +142,10 @@ function assertIncludes(haystack, needle) {
   );
 }
 
+function countOccurrences(haystack, needle) {
+  return haystack.split(needle).length - 1;
+}
+
 function testIncisionAndDrainageGeneratesStructuredNote() {
   const note = generateNote({
     values: {
@@ -184,7 +188,11 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
   assertIncludes(note, "Cavity irrigation/washout: yes");
   assertIncludes(note, "Packing/drain: Kaltostat packing");
   assertIncludes(note, "Skin management: Left open");
-  assertIncludes(note, "Drain: no drain placed");
+  assert.strictEqual(
+    countOccurrences(note.toLowerCase(), "drain placed"),
+    1,
+    `Expected I&D note to mention drain placement once. Actual note:\n${note}`,
+  );
   assertIncludes(note, "Complications: No immediate complications.");
 }
 

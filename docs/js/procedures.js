@@ -64,7 +64,6 @@ function buildIncisionAndDrainageOperationText(values) {
     `Packing/drain: ${formatTextOperationValue(values.packingOrDrain)}`,
     `Skin management: ${formatSelectOperationValue(values.skinManagement)}`,
     `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Drain: ${formatDrainOperationValue(values)}`,
     formatAdditionalDetailsOperationLine(values),
   ].filter(Boolean).join("\n");
 }
