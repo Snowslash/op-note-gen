@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, and **incision and drainage of abscess**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, and **open inguinal hernia repair**, built with:
 
 - HTML
 - CSS
@@ -16,6 +16,7 @@ This version supports:
 - Laparoscopic cholecystectomy
 - Diagnostic laparoscopy +/- washout / adhesiolysis
 - Incision and drainage of abscess
+- Open inguinal hernia repair
 
 ## Features
 
@@ -29,6 +30,7 @@ This version supports:
   - anaesthetic
   - anaesthetist
   - additional team members
+  - autofilled editable date/time
 - Raw multiline handling for:
   - indication
   - findings
@@ -36,7 +38,7 @@ This version supports:
   - appendix, gallbladder, abdominal survey, or abscess/wound appearance
   - contamination description
   - bile or stone spillage details
-  - washout, adhesiolysis, source control, abscess site, contents, packing, and wound management
+  - washout, adhesiolysis, source control, abscess site, contents, packing, wound management, hernia sac, mesh, cord structures, and ilioinguinal nerve status
   - cholangiogram findings
   - conversion reason
   - additional operative details
@@ -49,6 +51,7 @@ This version supports:
   - bile or stone spillage
   - intraoperative cholangiogram
   - closure details
+  - mesh details for open inguinal hernia repair
 - Non-blocking warnings for missing specimen, complications, and drain status
 
 ## Safety Rules
@@ -76,6 +79,7 @@ There is no build step and no backend.
 The generated note can include:
 
 - Procedure
+- Date/time
 - Surgeon / Assistant
 - Additional team members
 - Supervising consultant

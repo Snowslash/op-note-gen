@@ -18,6 +18,7 @@ Current supported procedures:
 - Laparoscopic cholecystectomy
 - Diagnostic laparoscopy +/- washout / adhesiolysis
 - Incision and drainage of abscess
+- Open inguinal hernia repair
 
 Do not add other procedures unless explicitly scoped.
 
@@ -91,6 +92,17 @@ Do not add other procedures unless explicitly scoped.
 - Packing or drain details (text)
 - Skin / wound management (select/custom)
 
+### Procedure-specific (open inguinal hernia repair)
+- Side (right/left/bilateral)
+- Hernia type (select/custom)
+- Hernia contents (text)
+- Sac management (text)
+- Mesh used? (yes/no)
+- Mesh type (text)
+- Mesh fixation (text)
+- Cord structures management (text)
+- Ilioinguinal nerve status (select/custom)
+
 ---
 
 ## 7. Output Format (Fixed)
@@ -144,6 +156,12 @@ The generated operative note must contain:
 - Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, skin/wound management, and haemostasis
 - Use `not specified` for unanswered structured operation fields
 - Preserve `not applicable` where explicitly selected
+
+### Operation section (open inguinal hernia repair logic)
+- Output structured labelled lines rather than a prose paragraph
+- Include side, hernia type, contents, sac management, mesh used, mesh type, mesh fixation, cord structures, ilioinguinal nerve status, and haemostasis
+- Use `not specified` for unanswered structured operation fields
+- Do not include laparoscopic ports for open inguinal hernia repair output
 
 ### Conditional examples
 - If perforated = yes -> include "features consistent with perforation"
@@ -209,7 +227,7 @@ Warnings (non-blocking):
 
 ## 14. Out of Scope
 
-- Procedures other than laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, and incision and drainage of abscess
+- Procedures other than laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, incision and drainage of abscess, and open inguinal hernia repair
 - Voice input
 - EMR integration
 - AI-generated clinical decisions
@@ -219,7 +237,7 @@ Warnings (non-blocking):
 
 ## 15. Future Versions (Not MVP)
 
-- Additional procedures beyond appendicectomy, cholecystectomy, diagnostic laparoscopy, and incision and drainage
+- Additional procedures beyond appendicectomy, cholecystectomy, diagnostic laparoscopy, incision and drainage, and open inguinal hernia repair
 - Free-text shorthand parsing
 - Export to PDF/Word
 - Custom templates

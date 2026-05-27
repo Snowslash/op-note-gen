@@ -25,5 +25,5 @@
 - Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.
 
 ## Scope
-- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, and incision and drainage of abscess.
-- Do not add further procedures unless explicitly asked; update `SPEC.md`, the procedure selector, and `PROCEDURES` together.
+- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, incision and drainage of abscess, and open inguinal hernia repair.
+- Do not add further procedures unless explicitly asked; update `SPEC.md`, `README.md`, the procedure selector, and `PROCEDURES` together.

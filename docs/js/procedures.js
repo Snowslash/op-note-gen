@@ -82,6 +82,22 @@ function buildIncisionAndDrainageOperationText(values) {
   ].filter(Boolean).join("\n");
 }
 
+function buildOpenInguinalHerniaRepairOperationText(values) {
+  return [
+    `Side: ${formatInlineValue(values.herniaSide)}`,
+    `Hernia type: ${formatSelectOperationValue(values.herniaType)}`,
+    `Hernia contents: ${formatTextOperationValue(values.herniaContents)}`,
+    `Sac management: ${formatTextOperationValue(values.sacManagement)}`,
+    `Mesh used: ${formatYesNoOperationValue(values.meshUsed)}`,
+    `Mesh type: ${formatTextOperationValue(values.meshType)}`,
+    `Mesh fixation: ${formatTextOperationValue(values.meshFixation)}`,
+    `Cord structures: ${formatTextOperationValue(values.cordStructuresManaged)}`,
+    `Ilioinguinal nerve: ${formatSelectOperationValue(values.ilioinguinalNerveStatus)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
+}
+
 function buildDrainText(values) {
   if (values.drainStatus === "no") {
     return "No drain placed";
@@ -299,7 +315,7 @@ function collectAdditionalTeamMembers() {
     .filter((member) => member.trimmedName);
 }
 
-function buildIncisionAndDrainageOutputSections() {
+function buildNoPortsOutputSections() {
   return buildStandardOutputSections()
     .filter((section) => section.build !== buildPortsSection);
 }
@@ -779,7 +795,117 @@ const PROCEDURES = {
       (values) => (!values.indication.trimmed ? "indication" : ""),
       (values) => (!values.findings.trimmed ? "findings" : ""),
     ],
-    outputSections: buildIncisionAndDrainageOutputSections(),
+    outputSections: buildNoPortsOutputSections(),
     buildOperationText: buildIncisionAndDrainageOperationText,
+  },
+  openInguinalHerniaRepair: {
+    id: "openInguinalHerniaRepair",
+    title: "Open inguinal hernia repair",
+    hint: "Open inguinal hernia repair-specific steps include side, hernia type, sac management, mesh, cord structures, ilioinguinal nerve, and haemostasis.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
+    fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      herniaSide: { type: FIELD_TYPES.SELECT, id: "herniaSide" },
+      herniaContents: { type: FIELD_TYPES.TEXT, id: "herniaContents" },
+      sacManagement: { type: FIELD_TYPES.TEXT, id: "sacManagement" },
+      meshUsed: { type: FIELD_TYPES.SELECT, id: "meshUsed" },
+      meshType: { type: FIELD_TYPES.TEXT, id: "meshType" },
+      meshFixation: { type: FIELD_TYPES.TEXT, id: "meshFixation" },
+      cordStructuresManaged: { type: FIELD_TYPES.TEXT, id: "cordStructuresManaged" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      herniaType: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "herniaType",
+        customId: "herniaTypeCustom",
+      },
+      ilioinguinalNerveStatus: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "ilioinguinalNerveStatus",
+        customId: "ilioinguinalNerveStatusCustom",
+      },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
+      {
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
+      },
+      {
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
+      },
+      {
+        targetId: "herniaTypeCustomField",
+        isVisible: (values) => values.herniaType.selected === "Custom / other",
+        clearOnHide: ["herniaTypeCustom"],
+      },
+      {
+        targetId: "meshTypeField",
+        isVisible: (values) => values.meshUsed === "yes",
+        clearOnHide: ["meshType"],
+      },
+      {
+        targetId: "meshFixationField",
+        isVisible: (values) => values.meshUsed === "yes",
+        clearOnHide: ["meshFixation"],
+      },
+      {
+        targetId: "ilioinguinalNerveStatusCustomField",
+        isVisible: (values) => values.ilioinguinalNerveStatus.selected === "Custom / other",
+        clearOnHide: ["ilioinguinalNerveStatusCustom"],
+      },
+      {
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
+      },
+    ],
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.drainStatus
+        ? "No drain status entered. Confirm whether no drain was placed or add details."
+        : ""),
+      (values) => (values.drainStatus === "yes" && !values.drainLocation.present
+        ? "Drain marked as yes without a location. Add drain location if available."
+        : ""),
+      (values) => (values.meshUsed === "yes" && !values.meshType.trimmed
+        ? "Mesh marked as used without mesh type. Add mesh type if available."
+        : ""),
+      (values) => (values.meshUsed === "yes" && !values.meshFixation.trimmed
+        ? "Mesh marked as used without fixation details. Add mesh fixation if available."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+    ],
+    outputSections: buildNoPortsOutputSections(),
+    buildOperationText: buildOpenInguinalHerniaRepairOperationText,
   },
 };

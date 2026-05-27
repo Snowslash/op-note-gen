@@ -240,6 +240,69 @@ function testDiagnosticLaparoscopyGeneratesStructuredNote() {
   );
 }
 
+function testOpenInguinalHerniaRepairGeneratesStructuredNote() {
+  const note = generateNote({
+    values: {
+      procedureSelect: "openInguinalHerniaRepair",
+      operationDateTime: "2026-05-27T16:45",
+      surgeon: "Dr A",
+      assistant: "Dr B",
+      anaesthetic: "GA",
+      indication: "Symptomatic right inguinal hernia",
+      findings: "Right indirect inguinal hernia with viable reducible contents",
+      herniaSide: "Right",
+      herniaType: "Indirect inguinal hernia",
+      herniaContents: "Viable reducible omentum",
+      sacManagement: "Sac dissected, opened, contents reduced, twisted and transfixed",
+      meshUsed: "yes",
+      meshType: "Lightweight polypropylene mesh",
+      meshFixation: "Interrupted 2-0 Prolene to pubic tubercle, inguinal ligament and conjoint tendon",
+      cordStructuresManaged: "Cord structures identified and protected throughout",
+      ilioinguinalNerveStatus: "Identified and preserved",
+      portsUsed: "stale laparoscopic port text from previous procedure",
+      specimen: "Hernia sac",
+      bloodLoss: "Minimal",
+      complications: "none",
+      skinClosureMethod: "subcuticular Monocryl and skin glue",
+      postOpPlan: "Day case discharge if criteria met, routine analgesia, avoid heavy lifting for 4-6 weeks",
+    },
+    radios: {
+      drainStatus: "no",
+      haemostasisConfirmed: "yes",
+      fascialClosurePerformed: "yes",
+    },
+  });
+
+  assertIncludes(note, "Procedure: Open inguinal hernia repair");
+  assertIncludes(note, "Date/time: 2026-05-27 16:45");
+  assertIncludes(note, "Side: Right");
+  assertIncludes(note, "Hernia type: Indirect inguinal hernia");
+  assertIncludes(note, "Hernia contents: Viable reducible omentum");
+  assertIncludes(note, "Sac management: Sac dissected, opened, contents reduced, twisted and transfixed");
+  assertIncludes(note, "Mesh used: yes");
+  assertIncludes(note, "Mesh type: Lightweight polypropylene mesh");
+  assertIncludes(note, "Mesh fixation: Interrupted 2-0 Prolene to pubic tubercle, inguinal ligament and conjoint tendon");
+  assertIncludes(note, "Cord structures: Cord structures identified and protected throughout");
+  assertIncludes(note, "Ilioinguinal nerve: Identified and preserved");
+  assertIncludes(note, "Haemostasis confirmed: yes");
+  assertIncludes(note, "Specimen: Hernia sac");
+  assertIncludes(note, "Complications: No immediate complications.");
+  assert.ok(
+    !note.includes("Ports:"),
+    `Expected open inguinal hernia note not to include stale laparoscopic ports. Actual note:\n${note}`,
+  );
+}
+
+function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const context = createFakeApp();
+  const hasProcedure = vm.runInContext("Boolean(PROCEDURES.openInguinalHerniaRepair)", context);
+
+  assert.ok(html.includes('value="openInguinalHerniaRepair"'), "Expected procedure selector to include open inguinal hernia repair.");
+  assert.ok(html.includes('data-procedure-section="openInguinalHerniaRepair"'), "Expected open inguinal hernia repair fields to be present in the UI.");
+  assert.ok(hasProcedure, "Expected PROCEDURES.openInguinalHerniaRepair to exist.");
+}
+
 function testAppendicectomyStillGenerates() {
   const note = generateNote({
     values: {
@@ -301,6 +364,8 @@ function testBlankComplicationsAreNotInvented() {
 
 testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
+testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
+testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
 testDiagnosticLaparoscopyGeneratesStructuredNote();
 testBlankComplicationsAreNotInvented();

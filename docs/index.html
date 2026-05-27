@@ -30,6 +30,7 @@
           <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
           <option value="diagnosticLaparoscopy">Diagnostic laparoscopy +/- washout / adhesiolysis</option>
           <option value="incisionAndDrainage">Incision and drainage of abscess</option>
+          <option value="openInguinalHerniaRepair">Open inguinal hernia repair</option>
         </select>
       </label>
     </section>
@@ -461,6 +462,88 @@
                   <label class="field" id="skinManagementCustomField" hidden>
                     <span>Custom skin / wound management</span>
                     <input type="text" id="skinManagementCustom" name="skinManagementCustom" autocomplete="off">
+                  </label>
+                </div>
+              </div>
+
+              <div class="procedure-fields field-wide" data-procedure-section="openInguinalHerniaRepair" hidden>
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Side</span>
+                    <select id="herniaSide" name="herniaSide">
+                      <option value="">Select side</option>
+                      <option value="Right">Right</option>
+                      <option value="Left">Left</option>
+                      <option value="Bilateral">Bilateral</option>
+                    </select>
+                  </label>
+
+                  <label class="field">
+                    <span>Hernia type</span>
+                    <select id="herniaType" name="herniaType">
+                      <option value="">Select hernia type</option>
+                      <option value="Indirect inguinal hernia">Indirect inguinal hernia</option>
+                      <option value="Direct inguinal hernia">Direct inguinal hernia</option>
+                      <option value="Pantaloon inguinal hernia">Pantaloon inguinal hernia</option>
+                      <option value="Femoral hernia">Femoral hernia</option>
+                      <option value="Recurrent inguinal hernia">Recurrent inguinal hernia</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="herniaTypeCustomField" hidden>
+                    <span>Custom hernia type</span>
+                    <input type="text" id="herniaTypeCustom" name="herniaTypeCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Hernia contents</span>
+                    <input type="text" id="herniaContents" name="herniaContents" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Sac management</span>
+                    <textarea id="sacManagement" name="sacManagement" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Mesh used</span>
+                    <select id="meshUsed" name="meshUsed">
+                      <option value="">Select mesh status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="meshTypeField" hidden>
+                    <span>Mesh type</span>
+                    <input type="text" id="meshType" name="meshType" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide" id="meshFixationField" hidden>
+                    <span>Mesh fixation</span>
+                    <textarea id="meshFixation" name="meshFixation" rows="3"></textarea>
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Cord structures</span>
+                    <input type="text" id="cordStructuresManaged" name="cordStructuresManaged" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Ilioinguinal nerve</span>
+                    <select id="ilioinguinalNerveStatus" name="ilioinguinalNerveStatus">
+                      <option value="">Select nerve status</option>
+                      <option value="Identified and preserved">Identified and preserved</option>
+                      <option value="Identified and divided">Identified and divided</option>
+                      <option value="Not identified">Not identified</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="ilioinguinalNerveStatusCustomField" hidden>
+                    <span>Custom ilioinguinal nerve status</span>
+                    <input type="text" id="ilioinguinalNerveStatusCustom" name="ilioinguinalNerveStatusCustom" autocomplete="off">
                   </label>
                 </div>
               </div>
