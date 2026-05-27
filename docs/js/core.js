@@ -8,6 +8,7 @@ const DOM = {
   copyFeedback: document.getElementById("copyFeedback"),
   addTeamMemberButton: document.getElementById("addTeamMemberButton"),
   teamMembersList: document.getElementById("teamMembersList"),
+  operationDateTime: document.getElementById("operationDateTime"),
   procedureSelect: document.getElementById("procedureSelect"),
   procedureTitle: document.getElementById("procedureTitle"),
   procedureHint: document.getElementById("procedureHint"),
@@ -165,6 +166,25 @@ function sentenceWithValue(prefix, value) {
 
 function formatInlineValue(value, fallback = "not specified") {
   return value || fallback;
+}
+
+function formatDateTimeValue(field) {
+  if (!field.trimmed) {
+    return "not specified";
+  }
+
+  return field.raw.replace("T", " ");
+}
+
+function getCurrentDateTimeLocalValue(date = new Date()) {
+  const offsetMs = date.getTimezoneOffset() * 60000;
+  return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
+
+function autofillOperationDateTime() {
+  if (!DOM.operationDateTime.value) {
+    DOM.operationDateTime.value = getCurrentDateTimeLocalValue();
+  }
 }
 
 function formatBlock(label, field, fallback = "not specified") {

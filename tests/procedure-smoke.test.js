@@ -244,6 +244,7 @@ function testAppendicectomyStillGenerates() {
   const note = generateNote({
     values: {
       procedureSelect: "lapAppendicectomy",
+      operationDateTime: "2026-05-27T14:30",
       indication: "Acute appendicitis",
       findings: "Inflamed appendix",
       anaesthetic: "GA",
@@ -263,7 +264,19 @@ function testAppendicectomyStillGenerates() {
   });
 
   assertIncludes(note, "Procedure: Laparoscopic appendicectomy");
+  assertIncludes(note, "Date/time: 2026-05-27 14:30");
   assertIncludes(note, "Stump control: Endoloops");
+}
+
+function testOperationDateTimeAutofillsOnLoad() {
+  const context = createFakeApp();
+  const value = vm.runInContext("DOM.operationDateTime.value", context);
+
+  assert.match(
+    value,
+    /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/,
+    `Expected operation date/time to autofill with a datetime-local value. Actual value: ${value}`,
+  );
 }
 
 function testBlankComplicationsAreNotInvented() {
@@ -287,6 +300,7 @@ function testBlankComplicationsAreNotInvented() {
 }
 
 testAppendicectomyStillGenerates();
+testOperationDateTimeAutofillsOnLoad();
 testIncisionAndDrainageGeneratesStructuredNote();
 testDiagnosticLaparoscopyGeneratesStructuredNote();
 testBlankComplicationsAreNotInvented();

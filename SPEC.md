@@ -43,6 +43,7 @@ Do not add other procedures unless explicitly scoped.
 ## 6. Input Fields
 
 ### Global fields
+- Date/time (datetime-local, autofilled to current local date/time)
 - Surgeon (text)
 - Assistant (text)
 - Anaesthetic (dropdown: GA / regional / local)
@@ -97,6 +98,7 @@ Do not add other procedures unless explicitly scoped.
 The generated operative note must contain:
 
 - Procedure
+- Date/time
 - Surgeon / Assistant
 - Anaesthetic
 - Indication
@@ -156,6 +158,7 @@ The generated operative note must contain:
 - Single-page layout
 - Structured form inputs
 - Procedure selector displayed
+- Date/time field autofills to current local date/time but remains editable
 - Selected procedure title displayed
 - "Generate Note" button
 - Output displayed below form

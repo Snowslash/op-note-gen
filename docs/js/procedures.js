@@ -130,6 +130,10 @@ function buildClosureText(values) {
   return sentences.length ? sentences.join(" ") : "not specified";
 }
 
+function buildDateTimeLine(values) {
+  return `Date/time: ${formatDateTimeValue(values.operationDateTime)}`;
+}
+
 function buildPrimaryTeamLine(values) {
   const surgeonValue = values.surgeon.trimmed ? values.surgeon.raw : "not specified";
   const assistantValue = values.assistant.trimmed ? values.assistant.raw : "not specified";
@@ -203,6 +207,9 @@ function buildStandardOutputSections() {
   return [
     {
       build: (values, procedure) => `Procedure: ${procedure.title}`,
+    },
+    {
+      build: buildDateTimeLine,
     },
     {
       build: buildPrimaryTeamLine,
@@ -306,6 +313,7 @@ const PROCEDURES = {
     hint: "Appendicectomy-specific steps include perforation, contamination, mesoappendix division, stump control, and washout.",
     validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
       supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
@@ -434,6 +442,7 @@ const PROCEDURES = {
     hint: "Cholecystectomy-specific steps include critical view, cystic duct and artery control, spillage, cholangiogram, and gallbladder retrieval.",
     validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
       supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
@@ -573,6 +582,7 @@ const PROCEDURES = {
     hint: "Diagnostic laparoscopy-specific steps include laparoscopic access, abdominal survey, procedure performed, washout, adhesiolysis, source control, haemostasis, drain, and conversion status.",
     validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
       supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
@@ -673,6 +683,7 @@ const PROCEDURES = {
     hint: "Incision and drainage-specific steps include abscess site, incision, contents drained, microbiology swab, loculations, washout, packing or drain, and wound management.",
     validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
       surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
       assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
       supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },

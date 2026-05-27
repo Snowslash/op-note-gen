@@ -157,6 +157,7 @@ DOM.teamMembersList.addEventListener("click", (event) => {
   row.remove();
 });
 
+autofillOperationDateTime();
 syncProcedureUi();
 syncConditionalFields();
 renderWarnings(buildWarnings(collectValues()));
