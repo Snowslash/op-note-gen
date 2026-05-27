@@ -175,8 +175,9 @@ The generated operative note must contain:
 
 - Single-page layout
 - Structured form inputs
-- Procedure selector displayed
+- Procedure selector displayed as compact operation buttons with a fallback dropdown
 - Date/time field autofills to current local date/time but remains editable
+- Dark mode toggle displayed and persisted locally
 - Selected procedure title displayed
 - "Generate Note" button
 - Output displayed below form

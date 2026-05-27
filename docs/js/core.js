@@ -9,7 +9,9 @@ const DOM = {
   addTeamMemberButton: document.getElementById("addTeamMemberButton"),
   teamMembersList: document.getElementById("teamMembersList"),
   operationDateTime: document.getElementById("operationDateTime"),
+  themeToggle: document.getElementById("themeToggle"),
   procedureSelect: document.getElementById("procedureSelect"),
+  procedureChoices: document.querySelectorAll("[data-procedure-choice]"),
   procedureTitle: document.getElementById("procedureTitle"),
   procedureHint: document.getElementById("procedureHint"),
   validationHint: document.getElementById("validationHint"),
@@ -30,6 +32,49 @@ const FIELD_TYPES = {
   SELECT_OR_CUSTOM: "selectOrCustom",
   CUSTOM: "custom",
 };
+
+const THEME_STORAGE_KEY = "opNoteTheme";
+
+function getStoredTheme() {
+  try {
+    return localStorage.getItem(THEME_STORAGE_KEY);
+  } catch (error) {
+    return null;
+  }
+}
+
+function persistTheme(theme) {
+  try {
+    localStorage.setItem(THEME_STORAGE_KEY, theme);
+  } catch (error) {
+    // Storage may be unavailable for local file usage; theme still applies in-memory.
+  }
+}
+
+function setTheme(theme) {
+  const normalisedTheme = theme === "dark" ? "dark" : "light";
+  document.documentElement.dataset.theme = normalisedTheme;
+
+  if (DOM.themeToggle) {
+    const isDark = normalisedTheme === "dark";
+    DOM.themeToggle.setAttribute("aria-pressed", String(isDark));
+    DOM.themeToggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+    DOM.themeToggle.innerHTML = isDark
+      ? '<span aria-hidden="true">☀</span><span>Light</span>'
+      : '<span aria-hidden="true">☾</span><span>Dark</span>';
+  }
+
+  persistTheme(normalisedTheme);
+}
+
+function initialiseTheme() {
+  setTheme(getStoredTheme() || "light");
+}
+
+function toggleTheme() {
+  const currentTheme = document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  setTheme(currentTheme === "dark" ? "light" : "dark");
+}
 
 function getElement(id) {
   return document.getElementById(id);

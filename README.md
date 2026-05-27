@@ -21,6 +21,8 @@ This version supports:
 ## Features
 
 - Structured input form with a compact two-column layout
+- Compact procedure choice buttons backed by an accessible fallback dropdown
+- Dark mode toggle with local preference persistence
 - Generated operative note preview
 - Copy-to-clipboard button
 - Admin/team fields including:
@@ -67,10 +69,11 @@ This version supports:
 ## How To Use
 
 1. Open [docs/index.html](./docs/index.html) in a browser.
-2. Complete the form.
-3. Select **Generate Note**.
-4. Review the generated note.
-5. Use **Copy to Clipboard** if needed.
+2. Choose the operation using the compact procedure buttons.
+3. Complete the form.
+4. Select **Generate Note**.
+5. Review the generated note.
+6. Use **Copy to Clipboard** if needed.
 
 There is no build step and no backend.
 

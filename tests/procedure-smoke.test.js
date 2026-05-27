@@ -12,8 +12,9 @@ const SCRIPT_FILES = [
 
 class HTMLElement {}
 
-function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = [] } = {}) {
+function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = [], storedTheme = null } = {}) {
   const elements = new Map();
+  const storedValues = new Map(storedTheme ? [["opNoteTheme", storedTheme]] : []);
 
   function makeElement(id) {
     return {
@@ -22,11 +23,31 @@ function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = []
       checked: false,
       hidden: false,
       style: {},
+      dataset: {},
       textContent: "",
       innerHTML: "",
       classList: {
-        add() {},
-        remove() {},
+        values: new Set(),
+        add(className) {
+          this.values.add(className);
+        },
+        remove(className) {
+          this.values.delete(className);
+        },
+        contains(className) {
+          return this.values.has(className);
+        },
+        toggle(className, force) {
+          if (force) {
+            this.values.add(className);
+            return true;
+          }
+          this.values.delete(className);
+          return false;
+        },
+      },
+      setAttribute(name, value) {
+        this[name] = value;
       },
       addEventListener() {},
       appendChild() {},
@@ -81,16 +102,31 @@ function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = []
       dataset: { procedureSection },
       hidden: false,
     }));
+  const procedureChoices = Array.from(html.matchAll(/data-procedure-choice="([^"]+)"/g))
+    .map(([, procedureChoice]) => Object.assign(makeElement(`procedure-choice-${procedureChoice}`), {
+      dataset: { procedureChoice },
+    }));
 
   const context = {
     console,
     HTMLElement,
+    localStorage: {
+      getItem(key) {
+        return storedValues.has(key) ? storedValues.get(key) : null;
+      },
+      setItem(key, value) {
+        storedValues.set(key, value);
+      },
+    },
     navigator: {
       clipboard: {
         writeText: async () => {},
       },
     },
     document: {
+      documentElement: {
+        dataset: {},
+      },
       getElementById: el,
       querySelector(selector) {
         const radioMatch = selector.match(/^input\[name="([^"]+)"\]:checked$/);
@@ -104,6 +140,10 @@ function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = []
       querySelectorAll(selector) {
         if (selector === "[data-procedure-section]") {
           return procedureSections;
+        }
+
+        if (selector === "[data-procedure-choice]") {
+          return procedureChoices;
         }
 
         return [];
@@ -303,6 +343,38 @@ function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
   assert.ok(hasProcedure, "Expected PROCEDURES.openInguinalHerniaRepair to exist.");
 }
 
+function testProcedureSelectorUsesCompactChoiceGrid() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const context = createFakeApp();
+  const procedureChoiceCount = vm.runInContext("DOM.procedureChoices.length", context);
+
+  assert.ok(html.includes('class="procedure-choice-grid"'), "Expected procedure selection to use a compact choice grid.");
+  assert.ok(html.includes('data-procedure-choice="lapAppendicectomy"'), "Expected procedure choice button for laparoscopic appendicectomy.");
+  assert.ok(html.includes('data-procedure-choice="openInguinalHerniaRepair"'), "Expected procedure choice button for open inguinal hernia repair.");
+  assert.strictEqual(procedureChoiceCount, 5, "Expected one compact procedure choice per supported operation.");
+}
+
+function testThemeToggleAppliesAndPersistsDarkMode() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
+  const context = createFakeApp();
+
+  assert.ok(html.includes('id="themeToggle"'), "Expected a dark mode toggle button in the UI.");
+  assert.ok(css.includes('[data-theme="dark"]'), "Expected dark mode CSS variables/rules.");
+
+  vm.runInContext('setTheme("dark")', context);
+  assert.strictEqual(
+    vm.runInContext("document.documentElement.dataset.theme", context),
+    "dark",
+    "Expected setTheme('dark') to apply the dark theme to the document element.",
+  );
+  assert.strictEqual(
+    vm.runInContext('localStorage.getItem("opNoteTheme")', context),
+    "dark",
+    "Expected selected theme to be persisted.",
+  );
+}
+
 function testAppendicectomyStillGenerates() {
   const note = generateNote({
     values: {
@@ -365,6 +437,8 @@ function testBlankComplicationsAreNotInvented() {
 testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
 testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
+testProcedureSelectorUsesCompactChoiceGrid();
+testThemeToggleAppliesAndPersistsDarkMode();
 testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
 testDiagnosticLaparoscopyGeneratesStructuredNote();

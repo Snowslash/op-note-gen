@@ -20,6 +20,8 @@
 - `docs/index.html` owns form fields and output containers; field IDs must match the definitions under `docs/js/`.
 - `docs/js/procedures.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
 - Add or change form data by updating the relevant field definition, visibility rule, validation/warning rule, and output section together.
+- UI changes include compact procedure choice buttons backed by the hidden/fallback `procedureSelect`; keep both in sync and covered by tests.
+- Theme changes use CSS custom properties and `data-theme` on the document element; keep dark mode local-only and non-clinical.
 - Operation text is built by procedure-specific functions such as `buildAppendicectomyOperationText` and `buildCholecystectomyOperationText`; keep it rule-based, labelled, and factual.
 - Operation output is structured as labelled lines; unanswered structured operation fields should render as `not specified`.
 - Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.

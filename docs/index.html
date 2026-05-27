@@ -9,8 +9,16 @@
 <body>
   <div class="page">
     <header class="page-header">
-      <p class="kicker">Operative Note Generator</p>
-      <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
+      <div class="page-header-top">
+        <div>
+          <p class="kicker">Operative Note Generator</p>
+          <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
+        </div>
+        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+          <span aria-hidden="true">☾</span>
+          <span>Dark</span>
+        </button>
+      </div>
       <p class="intro">
         Complete the structured fields below to generate a draft operative note.
         Review the output carefully before use.
@@ -23,9 +31,32 @@
         <p>Select the operation before completing the procedure-specific fields.</p>
       </div>
 
-      <label class="field procedure-selector-field">
-        <span>Operation type</span>
-        <select id="procedureSelect" name="procedureSelect">
+      <div class="procedure-choice-grid" role="group" aria-label="Operation type">
+        <button type="button" class="procedure-choice" data-procedure-choice="lapAppendicectomy">
+          <span class="procedure-choice-title">Lap appendix</span>
+          <span class="procedure-choice-meta">Emergency general surgery</span>
+        </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="lapCholecystectomy">
+          <span class="procedure-choice-title">Lap chole</span>
+          <span class="procedure-choice-meta">Gallbladder</span>
+        </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="diagnosticLaparoscopy">
+          <span class="procedure-choice-title">Diagnostic lap</span>
+          <span class="procedure-choice-meta">± washout / adhesiolysis</span>
+        </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="incisionAndDrainage">
+          <span class="procedure-choice-title">I&D abscess</span>
+          <span class="procedure-choice-meta">Skin / soft tissue</span>
+        </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="openInguinalHerniaRepair">
+          <span class="procedure-choice-title">Open inguinal hernia</span>
+          <span class="procedure-choice-meta">Hernia repair</span>
+        </button>
+      </div>
+
+      <label class="field procedure-selector-field procedure-select-fallback">
+        <span class="visually-hidden">Operation type</span>
+        <select id="procedureSelect" name="procedureSelect" aria-label="Operation type">
           <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
           <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
           <option value="diagnosticLaparoscopy">Diagnostic laparoscopy +/- washout / adhesiolysis</option>

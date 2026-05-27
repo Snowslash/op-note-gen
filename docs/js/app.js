@@ -54,6 +54,14 @@ function clearValidation() {
   DOM.validationMessage.textContent = "";
 }
 
+function syncProcedureChoiceState(procedure = getActiveProcedure()) {
+  DOM.procedureChoices.forEach((choice) => {
+    const isActive = choice.dataset.procedureChoice === procedure.id;
+    choice.classList.toggle("procedure-choice-active", isActive);
+    choice.setAttribute("aria-pressed", String(isActive));
+  });
+}
+
 function showValidation(missing) {
   DOM.validationMessage.textContent = `Please complete the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`;
   DOM.validationMessage.hidden = false;
@@ -68,6 +76,7 @@ function syncProcedureUi(procedure = getActiveProcedure()) {
   DOM.procedureTitle.textContent = procedure.title;
   DOM.procedureHint.textContent = procedure.hint;
   DOM.validationHint.textContent = procedure.validationHint;
+  syncProcedureChoiceState(procedure);
 
   DOM.procedureSections.forEach((section) => {
     const visibleForProcedures = section.dataset.procedureSection.split(/\s+/);
@@ -92,6 +101,24 @@ function handleFormState() {
   if (!validate(values, procedure).length) {
     clearValidation();
   }
+}
+
+function selectProcedure(procedureId) {
+  if (!PROCEDURES[procedureId]) {
+    return;
+  }
+
+  DOM.procedureSelect.value = procedureId;
+  APP_STATE.activeProcedureId = procedureId;
+  const procedure = getActiveProcedure();
+  APP_STATE.latestNoteText = "";
+  DOM.copyButton.disabled = true;
+  DOM.copyFeedback.textContent = "";
+  syncProcedureUi(procedure);
+  syncConditionalFields(procedure);
+  renderWarnings(buildWarnings(collectValues(procedure), procedure));
+  clearValidation();
+  showEmptyNoteState();
 }
 
 DOM.form.addEventListener("submit", (event) => {
@@ -124,17 +151,16 @@ DOM.form.addEventListener("input", handleFormState);
 DOM.form.addEventListener("change", handleFormState);
 
 DOM.procedureSelect.addEventListener("change", () => {
-  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
-  const procedure = getActiveProcedure();
-  APP_STATE.latestNoteText = "";
-  DOM.copyButton.disabled = true;
-  DOM.copyFeedback.textContent = "";
-  syncProcedureUi(procedure);
-  syncConditionalFields(procedure);
-  renderWarnings(buildWarnings(collectValues(procedure), procedure));
-  clearValidation();
-  showEmptyNoteState();
+  selectProcedure(DOM.procedureSelect.value);
 });
+
+DOM.procedureChoices.forEach((choice) => {
+  choice.addEventListener("click", () => {
+    selectProcedure(choice.dataset.procedureChoice);
+  });
+});
+
+DOM.themeToggle.addEventListener("click", toggleTheme);
 
 DOM.addTeamMemberButton.addEventListener("click", () => {
   DOM.teamMembersList.appendChild(createTeamMemberRow());
@@ -157,6 +183,7 @@ DOM.teamMembersList.addEventListener("click", (event) => {
   row.remove();
 });
 
+initialiseTheme();
 autofillOperationDateTime();
 syncProcedureUi();
 syncConditionalFields();
