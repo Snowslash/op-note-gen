@@ -90,7 +90,6 @@ Do not add other procedures unless explicitly scoped.
 - Loculations broken down? (yes/no/not applicable)
 - Cavity irrigated / washed out? (yes/no)
 - Packing or drain details (text)
-- Skin / wound management (select/custom)
 
 ### Procedure-specific (open inguinal hernia repair)
 - Side (right/left/bilateral)
@@ -153,7 +152,7 @@ The generated operative note must contain:
 
 ### Operation section (incision and drainage of abscess logic)
 - Output structured labelled lines rather than a prose paragraph
-- Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, skin/wound management, and haemostasis
+- Include abscess/wound site, incision type, contents drained, microbiology swab status, loculations, cavity irrigation/washout, packing or drain, and haemostasis
 - Use `not specified` for unanswered structured operation fields
 - Preserve `not applicable` where explicitly selected
 

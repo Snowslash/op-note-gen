@@ -76,7 +76,6 @@ function buildIncisionAndDrainageOperationText(values) {
     `Loculations broken down: ${formatYesNoNotApplicableOperationValue(values.loculationsBrokenDown)}`,
     `Cavity irrigation/washout: ${formatYesNoOperationValue(values.cavityIrrigated)}`,
     `Packing/drain: ${formatTextOperationValue(values.packingOrDrain)}`,
-    `Skin management: ${formatSelectOperationValue(values.skinManagement)}`,
     `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
     formatAdditionalDetailsOperationLine(values),
   ].filter(Boolean).join("\n");
@@ -696,7 +695,7 @@ const PROCEDURES = {
   incisionAndDrainage: {
     id: "incisionAndDrainage",
     title: "Incision and drainage of abscess",
-    hint: "Incision and drainage-specific steps include abscess site, incision, contents drained, microbiology swab, loculations, washout, packing or drain, and wound management.",
+    hint: "Incision and drainage-specific steps include abscess site, incision, contents drained, microbiology swab, loculations, washout, and packing or drain.",
     validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
     fields: {
       operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
@@ -728,11 +727,6 @@ const PROCEDURES = {
         type: FIELD_TYPES.SELECT_OR_CUSTOM,
         selectId: "abscessContents",
         customId: "abscessContentsCustom",
-      },
-      skinManagement: {
-        type: FIELD_TYPES.SELECT_OR_CUSTOM,
-        selectId: "skinManagement",
-        customId: "skinManagementCustom",
       },
       pusSwabSent: { type: FIELD_TYPES.SELECT, id: "pusSwabSent" },
       loculationsBrokenDown: { type: FIELD_TYPES.SELECT, id: "loculationsBrokenDown" },
@@ -766,11 +760,6 @@ const PROCEDURES = {
         targetId: "abscessContentsCustomField",
         isVisible: (values) => values.abscessContents.selected === "Custom / other",
         clearOnHide: ["abscessContentsCustom"],
-      },
-      {
-        targetId: "skinManagementCustomField",
-        isVisible: (values) => values.skinManagement.selected === "Custom / other",
-        clearOnHide: ["skinManagementCustom"],
       },
       {
         targetId: "fascialSutureField",

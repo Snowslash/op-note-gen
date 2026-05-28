@@ -40,7 +40,7 @@ This version supports:
   - appendix, gallbladder, abdominal survey, or abscess/wound appearance
   - contamination description
   - bile or stone spillage details
-  - washout, adhesiolysis, source control, abscess site, contents, packing, wound management, hernia sac, mesh, cord structures, and ilioinguinal nerve status
+  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, and ilioinguinal nerve status
   - cholangiogram findings
   - conversion reason
   - additional operative details

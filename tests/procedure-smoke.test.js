@@ -204,7 +204,8 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
       loculationsBrokenDown: "not applicable",
       cavityIrrigated: "yes",
       packingOrDrain: "Kaltostat packing",
-      skinManagement: "Left open",
+      skinManagement: "stale duplicate wound management from previous version",
+      skinClosureMethod: "interrupted nylon",
       bloodLoss: "Minimal",
       complications: "none",
       postOpPlan: "Ward care, regular analgesia, remove packing in 24 hours and review antibiotics when cultures available",
@@ -227,13 +228,34 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
   );
   assertIncludes(note, "Cavity irrigation/washout: yes");
   assertIncludes(note, "Packing/drain: Kaltostat packing");
-  assertIncludes(note, "Skin management: Left open");
+  assert.ok(
+    !note.includes("Skin management:"),
+    `Expected I&D note not to include duplicate skin/wound management field. Actual note:\n${note}`,
+  );
+  assertIncludes(note, "Closure: Skin was closed with interrupted nylon");
+  assert.strictEqual(
+    countOccurrences(note, "Skin"),
+    1,
+    `Expected I&D note to mention skin only in closure details. Actual note:\n${note}`,
+  );
   assert.strictEqual(
     countOccurrences(note.toLowerCase(), "drain placed"),
     1,
     `Expected I&D note to mention drain placement once. Actual note:\n${note}`,
   );
   assertIncludes(note, "Complications: No immediate complications.");
+}
+
+function testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const context = createFakeApp();
+  const hasSkinManagementField = vm.runInContext(
+    "Object.prototype.hasOwnProperty.call(PROCEDURES.incisionAndDrainage.fields, 'skinManagement')",
+    context,
+  );
+
+  assert.ok(!html.includes('id="skinManagement"'), "Expected duplicate I&D skin/wound management UI field to be removed.");
+  assert.ok(!hasSkinManagementField, "Expected duplicate I&D skin/wound management config field to be removed.");
 }
 
 function testDiagnosticLaparoscopyGeneratesStructuredNote() {
@@ -441,6 +463,7 @@ testProcedureSelectorUsesCompactChoiceGrid();
 testThemeToggleAppliesAndPersistsDarkMode();
 testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
+testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement();
 testDiagnosticLaparoscopyGeneratesStructuredNote();
 testBlankComplicationsAreNotInvented();
 console.log("procedure smoke tests passed");
