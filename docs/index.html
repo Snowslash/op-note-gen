@@ -1,695 +1,87 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Operative Note Generator</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-  <div class="page">
-    <header class="page-header">
-      <div class="page-header-top">
-        <div>
-          <p class="kicker">Operative Note Generator</p>
-          <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
+<!doctype html>
+<html lang="en-GB" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Operative Note Generator is a local-only browser tool for drafting structured operative notes from clinician-entered fields."
+    />
+    <title>Operative Note Generator — Sangeev</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="landing-body">
+    <main class="landing-page">
+      <section class="landing-hero" aria-labelledby="page-title">
+        <p class="landing-kicker">Local-only browser tool</p>
+        <h1 id="page-title">Operative Note Generator</h1>
+        <p class="landing-lede">
+          A focused operative-note drafting tool for common emergency general surgery cases. Structured inputs in,
+          reviewable note out — without accounts, storage, analytics, or a backend.
+        </p>
+        <div class="landing-actions" aria-label="Project links">
+          <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
+          <a class="landing-button" href="https://github.com/Snowslash/op-note-gen">View source</a>
         </div>
-        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
-          <span aria-hidden="true">☾</span>
-          <span>Dark</span>
-        </button>
-      </div>
-      <p class="intro">
-        Complete the structured fields below to generate a draft operative note.
-        Review the output carefully before use.
-      </p>
-    </header>
-
-    <section class="panel procedure-panel" aria-labelledby="procedure-section-title">
-      <div class="section-header section-header-compact">
-        <h2 id="procedure-section-title">Procedure</h2>
-        <p>Select the operation before completing the procedure-specific fields.</p>
-      </div>
-
-      <div class="procedure-choice-grid" role="group" aria-label="Operation type">
-        <button type="button" class="procedure-choice" data-procedure-choice="lapAppendicectomy">
-          <span class="procedure-choice-title">Lap appendix</span>
-          <span class="procedure-choice-meta">Emergency general surgery</span>
-        </button>
-        <button type="button" class="procedure-choice" data-procedure-choice="lapCholecystectomy">
-          <span class="procedure-choice-title">Lap chole</span>
-          <span class="procedure-choice-meta">Gallbladder</span>
-        </button>
-        <button type="button" class="procedure-choice" data-procedure-choice="diagnosticLaparoscopy">
-          <span class="procedure-choice-title">Diagnostic lap</span>
-          <span class="procedure-choice-meta">± washout / adhesiolysis</span>
-        </button>
-        <button type="button" class="procedure-choice" data-procedure-choice="incisionAndDrainage">
-          <span class="procedure-choice-title">I&D abscess</span>
-          <span class="procedure-choice-meta">Skin / soft tissue</span>
-        </button>
-        <button type="button" class="procedure-choice" data-procedure-choice="openInguinalHerniaRepair">
-          <span class="procedure-choice-title">Open inguinal hernia</span>
-          <span class="procedure-choice-meta">Hernia repair</span>
-        </button>
-      </div>
-
-      <label class="field procedure-selector-field procedure-select-fallback">
-        <span class="visually-hidden">Operation type</span>
-        <select id="procedureSelect" name="procedureSelect" aria-label="Operation type">
-          <option value="lapAppendicectomy">Laparoscopic appendicectomy</option>
-          <option value="lapCholecystectomy">Laparoscopic cholecystectomy</option>
-          <option value="diagnosticLaparoscopy">Diagnostic laparoscopy +/- washout / adhesiolysis</option>
-          <option value="incisionAndDrainage">Incision and drainage of abscess</option>
-          <option value="openInguinalHerniaRepair">Open inguinal hernia repair</option>
-        </select>
-      </label>
-    </section>
-
-    <main class="layout">
-      <section class="panel form-panel">
-        <form id="note-form" novalidate>
-          <section class="form-section">
-            <div class="section-header section-header-compact">
-              <h2>Admin details</h2>
-              <p>Core identifiers for the operative note.</p>
-            </div>
-
-            <div class="form-grid form-grid-admin">
-              <label class="field">
-                <span>Date/time</span>
-                <input type="datetime-local" id="operationDateTime" name="operationDateTime">
-              </label>
-
-              <label class="field">
-                <span>Surgeon</span>
-                <input type="text" id="surgeon" name="surgeon" autocomplete="off">
-              </label>
-
-              <label class="field">
-                <span>Assistant</span>
-                <input type="text" id="assistant" name="assistant" autocomplete="off">
-              </label>
-
-              <label class="field">
-                <span>Supervising consultant</span>
-                <input type="text" id="supervisingConsultant" name="supervisingConsultant" autocomplete="off">
-              </label>
-
-              <label class="field">
-                <span>Anaesthetic</span>
-                <select id="anaesthetic" name="anaesthetic">
-                  <option value="">Select anaesthetic</option>
-                  <option value="GA">GA</option>
-                  <option value="regional">Regional</option>
-                  <option value="local">Local</option>
-                </select>
-              </label>
-
-              <label class="field">
-                <span>Anaesthetist</span>
-                <input type="text" id="anaesthetist" name="anaesthetist" autocomplete="off">
-              </label>
-            </div>
-
-            <div class="team-members-block">
-              <div class="team-members-header">
-                <div>
-                  <h3>Additional team members</h3>
-                  <p>Add extra surgeons or assistants if needed.</p>
-                </div>
-                <button type="button" id="addTeamMemberButton" class="secondary-button compact-button">Add team member</button>
-              </div>
-
-              <div id="teamMembersList" class="team-members-list"></div>
-            </div>
-          </section>
-
-          <section class="form-section">
-            <div class="section-header section-header-compact">
-              <h2>Clinical details</h2>
-              <p>Required clinical context plus optional extras.</p>
-            </div>
-
-            <div class="form-grid">
-              <label class="field field-wide">
-                <span>Indication</span>
-                <textarea id="indication" name="indication" rows="3" required></textarea>
-              </label>
-
-              <label class="field field-wide">
-                <span>Findings</span>
-                <textarea id="findings" name="findings" rows="4" required></textarea>
-              </label>
-
-              <label class="field">
-                <span>Specimen</span>
-                <input type="text" id="specimen" name="specimen" autocomplete="off">
-              </label>
-            </div>
-
-            <details class="disclosure">
-              <summary>Optional clinical fields</summary>
-              <div class="disclosure-content">
-                <div class="form-grid">
-                  <label class="field">
-                    <span>Estimated blood loss</span>
-                    <input type="text" id="bloodLoss" name="bloodLoss" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Complications</span>
-                    <input type="text" id="complications" name="complications" autocomplete="off">
-                  </label>
-                </div>
-              </div>
-            </details>
-          </section>
-
-          <section class="form-section">
-            <div class="section-header section-header-compact">
-              <h2>Operative steps</h2>
-              <p id="procedureHint">Procedure-specific steps update when the selected operation changes.</p>
-            </div>
-
-            <div class="form-grid">
-              <label class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
-                <span>Laparoscopic entry technique</span>
-                <select id="entryTechnique" name="entryTechnique">
-                  <option value="">Select entry technique</option>
-                  <option value="Hasson">Hasson</option>
-                  <option value="Veress">Veress</option>
-                  <option value="Optical entry">Optical entry</option>
-                  <option value="Custom / other">Custom / other</option>
-                </select>
-              </label>
-
-              <label class="field" id="entryTechniqueCustomField" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy" hidden>
-                <span>Custom entry technique</span>
-                <input type="text" id="entryTechniqueCustom" name="entryTechniqueCustom" autocomplete="off">
-              </label>
-
-              <label class="field field-wide" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
-                <span>Ports used / port configuration</span>
-                <textarea id="portsUsed" name="portsUsed" rows="3"></textarea>
-              </label>
-
-              <div class="procedure-fields field-wide" data-procedure-section="lapAppendicectomy">
-                <div class="form-grid">
-                  <label class="field field-wide">
-                    <span>Appendix appearance / operative findings</span>
-                    <textarea id="appendixAppearance" name="appendixAppearance" rows="3"></textarea>
-                  </label>
-
-                  <div class="field">
-                    <span>Perforation</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Perforation">
-                      <label><input type="radio" name="perforation" value="yes"> Yes</label>
-                      <label><input type="radio" name="perforation" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <span>Contamination present</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Contamination present">
-                      <label><input type="radio" name="contaminationPresent" value="yes"> Yes</label>
-                      <label><input type="radio" name="contaminationPresent" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <label class="field field-wide" id="contaminationDescriptionField" hidden>
-                    <span>Contamination description</span>
-                    <textarea id="contaminationDescription" name="contaminationDescription" rows="3"></textarea>
-                  </label>
-
-                  <label class="field">
-                    <span>Mesoappendix division method</span>
-                    <select id="mesoappendixDivision" name="mesoappendixDivision">
-                      <option value="">Select mesoappendix division method</option>
-                      <option value="Electrocautery">Electrocautery</option>
-                      <option value="LigaSure">LigaSure</option>
-                      <option value="Harmonic">Harmonic</option>
-                      <option value="Clips and division">Clips and division</option>
-                      <option value="Stapler">Stapler</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="mesoappendixDivisionCustomField" hidden>
-                    <span>Custom mesoappendix division method</span>
-                    <input type="text" id="mesoappendixDivisionCustom" name="mesoappendixDivisionCustom" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Stump control method</span>
-                    <select id="stumpControl" name="stumpControl">
-                      <option value="">Select stump control method</option>
-                      <option value="Endoloops">Endoloops</option>
-                      <option value="Stapler">Stapler</option>
-                      <option value="Clips">Clips</option>
-                      <option value="Suture ligature">Suture ligature</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="stumpControlCustomField" hidden>
-                    <span>Custom stump control method</span>
-                    <input type="text" id="stumpControlCustom" name="stumpControlCustom" autocomplete="off">
-                  </label>
-
-                  <div class="field">
-                    <span>Specimen removed in bag</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Specimen removed in bag">
-                      <label><input type="radio" name="specimenRemovedInBag" value="yes"> Yes</label>
-                      <label><input type="radio" name="specimenRemovedInBag" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <span>Washout performed</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Washout performed">
-                      <label><input type="radio" name="washoutPerformed" value="yes"> Yes</label>
-                      <label><input type="radio" name="washoutPerformed" value="no"> No</label>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="procedure-fields field-wide" data-procedure-section="lapCholecystectomy" hidden>
-                <div class="form-grid">
-                  <label class="field field-wide">
-                    <span>Gallbladder appearance / operative findings</span>
-                    <textarea id="gallbladderAppearance" name="gallbladderAppearance" rows="3"></textarea>
-                  </label>
-
-                  <div class="field">
-                    <span>Critical view of safety achieved</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Critical view of safety achieved">
-                      <label><input type="radio" name="criticalViewAchieved" value="yes"> Yes</label>
-                      <label><input type="radio" name="criticalViewAchieved" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <label class="field">
-                    <span>Cystic duct control method</span>
-                    <select id="cysticDuctControl" name="cysticDuctControl">
-                      <option value="">Select cystic duct control method</option>
-                      <option value="Clips">Clips</option>
-                      <option value="Endoloop">Endoloop</option>
-                      <option value="Stapler">Stapler</option>
-                      <option value="Suture ligature">Suture ligature</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="cysticDuctControlCustomField" hidden>
-                    <span>Custom cystic duct control method</span>
-                    <input type="text" id="cysticDuctControlCustom" name="cysticDuctControlCustom" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Cystic artery control method</span>
-                    <select id="cysticArteryControl" name="cysticArteryControl">
-                      <option value="">Select cystic artery control method</option>
-                      <option value="Clips">Clips</option>
-                      <option value="Diathermy">Diathermy</option>
-                      <option value="LigaSure">LigaSure</option>
-                      <option value="Suture ligature">Suture ligature</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="cysticArteryControlCustomField" hidden>
-                    <span>Custom cystic artery control method</span>
-                    <input type="text" id="cysticArteryControlCustom" name="cysticArteryControlCustom" autocomplete="off">
-                  </label>
-
-                  <div class="field">
-                    <span>Gallbladder removed in bag</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Gallbladder removed in bag">
-                      <label><input type="radio" name="gallbladderRemovedInBag" value="yes"> Yes</label>
-                      <label><input type="radio" name="gallbladderRemovedInBag" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <div class="field">
-                    <span>Bile spillage</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Bile spillage">
-                      <label><input type="radio" name="bileSpillage" value="yes"> Yes</label>
-                      <label><input type="radio" name="bileSpillage" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <label class="field field-wide" id="bileSpillageDetailsField" hidden>
-                    <span>Bile spillage details</span>
-                    <textarea id="bileSpillageDetails" name="bileSpillageDetails" rows="3"></textarea>
-                  </label>
-
-                  <div class="field">
-                    <span>Stone spillage</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Stone spillage">
-                      <label><input type="radio" name="stoneSpillage" value="yes"> Yes</label>
-                      <label><input type="radio" name="stoneSpillage" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <label class="field field-wide" id="stoneSpillageDetailsField" hidden>
-                    <span>Stone spillage details</span>
-                    <textarea id="stoneSpillageDetails" name="stoneSpillageDetails" rows="3"></textarea>
-                  </label>
-
-                  <div class="field">
-                    <span>Intraoperative cholangiogram</span>
-                    <div class="choice-row" role="radiogroup" aria-label="Intraoperative cholangiogram">
-                      <label><input type="radio" name="cholangiogramPerformed" value="yes"> Yes</label>
-                      <label><input type="radio" name="cholangiogramPerformed" value="no"> No</label>
-                    </div>
-                  </div>
-
-                  <label class="field field-wide" id="cholangiogramFindingsField" hidden>
-                    <span>Cholangiogram findings</span>
-                    <textarea id="cholangiogramFindings" name="cholangiogramFindings" rows="3"></textarea>
-                  </label>
-                </div>
-              </div>
-
-              <div class="procedure-fields field-wide" data-procedure-section="diagnosticLaparoscopy" hidden>
-                <div class="form-grid">
-                  <label class="field field-wide">
-                    <span>Abdominal survey / key findings</span>
-                    <textarea id="abdominalSurvey" name="abdominalSurvey" rows="3"></textarea>
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Procedure performed</span>
-                    <input type="text" id="procedurePerformed" name="procedurePerformed" autocomplete="off">
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Washout / irrigation details</span>
-                    <input type="text" id="washoutFluid" name="washoutFluid" autocomplete="off">
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Adhesiolysis details</span>
-                    <textarea id="adhesiolysisDetails" name="adhesiolysisDetails" rows="3"></textarea>
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Source control / intra-abdominal pathology dealt with</span>
-                    <textarea id="sourceControl" name="sourceControl" rows="3"></textarea>
-                  </label>
-                </div>
-              </div>
-
-              <div class="procedure-fields field-wide" data-procedure-section="incisionAndDrainage" hidden>
-                <div class="form-grid">
-                  <label class="field field-wide">
-                    <span>Abscess / wound site</span>
-                    <input type="text" id="incisionSite" name="incisionSite" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Incision type</span>
-                    <select id="incisionType" name="incisionType">
-                      <option value="">Select incision type</option>
-                      <option value="Linear incision">Linear incision</option>
-                      <option value="Cruciate incision">Cruciate incision</option>
-                      <option value="Elliptical incision">Elliptical incision</option>
-                      <option value="Wound opened along previous scar">Wound opened along previous scar</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="incisionTypeCustomField" hidden>
-                    <span>Custom incision type</span>
-                    <input type="text" id="incisionTypeCustom" name="incisionTypeCustom" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Contents drained</span>
-                    <select id="abscessContents" name="abscessContents">
-                      <option value="">Select contents drained</option>
-                      <option value="Pus">Pus</option>
-                      <option value="Seropurulent fluid">Seropurulent fluid</option>
-                      <option value="Haematoma">Haematoma</option>
-                      <option value="Necrotic material">Necrotic material</option>
-                      <option value="No pus encountered">No pus encountered</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="abscessContentsCustomField" hidden>
-                    <span>Custom contents drained</span>
-                    <input type="text" id="abscessContentsCustom" name="abscessContentsCustom" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Microbiology swab sent</span>
-                    <select id="pusSwabSent" name="pusSwabSent">
-                      <option value="">Select swab status</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </label>
-
-                  <label class="field">
-                    <span>Loculations broken down</span>
-                    <select id="loculationsBrokenDown" name="loculationsBrokenDown">
-                      <option value="">Select loculation status</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                      <option value="not applicable">Not applicable</option>
-                    </select>
-                  </label>
-
-                  <label class="field">
-                    <span>Cavity irrigated / washed out</span>
-                    <select id="cavityIrrigated" name="cavityIrrigated">
-                      <option value="">Select washout status</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Packing or drain details</span>
-                    <input type="text" id="packingOrDrain" name="packingOrDrain" autocomplete="off">
-                  </label>
-                </div>
-              </div>
-
-              <div class="procedure-fields field-wide" data-procedure-section="openInguinalHerniaRepair" hidden>
-                <div class="form-grid">
-                  <label class="field">
-                    <span>Side</span>
-                    <select id="herniaSide" name="herniaSide">
-                      <option value="">Select side</option>
-                      <option value="Right">Right</option>
-                      <option value="Left">Left</option>
-                      <option value="Bilateral">Bilateral</option>
-                    </select>
-                  </label>
-
-                  <label class="field">
-                    <span>Hernia type</span>
-                    <select id="herniaType" name="herniaType">
-                      <option value="">Select hernia type</option>
-                      <option value="Indirect inguinal hernia">Indirect inguinal hernia</option>
-                      <option value="Direct inguinal hernia">Direct inguinal hernia</option>
-                      <option value="Pantaloon inguinal hernia">Pantaloon inguinal hernia</option>
-                      <option value="Femoral hernia">Femoral hernia</option>
-                      <option value="Recurrent inguinal hernia">Recurrent inguinal hernia</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="herniaTypeCustomField" hidden>
-                    <span>Custom hernia type</span>
-                    <input type="text" id="herniaTypeCustom" name="herniaTypeCustom" autocomplete="off">
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Hernia contents</span>
-                    <input type="text" id="herniaContents" name="herniaContents" autocomplete="off">
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Sac management</span>
-                    <textarea id="sacManagement" name="sacManagement" rows="3"></textarea>
-                  </label>
-
-                  <label class="field">
-                    <span>Mesh used</span>
-                    <select id="meshUsed" name="meshUsed">
-                      <option value="">Select mesh status</option>
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="meshTypeField" hidden>
-                    <span>Mesh type</span>
-                    <input type="text" id="meshType" name="meshType" autocomplete="off">
-                  </label>
-
-                  <label class="field field-wide" id="meshFixationField" hidden>
-                    <span>Mesh fixation</span>
-                    <textarea id="meshFixation" name="meshFixation" rows="3"></textarea>
-                  </label>
-
-                  <label class="field field-wide">
-                    <span>Cord structures</span>
-                    <input type="text" id="cordStructuresManaged" name="cordStructuresManaged" autocomplete="off">
-                  </label>
-
-                  <label class="field">
-                    <span>Ilioinguinal nerve</span>
-                    <select id="ilioinguinalNerveStatus" name="ilioinguinalNerveStatus">
-                      <option value="">Select nerve status</option>
-                      <option value="Identified and preserved">Identified and preserved</option>
-                      <option value="Identified and divided">Identified and divided</option>
-                      <option value="Not identified">Not identified</option>
-                      <option value="Custom / other">Custom / other</option>
-                    </select>
-                  </label>
-
-                  <label class="field" id="ilioinguinalNerveStatusCustomField" hidden>
-                    <span>Custom ilioinguinal nerve status</span>
-                    <input type="text" id="ilioinguinalNerveStatusCustom" name="ilioinguinalNerveStatusCustom" autocomplete="off">
-                  </label>
-                </div>
-              </div>
-
-              <div class="field">
-                <span>Haemostasis confirmed</span>
-                <div class="choice-row" role="radiogroup" aria-label="Haemostasis confirmed">
-                  <label><input type="radio" name="haemostasisConfirmed" value="yes"> Yes</label>
-                  <label><input type="radio" name="haemostasisConfirmed" value="no"> No</label>
-                </div>
-              </div>
-
-              <div class="field" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy">
-                <span>Converted to open</span>
-                <div class="choice-row">
-                  <label><input type="checkbox" id="convertedToOpen" name="convertedToOpen"> Yes</label>
-                </div>
-              </div>
-
-              <label class="field field-wide" id="conversionReasonField" data-procedure-section="lapAppendicectomy lapCholecystectomy diagnosticLaparoscopy" hidden>
-                <span>Reason for conversion</span>
-                <textarea id="conversionReason" name="conversionReason" rows="3"></textarea>
-              </label>
-
-              <label class="field field-wide">
-                <span>Additional operative details</span>
-                <textarea id="additionalOperativeDetails" name="additionalOperativeDetails" rows="3"></textarea>
-              </label>
-            </div>
-          </section>
-
-          <section class="form-section">
-            <div class="section-header section-header-compact">
-              <h2>Completion details</h2>
-              <p>Drain, closure, and postoperative instructions.</p>
-            </div>
-
-            <div class="form-grid form-grid-thirds">
-              <div class="field">
-                <span>Drain placed?</span>
-                <div class="choice-row" role="radiogroup" aria-label="Drain placed">
-                  <label><input type="radio" name="drainStatus" value="yes"> Yes</label>
-                  <label><input type="radio" name="drainStatus" value="no"> No</label>
-                </div>
-              </div>
-
-              <label class="field" id="drainLocationField" hidden>
-                <span>Drain location</span>
-                <select id="drainLocation" name="drainLocation">
-                  <option value="">Select drain location</option>
-                  <option value="Pelvis">Pelvis</option>
-                  <option value="Right iliac fossa">Right iliac fossa</option>
-                  <option value="Right paracolic gutter">Right paracolic gutter</option>
-                  <option value="Left paracolic gutter">Left paracolic gutter</option>
-                  <option value="Morrison's pouch">Morrison's pouch</option>
-                  <option value="Custom / other">Custom / other</option>
-                </select>
-              </label>
-
-              <label class="field" id="drainLocationCustomField" hidden>
-                <span>Custom drain location</span>
-                <input type="text" id="drainLocationCustom" name="drainLocationCustom" autocomplete="off">
-              </label>
-            </div>
-
-            <div class="form-grid form-grid-thirds form-grid-tight-top">
-              <div class="field">
-                <span>Fascial closure performed?</span>
-                <div class="choice-row" role="radiogroup" aria-label="Fascial closure performed">
-                  <label><input type="radio" name="fascialClosurePerformed" value="yes"> Yes</label>
-                  <label><input type="radio" name="fascialClosurePerformed" value="no"> No</label>
-                </div>
-              </div>
-
-              <label class="field" id="fascialSutureField" hidden>
-                <span>Fascial suture material</span>
-                <input type="text" id="fascialSutureMaterial" name="fascialSutureMaterial" autocomplete="off">
-              </label>
-
-              <label class="field">
-                <span>Skin closure method</span>
-                <input type="text" id="skinClosureMethod" name="skinClosureMethod" autocomplete="off">
-              </label>
-            </div>
-
-            <div class="form-grid form-grid-tight-top">
-              <label class="field field-wide">
-                <span>Post-operative plan</span>
-                <textarea id="postOpPlan" name="postOpPlan" rows="3"></textarea>
-              </label>
-            </div>
-          </section>
-
-          <div class="form-actions">
-            <button type="submit" class="primary-button">Generate Note</button>
-          </div>
-        </form>
       </section>
 
-      <aside class="panel note-panel">
-        <div class="section-header section-header-compact">
-          <h2>Generated note</h2>
-          <p id="validationHint">Warnings are advisory. Required operative fields depend on the selected procedure.</p>
-        </div>
+      <section class="landing-grid" aria-label="Project summary">
+        <article class="landing-card">
+          <h2>What it is</h2>
+          <p>
+            A static web app that converts clinician-entered operative details into a structured draft operation note
+            for copying into the appropriate clinical record after review.
+          </p>
+        </article>
+        <article class="landing-card">
+          <h2>Why it exists</h2>
+          <p>
+            Repetitive operation notes are easy to make inconsistent under pressure. This keeps the common fields,
+            procedure-specific prompts, checks, and output format close together.
+          </p>
+        </article>
+        <article class="landing-card">
+          <h2>Current status</h2>
+          <p>
+            Personal prototype, actively iterated, and deliberately narrow. It supports a small set of common general
+            surgical procedures rather than trying to be a universal theatre system.
+          </p>
+        </article>
+      </section>
 
-        <div id="validationMessage" class="message message-error" hidden></div>
-
-        <div id="warningBox" class="message message-warning" hidden>
-          <h3>Checks</h3>
-          <ul id="warningList"></ul>
+      <section class="landing-feature-section" aria-labelledby="features-heading">
+        <div>
+          <p class="landing-kicker">Current prototype</p>
+          <h2 id="features-heading">Structured prompts for common emergency general surgery notes</h2>
         </div>
+        <ul class="landing-feature-list">
+          <li>Procedure selector for lap appendix, lap chole, diagnostic laparoscopy, abscess I&amp;D, and open inguinal hernia repair.</li>
+          <li>Shared admin, anaesthetic, indication, findings, specimen, drain, closure, and post-operative plan fields.</li>
+          <li>Procedure-specific fields and advisory checks to reduce obvious omissions before copying the note.</li>
+          <li>Generated text remains editable by review: the tool does not infer pathology, complications, or clinical decisions.</li>
+          <li>Runs entirely in the browser with no backend, login, cloud sync, analytics, external AI calls, or data transmission.</li>
+        </ul>
+      </section>
 
-        <div class="output-actions">
-          <button type="button" id="copyButton" class="secondary-button" disabled>Copy to Clipboard</button>
-          <span id="copyFeedback" class="copy-feedback" aria-live="polite"></span>
-        </div>
-
-        <div id="noteOutput" class="note-output note-output-empty">
-          <p>Your operative note will appear here after generation.</p>
-        </div>
-      </aside>
+      <section id="safety" class="landing-notice" aria-labelledby="safety-heading">
+        <p class="landing-kicker">Clinical safety boundary</p>
+        <h2 id="safety-heading">Drafting aid only. Not a clinical system.</h2>
+        <p>
+          This is a personal static tool for drafting text from information entered by a clinician. It is not an EHR,
+          referral platform, NHS-approved product, clinical safety system, regulated medical device, or source of truth.
+        </p>
+        <p>
+          No patient-identifiable information should be sent to this website or repository. Generated notes must be
+          checked, corrected, and entered into the appropriate clinical record by the responsible clinician.
+        </p>
+      </section>
     </main>
 
-    <footer class="privacy-footer" aria-label="Privacy and safety notice">
+    <footer class="landing-footer">
       <p>
-        This tool runs entirely in your browser. No entered data is transmitted or stored by this site.
-        Review generated text carefully before use in any clinical record.
+        Operative Note Generator is an experimental personal project by Sangeev. It runs as static files and should be
+        treated as clinician-reviewed drafting assistance only.
       </p>
     </footer>
-  </div>
-
-  <script src="js/core.js"></script>
-  <script src="js/procedures.js"></script>
-  <script src="js/app.js"></script>
-</body>
+  </body>
 </html>

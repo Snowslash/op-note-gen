@@ -17,7 +17,7 @@
 - The generated note must remain clinician-reviewed drafting assistance, not decision-making.
 
 ## Code Orientation
-- `docs/index.html` owns form fields and output containers; field IDs must match the definitions under `docs/js/`.
+- `docs/index.html` is the static landing page; `docs/app.html` owns the app form fields and output containers; field IDs must match the definitions under `docs/js/`.
 - `docs/js/procedures.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
 - Add or change form data by updating the relevant field definition, visibility rule, validation/warning rule, and output section together.
 - UI changes include compact procedure choice buttons backed by the hidden/fallback `procedureSelect`; keep both in sync and covered by tests.

@@ -68,12 +68,13 @@ This version supports:
 
 ## How To Use
 
-1. Open [docs/index.html](./docs/index.html) in a browser.
-2. Choose the operation using the compact procedure buttons.
-3. Complete the form.
-4. Select **Generate Note**.
-5. Review the generated note.
-6. Use **Copy to Clipboard** if needed.
+1. Open the landing page at [docs/index.html](./docs/index.html).
+2. Select **Open generator**, or open [docs/app.html](./docs/app.html) directly.
+3. Choose the operation using the compact procedure buttons.
+4. Complete the form.
+5. Select **Generate Note**.
+6. Review the generated note.
+7. Use **Copy to Clipboard** if needed.
 
 There is no build step and no backend.
 
@@ -101,8 +102,9 @@ The generated note can include:
 
 ## Project Files
 
-- [docs/index.html](./docs/index.html) - app structure and form fields
-- [docs/styles.css](./docs/styles.css) - layout and styling
+- [docs/index.html](./docs/index.html) - static landing page
+- [docs/app.html](./docs/app.html) - app structure and form fields
+- [docs/styles.css](./docs/styles.css) - landing page and app styling
 - [docs/js/core.js](./docs/js/core.js) - shared DOM/state helpers and formatting utilities
 - [docs/js/procedures.js](./docs/js/procedures.js) - procedure-specific configs and operation text generation
 - [docs/js/app.js](./docs/js/app.js) - validation, rendering, event listeners, and app initialisation

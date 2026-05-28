@@ -84,7 +84,7 @@ function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = []
     return elements.get(id);
   }
 
-  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   for (const [, id] of html.matchAll(/id="([^"]+)"/g)) {
     el(id);
   }
@@ -247,7 +247,7 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
 }
 
 function testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
   const hasSkinManagementField = vm.runInContext(
     "Object.prototype.hasOwnProperty.call(PROCEDURES.incisionAndDrainage.fields, 'skinManagement')",
@@ -356,7 +356,7 @@ function testOpenInguinalHerniaRepairGeneratesStructuredNote() {
 }
 
 function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
   const hasProcedure = vm.runInContext("Boolean(PROCEDURES.openInguinalHerniaRepair)", context);
 
@@ -366,7 +366,7 @@ function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
 }
 
 function testProcedureSelectorUsesCompactChoiceGrid() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
   const procedureChoiceCount = vm.runInContext("DOM.procedureChoices.length", context);
 
@@ -377,7 +377,7 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
 }
 
 function testThemeToggleAppliesAndPersistsDarkMode() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
   const context = createFakeApp();
 
