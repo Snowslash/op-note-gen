@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Operative Note Generator is a local-only browser tool for drafting structured operative notes from clinician-entered fields."
+      content="Operative Note Generator helps draft common general surgery operation notes from clinician-entered fields."
     />
     <title>Operative Note Generator — Sangeev</title>
     <link rel="stylesheet" href="./styles.css" />
@@ -15,8 +15,8 @@
       <section class="landing-hero" aria-labelledby="page-title">
         <h1 id="page-title">Operative Note Generator</h1>
         <p class="landing-lede">
-          A focused operative-note drafting tool for common emergency general surgery cases. Structured inputs in,
-          reviewable note out — without accounts, storage, analytics, or a backend.
+          Draft common general surgery operation notes from a short form. The page has no account,
+          backend, analytics, or autosave.
         </p>
         <div class="landing-actions" aria-label="Project links">
           <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
@@ -28,22 +28,22 @@
         <article class="landing-card">
           <h2>What it is</h2>
           <p>
-            A static web app that converts clinician-entered operative details into a structured draft operation note
-            for copying into the appropriate clinical record after review.
+            A browser form for turning operation details into a draft note. Check it, edit it,
+            then copy it into the clinical record yourself.
           </p>
         </article>
         <article class="landing-card">
           <h2>Why it exists</h2>
           <p>
-            Repetitive operation notes are easy to make inconsistent under pressure. This keeps the common fields,
-            procedure-specific prompts, checks, and output format close together.
+            Operation notes are repetitive, but the omissions still matter. The form keeps the usual fields
+            and procedure prompts in one place.
           </p>
         </article>
         <article class="landing-card">
           <h2>Current status</h2>
           <p>
-            Personal prototype, actively iterated, and deliberately narrow. It supports a small set of common general
-            surgical procedures rather than trying to be a universal theatre system.
+            Personal prototype. Narrow on purpose. It covers a few common general surgery cases,
+            not every operation in theatre.
           </p>
         </article>
       </section>
@@ -51,14 +51,14 @@
       <section class="landing-feature-section" aria-labelledby="features-heading">
         <div>
           <p class="landing-kicker">Current prototype</p>
-          <h2 id="features-heading">Structured prompts for common emergency general surgery notes</h2>
+          <h2 id="features-heading">Prompts for common emergency general surgery notes</h2>
         </div>
         <ul class="landing-feature-list">
-          <li>Procedure selector for lap appendix, lap chole, diagnostic laparoscopy, abscess I&amp;D, and open inguinal hernia repair.</li>
-          <li>Shared admin, anaesthetic, indication, findings, specimen, drain, closure, and post-operative plan fields.</li>
-          <li>Procedure-specific fields and advisory checks to reduce obvious omissions before copying the note.</li>
-          <li>Generated text remains editable by review: the tool does not infer pathology, complications, or clinical decisions.</li>
-          <li>Runs entirely in the browser with no backend, login, cloud sync, analytics, external AI calls, or data transmission.</li>
+          <li>Choose lap appendix, lap chole, diagnostic laparoscopy, abscess I&amp;D, or open inguinal hernia repair.</li>
+          <li>Fill in admin details, anaesthetic, indication, findings, specimen, drain, closure, and post-op plan.</li>
+          <li>Use procedure-specific prompts and checks before copying the note.</li>
+          <li>The tool does not infer pathology, complications, or clinical decisions.</li>
+          <li>It runs in the browser. There is no backend, login, cloud sync, analytics, external AI call, or data upload.</li>
         </ul>
       </section>
 
@@ -66,20 +66,20 @@
         <p class="landing-kicker">Clinical safety boundary</p>
         <h2 id="safety-heading">Drafting aid only. Not a clinical system.</h2>
         <p>
-          This is a personal static tool for drafting text from information entered by a clinician. It is not an EHR,
+          This is a personal tool for drafting text from information entered by a clinician. It is not an EHR,
           referral platform, NHS-approved product, clinical safety system, regulated medical device, or source of truth.
         </p>
         <p>
-          No patient-identifiable information should be sent to this website or repository. Generated notes must be
-          checked, corrected, and entered into the appropriate clinical record by the responsible clinician.
+          Do not send patient-identifiable information to this website or repository. Check and correct the draft
+          before entering it into the clinical record.
         </p>
       </section>
     </main>
 
     <footer class="landing-footer">
       <p>
-        Operative Note Generator is an experimental personal project by Sangeev. It runs as static files and should be
-        treated as clinician-reviewed drafting assistance only.
+        Operative Note Generator is an experimental personal project by Sangeev. Treat its output as a draft,
+        not a finished operation note.
       </p>
     </footer>
   </body>
