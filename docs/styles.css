@@ -68,7 +68,7 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
 }
@@ -982,7 +982,7 @@ button:disabled {
   --shadow: none;
   background: var(--bg);
   color: var(--text);
-  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 html[data-theme="dark"] .landing-body {
@@ -1196,7 +1196,7 @@ html[data-theme="dark"]:has(.landing-body) {
   min-height: 100vh;
   color: var(--landing-ink);
   background: var(--landing-paper);
-  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+  font-family: Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
 }
 
 html[data-theme="dark"] .landing-body {
@@ -1412,6 +1412,7 @@ html[data-theme="dark"] .landing-body {
 
 .landing-note-example pre {
   color: var(--landing-ink);
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
   font-size: 0.9rem;
   line-height: 1.5;
 }
@@ -1426,6 +1427,10 @@ html[data-theme="dark"] .landing-body {
 .landing-footer {
   padding: 18px 0 44px;
 }
+.landing-footer p {
+  font-family: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+}
+
 
 @media (max-width: 700px) {
   .landing-body .site-nav { display: block; }
