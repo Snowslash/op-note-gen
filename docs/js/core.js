@@ -218,7 +218,13 @@ function formatDateTimeValue(field) {
     return "not specified";
   }
 
-  return field.raw.replace("T", " ");
+  const match = field.raw.match(/^(\d{4})-(\d{2})-(\d{2})T(\d{2}:\d{2})$/);
+  if (!match) {
+    return field.raw.replace("T", " ");
+  }
+
+  const [, year, month, day, time] = match;
+  return `${day}/${month}/${year}, ${time}`;
 }
 
 function getCurrentDateTimeLocalValue(date = new Date()) {

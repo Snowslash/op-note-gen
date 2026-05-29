@@ -9,7 +9,6 @@ function buildAppendicectomyOperationText(values) {
     `Specimen removed in bag: ${formatYesNoOperationValue(values.specimenRemovedInBag)}`,
     `Washout performed: ${formatYesNoOperationValue(values.washoutPerformed)}`,
     `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Drain: ${formatDrainOperationValue(values)}`,
     `Converted to open: ${formatConversionOperationValue(values)}`,
     formatAdditionalDetailsOperationLine(values),
   ].filter(Boolean).join("\n");
@@ -27,7 +26,6 @@ function buildCholecystectomyOperationText(values) {
     `Stone spillage: ${formatNoneOrPresentOperationValue(values.stoneSpillage, values.stoneSpillageDetails)}`,
     `Intraoperative cholangiogram: ${formatPerformedOperationValue(values.cholangiogramPerformed, values.cholangiogramFindings)}`,
     `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Drain: ${formatDrainOperationValue(values)}`,
     `Converted to open: ${formatConversionOperationValue(values)}`,
     formatAdditionalDetailsOperationLine(values),
   ].filter(Boolean).join("\n");

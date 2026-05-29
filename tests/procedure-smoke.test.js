@@ -336,7 +336,7 @@ function testOpenInguinalHerniaRepairGeneratesStructuredNote() {
   });
 
   assertIncludes(note, "Procedure: Open inguinal hernia repair");
-  assertIncludes(note, "Date/time: 2026-05-27 16:45");
+  assertIncludes(note, "Date/time: 27/05/2026, 16:45");
   assertIncludes(note, "Side: Right");
   assertIncludes(note, "Hernia type: Indirect inguinal hernia");
   assertIncludes(note, "Hernia contents: Viable reducible omentum");
@@ -421,8 +421,13 @@ function testAppendicectomyStillGenerates() {
   });
 
   assertIncludes(note, "Procedure: Laparoscopic appendicectomy");
-  assertIncludes(note, "Date/time: 2026-05-27 14:30");
+  assertIncludes(note, "Date/time: 27/05/2026, 14:30");
   assertIncludes(note, "Stump control: Endoloops");
+  assert.strictEqual(
+    countOccurrences(note, "Drain:"),
+    1,
+    `Expected appendicectomy note to include one drain line. Actual note:\n${note}`,
+  );
 }
 
 function testOperationDateTimeAutofillsOnLoad() {

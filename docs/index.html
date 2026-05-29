@@ -23,8 +23,8 @@
       <section class="landing-hero" aria-labelledby="page-title">
         <h1 id="page-title">Operative Note Generator</h1>
         <p class="landing-lede">
-          Draft common general surgery operation notes from a short form. The page has no account,
-          backend, analytics or autosave.
+          Draft common general surgery operation notes from a short form. I started it to avoid
+          missing repetitive fields. The page has no account, backend, analytics or autosave.
         </p>
         <div class="landing-actions" aria-label="Project links">
           <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
@@ -54,6 +54,56 @@
             not every operation in theatre.
           </p>
         </article>
+      </section>
+
+      <section class="landing-screenshots" aria-labelledby="screenshots-heading">
+        <div class="landing-screenshots-heading">
+          <p class="landing-kicker">Example workflow</p>
+          <h2 id="screenshots-heading">Example appendicectomy draft</h2>
+          <p>
+            These screenshots use synthetic details. The tool does not store, transmit or check the clinical truth
+            of anything entered.
+          </p>
+        </div>
+        <div class="landing-screenshot-grid">
+          <figure>
+            <img
+              src="./assets/opnotes-form-example.png"
+              alt="Operative Note Generator form with example appendicectomy details entered."
+              loading="lazy"
+              width="821"
+              height="1292"
+            />
+            <figcaption>Procedure-specific fields keep the common appendicectomy details together.</figcaption>
+          </figure>
+          <article class="landing-note-example" aria-label="Example generated note excerpt">
+            <h3>Draft output excerpt</h3>
+            <pre>Procedure: Laparoscopic appendicectomy
+
+Date/time: 29/05/2026, 10:52
+
+Findings:
+Pus, inflamed appendix
+
+Operation:
+Laparoscopic entry method: Hasson
+Perforation: yes
+Contamination: none
+Mesoappendix division: Electrocautery
+Stump control: Endoloops
+Washout performed: yes
+Haemostasis confirmed: yes
+
+Specimen: 1x appendix
+
+Drain: Right iliac fossa
+
+Post-operative plan:
+1) Return to ward
+2) Continue antibiotics</pre>
+            <p>The generated text is deliberately plain so it can be checked and edited before use.</p>
+          </article>
+        </div>
       </section>
 
       <section class="landing-feature-section" aria-labelledby="features-heading">
