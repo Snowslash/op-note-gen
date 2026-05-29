@@ -70,7 +70,7 @@ function setTheme(theme) {
 }
 
 function initialiseTheme() {
-  setTheme(getStoredTheme() || "light");
+  setTheme(getStoredTheme() || document.documentElement.dataset.theme || "dark");
 }
 
 function toggleTheme() {
