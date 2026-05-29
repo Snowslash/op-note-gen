@@ -44,7 +44,7 @@
           <span>Search procedures</span>
           <input type="search" id="procedureSearch" name="procedureSearch" placeholder="Search by operation or specialty" autocomplete="off">
         </label>
-        <p id="procedureSearchStatus" class="procedure-search-status" aria-live="polite">6 procedures shown</p>
+        <p id="procedureSearchStatus" class="procedure-search-status" aria-live="polite">7 procedures shown</p>
       </div>
 
       <div class="procedure-choice-grid" role="group" aria-label="Operation type">
@@ -72,6 +72,10 @@
           <span class="procedure-choice-title">Open umbilical hernia</span>
           <span class="procedure-choice-meta">Hernia repair</span>
         </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="emergencyLaparotomy">
+          <span class="procedure-choice-title">Emergency laparotomy</span>
+          <span class="procedure-choice-meta">Resection / stoma / washout</span>
+        </button>
       </div>
 
       <label class="field procedure-selector-field procedure-select-fallback">
@@ -83,6 +87,7 @@
           <option value="incisionAndDrainage">Incision and drainage of abscess</option>
           <option value="openInguinalHerniaRepair">Open inguinal hernia repair</option>
           <option value="openUmbilicalHerniaRepair">Open umbilical hernia repair</option>
+          <option value="emergencyLaparotomy">Emergency laparotomy</option>
         </select>
       </label>
     </section>
@@ -653,6 +658,95 @@
                 </div>
               </div>
 
+              <div class="procedure-fields field-wide" data-procedure-section="emergencyLaparotomy" hidden>
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Incision</span>
+                    <input type="text" id="laparotomyIncision" name="laparotomyIncision" autocomplete="off" placeholder="e.g. Midline laparotomy">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Pathology / source</span>
+                    <input type="text" id="laparotomyPathology" name="laparotomyPathology" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Procedure performed</span>
+                    <textarea id="laparotomyProcedurePerformed" name="laparotomyProcedurePerformed" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Bowel resection performed</span>
+                    <select id="laparotomyBowelResectionPerformed" name="laparotomyBowelResectionPerformed">
+                      <option value="">Select resection status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide" id="laparotomyBowelResectionDetailsField" hidden>
+                    <span>Bowel resection details</span>
+                    <textarea id="laparotomyBowelResectionDetails" name="laparotomyBowelResectionDetails" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Anastomosis performed</span>
+                    <select id="laparotomyAnastomosisPerformed" name="laparotomyAnastomosisPerformed">
+                      <option value="">Select anastomosis status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide" id="laparotomyAnastomosisDetailsField" hidden>
+                    <span>Anastomosis details</span>
+                    <textarea id="laparotomyAnastomosisDetails" name="laparotomyAnastomosisDetails" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Stoma formed</span>
+                    <select id="laparotomyStomaFormed" name="laparotomyStomaFormed">
+                      <option value="">Select stoma status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide" id="laparotomyStomaDetailsField" hidden>
+                    <span>Stoma details</span>
+                    <textarea id="laparotomyStomaDetails" name="laparotomyStomaDetails" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Washout performed</span>
+                    <select id="laparotomyWashoutPerformed" name="laparotomyWashoutPerformed">
+                      <option value="">Select washout status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide" id="laparotomyWashoutDetailsField" hidden>
+                    <span>Washout details</span>
+                    <textarea id="laparotomyWashoutDetails" name="laparotomyWashoutDetails" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Temporary abdominal closure</span>
+                    <select id="laparotomyTemporaryClosure" name="laparotomyTemporaryClosure">
+                      <option value="">Select temporary closure status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field field-wide" id="laparotomyTemporaryClosureDetailsField" hidden>
+                    <span>Temporary closure details</span>
+                    <textarea id="laparotomyTemporaryClosureDetails" name="laparotomyTemporaryClosureDetails" rows="3"></textarea>
+                  </label>
+                </div>
+              </div>
+
               <div class="field">
                 <span>Haemostasis confirmed</span>
                 <div class="choice-row" role="radiogroup" aria-label="Haemostasis confirmed">
@@ -781,6 +875,7 @@
   </div>
 
   <script src="js/core.js"></script>
+  <script src="js/note-formatters.js"></script>
   <script src="js/procedures.js"></script>
   <script src="js/app.js"></script>
 </body>

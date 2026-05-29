@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, **open inguinal hernia repair**, and **open umbilical hernia repair**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, **open inguinal hernia repair**, **open umbilical hernia repair**, and **emergency laparotomy**, built with:
 
 - HTML
 - CSS
@@ -18,6 +18,7 @@ This version supports:
 - Incision and drainage of abscess
 - Open inguinal hernia repair
 - Open umbilical hernia repair
+- Emergency laparotomy
 
 ## Features
 
@@ -41,7 +42,7 @@ This version supports:
   - appendix, gallbladder, abdominal survey, or abscess/wound appearance
   - contamination description
   - bile or stone spillage details
-  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, ilioinguinal nerve status, umbilical hernia defect size, and umbilical repair method
+  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, ilioinguinal nerve status, umbilical hernia defect size, umbilical repair method, laparotomy pathology, bowel resection, anastomosis, stoma, and temporary abdominal closure
   - cholangiogram findings
   - conversion reason
   - additional operative details
@@ -55,6 +56,7 @@ This version supports:
   - intraoperative cholangiogram
   - closure details
   - mesh details for open inguinal and open umbilical hernia repair
+  - emergency laparotomy modules for bowel resection, anastomosis, stoma, washout, and temporary abdominal closure
 - Non-blocking warnings for missing specimen, complications, and drain status
 
 ## Safety Rules
@@ -77,7 +79,13 @@ This version supports:
 6. Review the generated note.
 7. Use **Copy to Clipboard** if needed.
 
-There is no build step and no backend.
+There is no build step and no backend. For local verification, run:
+
+```bash
+npm run verify
+```
+
+This performs JavaScript syntax checks and runs the procedure smoke tests.
 
 ## Output Structure
 
@@ -106,9 +114,11 @@ The generated note can include:
 - [docs/index.html](./docs/index.html) - static landing page
 - [docs/app.html](./docs/app.html) - app structure and form fields
 - [docs/styles.css](./docs/styles.css) - landing page and app styling
-- [docs/js/core.js](./docs/js/core.js) - shared DOM/state helpers and formatting utilities
-- [docs/js/procedures.js](./docs/js/procedures.js) - procedure-specific configs and operation text generation
-- [docs/js/app.js](./docs/js/app.js) - validation, rendering, event listeners, and app initialisation
+- `docs/js/core.js` centralizes shared DOM/state helpers and formatting utilities.
+- `docs/js/note-formatters.js` centralizes common output section builders and note-formatting helpers.
+- `docs/js/procedures.js` centralizes procedure-specific configs and operation text generation.
+- `docs/js/app.js` handles validation, rendering, event listeners, and app initialisation.
+- `tests/procedure-smoke.test.js` covers procedure wiring and generated-note safety regressions.
 
 ## Notes
 

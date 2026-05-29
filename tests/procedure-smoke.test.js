@@ -6,6 +6,7 @@ const vm = require("vm");
 const ROOT = path.resolve(__dirname, "..");
 const SCRIPT_FILES = [
   "docs/js/core.js",
+  "docs/js/note-formatters.js",
   "docs/js/procedures.js",
   "docs/js/app.js",
 ];
@@ -302,6 +303,62 @@ function testDiagnosticLaparoscopyGeneratesStructuredNote() {
   );
 }
 
+function testEmergencyLaparotomyGeneratesStructuredModularNote() {
+  const note = generateNote({
+    values: {
+      procedureSelect: "emergencyLaparotomy",
+      operationDateTime: "2026-05-29T23:10",
+      surgeon: "Dr A",
+      assistant: "Dr B",
+      anaesthetic: "GA",
+      indication: "Peritonitis with CT concern for perforated viscus",
+      findings: "Purulent four-quadrant contamination with perforated sigmoid diverticular disease",
+      laparotomyIncision: "Midline laparotomy",
+      laparotomyPathology: "Perforated sigmoid diverticular disease",
+      laparotomyProcedurePerformed: "Emergency laparotomy, sigmoid colectomy, end colostomy and washout",
+      laparotomyBowelResectionPerformed: "yes",
+      laparotomyBowelResectionDetails: "Diseased sigmoid colon resected between healthy proximal descending colon and upper rectum",
+      laparotomyAnastomosisPerformed: "no",
+      laparotomyStomaFormed: "yes",
+      laparotomyStomaDetails: "End colostomy matured in the left iliac fossa",
+      laparotomyWashoutPerformed: "yes",
+      laparotomyWashoutDetails: "Warm saline washout of all quadrants until clear",
+      laparotomyTemporaryClosure: "no",
+      portsUsed: "stale laparoscopic ports",
+      umbilicalRepairMethod: "stale hernia repair method",
+      specimen: "Sigmoid colon",
+      bloodLoss: "200 mL",
+      complications: "none",
+      skinClosureMethod: "skin clips",
+      postOpPlan: "HDU, IV antibiotics, VTE prophylaxis, stoma nurse review",
+    },
+    radios: {
+      drainStatus: "yes",
+      haemostasisConfirmed: "yes",
+      fascialClosurePerformed: "yes",
+    },
+  });
+
+  assertIncludes(note, "Procedure: Emergency laparotomy");
+  assertIncludes(note, "Date/time: 29/05/2026, 23:10");
+  assertIncludes(note, "Incision: Midline laparotomy");
+  assertIncludes(note, "Pathology/source: Perforated sigmoid diverticular disease");
+  assertIncludes(note, "Procedure performed: Emergency laparotomy, sigmoid colectomy, end colostomy and washout");
+  assertIncludes(note, "Bowel resection performed: yes");
+  assertIncludes(note, "Bowel resection details: Diseased sigmoid colon resected between healthy proximal descending colon and upper rectum");
+  assertIncludes(note, "Anastomosis performed: no");
+  assertIncludes(note, "Stoma formed: yes");
+  assertIncludes(note, "Stoma details: End colostomy matured in the left iliac fossa");
+  assertIncludes(note, "Washout performed: yes");
+  assertIncludes(note, "Washout details: Warm saline washout of all quadrants until clear");
+  assertIncludes(note, "Temporary abdominal closure: no");
+  assertIncludes(note, "Haemostasis confirmed: yes");
+  assertIncludes(note, "Specimen: Sigmoid colon");
+  assertIncludes(note, "Complications: No immediate complications.");
+  assert.ok(!note.includes("Ports:"), `Expected emergency laparotomy note not to include stale laparoscopic ports. Actual note:\n${note}`);
+  assert.ok(!note.includes("Repair method:"), `Expected emergency laparotomy note not to include stale hernia fields. Actual note:\n${note}`);
+}
+
 function testOpenUmbilicalHerniaRepairGeneratesStructuredNote() {
   const note = generateNote({
     values: {
@@ -419,6 +476,17 @@ function testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry() {
   assert.ok(hasProcedure, "Expected PROCEDURES.openUmbilicalHerniaRepair to exist.");
 }
 
+function testEmergencyLaparotomyIsWiredInUiAndRegistry() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const context = createFakeApp();
+  const hasProcedure = vm.runInContext("Boolean(PROCEDURES.emergencyLaparotomy)", context);
+
+  assert.ok(html.includes('value="emergencyLaparotomy"'), "Expected procedure selector to include emergency laparotomy.");
+  assert.ok(html.includes('data-procedure-choice="emergencyLaparotomy"'), "Expected compact procedure choice for emergency laparotomy.");
+  assert.ok(html.includes('data-procedure-section="emergencyLaparotomy"'), "Expected emergency laparotomy fields to be present in the UI.");
+  assert.ok(hasProcedure, "Expected PROCEDURES.emergencyLaparotomy to exist.");
+}
+
 function testProcedureSelectorUsesCompactChoiceGrid() {
   const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
@@ -427,7 +495,8 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
   assert.ok(html.includes('class="procedure-choice-grid"'), "Expected procedure selection to use a compact choice grid.");
   assert.ok(html.includes('data-procedure-choice="lapAppendicectomy"'), "Expected procedure choice button for laparoscopic appendicectomy.");
   assert.ok(html.includes('data-procedure-choice="openUmbilicalHerniaRepair"'), "Expected procedure choice button for open umbilical hernia repair.");
-  assert.strictEqual(procedureChoiceCount, 6, "Expected one compact procedure choice per supported operation.");
+  assert.ok(html.includes('data-procedure-choice="emergencyLaparotomy"'), "Expected procedure choice button for emergency laparotomy.");
+  assert.strictEqual(procedureChoiceCount, 7, "Expected one compact procedure choice per supported operation.");
 }
 
 function testProcedureSearchFiltersChoiceCards() {
@@ -446,6 +515,7 @@ function testProcedureSearchFiltersChoiceCards() {
       ["incisionAndDrainage", true],
       ["openInguinalHerniaRepair", false],
       ["openUmbilicalHerniaRepair", true],
+      ["emergencyLaparotomy", true],
     ]),
     "Expected procedure search to hide non-matching cards and keep the matching card visible.",
   );
@@ -453,7 +523,7 @@ function testProcedureSearchFiltersChoiceCards() {
   vm.runInContext('DOM.procedureSearch.value = "lap"; filterProcedureChoices();', context);
   assert.strictEqual(
     vm.runInContext("DOM.procedureSearchStatus.textContent", context),
-    "3 procedures shown",
+    "4 procedures shown",
     "Expected procedure search status to report visible matches.",
   );
 }
@@ -535,6 +605,49 @@ function testOperationDateTimeAutofillsOnLoad() {
   );
 }
 
+function testProcedureFieldDefinitionsMatchHtmlControls() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const ids = new Set(Array.from(html.matchAll(/id="([^"]+)"/g), ([, id]) => id));
+  const names = new Set(Array.from(html.matchAll(/name="([^"]+)"/g), ([, name]) => name));
+  const context = createFakeApp();
+  const procedures = vm.runInContext("PROCEDURES", context);
+  const missing = [];
+
+  Object.entries(procedures).forEach(([procedureId, procedure]) => {
+    Object.entries(procedure.fields).forEach(([fieldName, definition]) => {
+      if (definition.id && !ids.has(definition.id)) {
+        missing.push(`${procedureId}.${fieldName}: missing id ${definition.id}`);
+      }
+
+      if (definition.selectId && !ids.has(definition.selectId)) {
+        missing.push(`${procedureId}.${fieldName}: missing selectId ${definition.selectId}`);
+      }
+
+      if (definition.customId && !ids.has(definition.customId)) {
+        missing.push(`${procedureId}.${fieldName}: missing customId ${definition.customId}`);
+      }
+
+      if (definition.name && !names.has(definition.name)) {
+        missing.push(`${procedureId}.${fieldName}: missing name ${definition.name}`);
+      }
+    });
+
+    procedure.visibilityRules.forEach((rule) => {
+      if (rule.targetId && !ids.has(rule.targetId)) {
+        missing.push(`${procedureId}.visibility: missing target ${rule.targetId}`);
+      }
+
+      (rule.clearOnHide || []).forEach((id) => {
+        if (!ids.has(id)) {
+          missing.push(`${procedureId}.visibility: missing clearOnHide id ${id}`);
+        }
+      });
+    });
+  });
+
+  assert.deepStrictEqual(missing, []);
+}
+
 function testBlankComplicationsAreNotInvented() {
   const note = generateNote({
     values: {
@@ -559,13 +672,16 @@ testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
 testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
 testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry();
+testEmergencyLaparotomyIsWiredInUiAndRegistry();
 testProcedureSelectorUsesCompactChoiceGrid();
 testProcedureSearchFiltersChoiceCards();
 testThemeToggleAppliesAndPersistsDarkMode();
+testEmergencyLaparotomyGeneratesStructuredModularNote();
 testOpenUmbilicalHerniaRepairGeneratesStructuredNote();
 testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
 testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement();
 testDiagnosticLaparoscopyGeneratesStructuredNote();
+testProcedureFieldDefinitionsMatchHtmlControls();
 testBlankComplicationsAreNotInvented();
 console.log("procedure smoke tests passed");

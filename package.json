@@ -1,0 +1,11 @@
+{
+  "name": "op-note-gen",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static operative note generator for common general surgical procedures.",
+  "scripts": {
+    "check:js": "node --check docs/theme.js && node --check docs/js/core.js && node --check docs/js/note-formatters.js && node --check docs/js/procedures.js && node --check docs/js/app.js && node --check tests/procedure-smoke.test.js",
+    "test": "node tests/procedure-smoke.test.js",
+    "verify": "npm run check:js && npm test"
+  }
+}

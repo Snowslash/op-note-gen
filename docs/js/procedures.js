@@ -1,339 +1,3 @@
-function buildAppendicectomyOperationText(values) {
-  return [
-    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
-    `Appendix appearance: ${formatTextOperationValue(values.appendixAppearance)}`,
-    `Perforation: ${formatYesNoOperationValue(values.perforation)}`,
-    `Contamination: ${formatNoneOrPresentOperationValue(values.contaminationPresent, values.contaminationDescription)}`,
-    `Mesoappendix division: ${formatSelectOperationValue(values.mesoappendixDivision)}`,
-    `Stump control: ${formatSelectOperationValue(values.stumpControl)}`,
-    `Specimen removed in bag: ${formatYesNoOperationValue(values.specimenRemovedInBag)}`,
-    `Washout performed: ${formatYesNoOperationValue(values.washoutPerformed)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Converted to open: ${formatConversionOperationValue(values)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function buildCholecystectomyOperationText(values) {
-  return [
-    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
-    `Gallbladder appearance: ${formatTextOperationValue(values.gallbladderAppearance)}`,
-    `Critical view of safety: ${formatAchievedOperationValue(values.criticalViewAchieved)}`,
-    `Cystic duct control: ${formatSelectOperationValue(values.cysticDuctControl)}`,
-    `Cystic artery control: ${formatSelectOperationValue(values.cysticArteryControl)}`,
-    `Gallbladder removed in bag: ${formatYesNoOperationValue(values.gallbladderRemovedInBag)}`,
-    `Bile spillage: ${formatNoneOrPresentOperationValue(values.bileSpillage, values.bileSpillageDetails)}`,
-    `Stone spillage: ${formatNoneOrPresentOperationValue(values.stoneSpillage, values.stoneSpillageDetails)}`,
-    `Intraoperative cholangiogram: ${formatPerformedOperationValue(values.cholangiogramPerformed, values.cholangiogramFindings)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Converted to open: ${formatConversionOperationValue(values)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function buildDiagnosticLaparoscopyOperationText(values) {
-  return [
-    `Laparoscopic entry method: ${formatSelectOperationValue(values.entryTechnique)}`,
-    `Abdominal survey: ${formatTextOperationValue(values.abdominalSurvey)}`,
-    `Procedure performed: ${formatTextOperationValue(values.procedurePerformed)}`,
-    `Washout/irrigation: ${formatTextOperationValue(values.washoutFluid)}`,
-    `Adhesiolysis: ${formatTextOperationValue(values.adhesiolysisDetails)}`,
-    `Source control: ${formatTextOperationValue(values.sourceControl)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    `Converted to open: ${formatConversionOperationValue(values)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function formatSentStatus(value) {
-  if (value === "yes") {
-    return "sent";
-  }
-
-  if (value === "no") {
-    return "not sent";
-  }
-
-  return "not specified";
-}
-
-function formatYesNoNotApplicableOperationValue(value) {
-  if (value === "not applicable") {
-    return "not applicable";
-  }
-
-  return formatYesNoOperationValue(value);
-}
-
-function buildIncisionAndDrainageOperationText(values) {
-  return [
-    `Incision site: ${formatTextOperationValue(values.incisionSite)}`,
-    `Incision: ${formatSelectOperationValue(values.incisionType)}`,
-    `Contents drained: ${formatSelectOperationValue(values.abscessContents)}`,
-    `Microbiology swab: ${formatSentStatus(values.pusSwabSent)}`,
-    `Loculations broken down: ${formatYesNoNotApplicableOperationValue(values.loculationsBrokenDown)}`,
-    `Cavity irrigation/washout: ${formatYesNoOperationValue(values.cavityIrrigated)}`,
-    `Packing/drain: ${formatTextOperationValue(values.packingOrDrain)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function buildOpenInguinalHerniaRepairOperationText(values) {
-  return [
-    `Side: ${formatInlineValue(values.herniaSide)}`,
-    `Hernia type: ${formatSelectOperationValue(values.herniaType)}`,
-    `Hernia contents: ${formatTextOperationValue(values.herniaContents)}`,
-    `Sac management: ${formatTextOperationValue(values.sacManagement)}`,
-    `Mesh used: ${formatYesNoOperationValue(values.meshUsed)}`,
-    `Mesh type: ${formatTextOperationValue(values.meshType)}`,
-    `Mesh fixation: ${formatTextOperationValue(values.meshFixation)}`,
-    `Cord structures: ${formatTextOperationValue(values.cordStructuresManaged)}`,
-    `Ilioinguinal nerve: ${formatSelectOperationValue(values.ilioinguinalNerveStatus)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function buildOpenUmbilicalHerniaRepairOperationText(values) {
-  return [
-    `Defect size: ${formatTextOperationValue(values.umbilicalHerniaDefectSize)}`,
-    `Hernia contents: ${formatTextOperationValue(values.umbilicalHerniaContents)}`,
-    `Sac management: ${formatTextOperationValue(values.umbilicalSacManagement)}`,
-    `Repair method: ${formatSelectOperationValue(values.umbilicalRepairMethod)}`,
-    `Mesh used: ${formatYesNoOperationValue(values.umbilicalMeshUsed)}`,
-    `Mesh type: ${formatTextOperationValue(values.umbilicalMeshType)}`,
-    `Mesh position: ${formatSelectOperationValue(values.umbilicalMeshPosition)}`,
-    `Mesh fixation: ${formatTextOperationValue(values.umbilicalMeshFixation)}`,
-    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
-    formatAdditionalDetailsOperationLine(values),
-  ].filter(Boolean).join("\n");
-}
-
-function buildDrainText(values) {
-  if (values.drainStatus === "no") {
-    return "No drain placed";
-  }
-
-  if (values.drainStatus === "yes") {
-    return values.drainLocation.present ? values.drainLocation.value : "not specified";
-  }
-
-  return "not specified";
-}
-
-function buildComplicationsText(values) {
-  const normalisedComplications = values.complications.trimmed
-    .toLowerCase()
-    .replace(/[.!]+$/, "");
-
-  if (!values.complications.trimmed) {
-    return "not specified";
-  }
-
-  if (normalisedComplications === "nil" || normalisedComplications === "none") {
-    return "No immediate complications.";
-  }
-
-  return values.complications.raw;
-}
-
-function buildClosureText(values) {
-  const sentences = [];
-
-  if (values.fascialClosurePerformed === "yes") {
-    if (values.fascialSutureMaterial.trimmed) {
-      sentences.push(sentenceWithValue("Fascial closure was performed with ", values.fascialSutureMaterial.raw));
-    } else {
-      sentences.push("Fascial closure was performed.");
-    }
-  } else if (values.fascialClosurePerformed === "no") {
-    sentences.push("Fascial closure was not performed.");
-  }
-
-  if (values.skinClosureMethod.trimmed) {
-    sentences.push(sentenceWithValue("Skin was closed with ", values.skinClosureMethod.raw));
-  }
-
-  return sentences.length ? sentences.join(" ") : "not specified";
-}
-
-function buildDateTimeLine(values) {
-  return `Date/time: ${formatDateTimeValue(values.operationDateTime)}`;
-}
-
-function buildPrimaryTeamLine(values) {
-  const surgeonValue = values.surgeon.trimmed ? values.surgeon.raw : "not specified";
-  const assistantValue = values.assistant.trimmed ? values.assistant.raw : "not specified";
-  return `Surgeon / Assistant: Surgeon ${surgeonValue}; Assistant ${assistantValue}`;
-}
-
-function buildAdditionalTeamMembersText(values) {
-  if (!values.additionalTeamMembers.length) {
-    return "";
-  }
-
-  return values.additionalTeamMembers
-    .map((member) => `${member.role} ${member.name}`)
-    .join("; ");
-}
-
-function buildAdditionalTeamMembersLine(values) {
-  const additionalTeamMembersText = buildAdditionalTeamMembersText(values);
-  return additionalTeamMembersText ? `Additional team members: ${additionalTeamMembersText}` : "";
-}
-
-function buildSupervisingConsultantLine(values) {
-  return values.supervisingConsultant.trimmed
-    ? `Supervising consultant: ${values.supervisingConsultant.raw}`
-    : "";
-}
-
-function buildAnaestheticLine(values) {
-  return `Anaesthetic: ${formatInlineValue(values.anaesthetic)}`;
-}
-
-function buildAnaesthetistLine(values) {
-  return values.anaesthetist.trimmed ? `Anaesthetist: ${values.anaesthetist.raw}` : "";
-}
-
-function buildPortsSection(values) {
-  return values.portsUsed.trimmed ? formatBlock("Ports", values.portsUsed) : "";
-}
-
-function buildOperationLine(values, procedure) {
-  return `Operation:\n${procedure.buildOperationText(values)}`;
-}
-
-function buildSpecimenLine(values) {
-  return `Specimen: ${formatInlineValue(values.specimen.trimmed ? values.specimen.raw : "")}`;
-}
-
-function buildDrainLine(values) {
-  return `Drain: ${buildDrainText(values)}`;
-}
-
-function buildEstimatedBloodLossLine(values) {
-  const bloodLossNormalised = values.bloodLoss.trimmed.toLowerCase();
-
-  if (!values.bloodLoss.trimmed || bloodLossNormalised === "not specified") {
-    return "";
-  }
-
-  return `Estimated blood loss: ${values.bloodLoss.raw}`;
-}
-
-function buildComplicationsLine(values) {
-  return `Complications: ${buildComplicationsText(values)}`;
-}
-
-function buildClosureLine(values) {
-  return `Closure: ${buildClosureText(values)}`;
-}
-
-function buildStandardOutputSections() {
-  return [
-    {
-      build: (values, procedure) => `Procedure: ${procedure.title}`,
-    },
-    {
-      build: buildDateTimeLine,
-    },
-    {
-      build: buildPrimaryTeamLine,
-    },
-    {
-      build: buildAdditionalTeamMembersLine,
-    },
-    {
-      build: buildSupervisingConsultantLine,
-    },
-    {
-      build: buildAnaestheticLine,
-    },
-    {
-      build: buildAnaesthetistLine,
-    },
-    {
-      build: (values) => formatBlock("Indication", values.indication),
-    },
-    {
-      build: (values) => formatBlock("Findings", values.findings),
-    },
-    {
-      build: buildPortsSection,
-    },
-    {
-      build: buildOperationLine,
-    },
-    {
-      build: buildSpecimenLine,
-    },
-    {
-      build: buildDrainLine,
-    },
-    {
-      build: buildEstimatedBloodLossLine,
-    },
-    {
-      build: buildComplicationsLine,
-    },
-    {
-      build: buildClosureLine,
-    },
-    {
-      build: (values) => formatBlock("Post-operative plan", values.postOpPlan),
-    },
-  ];
-}
-
-function createTeamMemberRow(role = "Assistant", name = "") {
-  const row = document.createElement("div");
-  row.className = "team-member-row";
-  row.dataset.teamMemberId = String(APP_STATE.teamMemberIdCounter);
-  APP_STATE.teamMemberIdCounter += 1;
-
-  row.innerHTML = `
-    <label class="field">
-      <span>Role</span>
-      <select class="team-member-role" aria-label="Team member role">
-        <option value="Surgeon"${role === "Surgeon" ? " selected" : ""}>Surgeon</option>
-        <option value="Assistant"${role === "Assistant" ? " selected" : ""}>Assistant</option>
-      </select>
-    </label>
-    <label class="field">
-      <span>Name</span>
-      <input type="text" class="team-member-name" aria-label="Team member name" autocomplete="off" value="${escapeHtml(name)}">
-    </label>
-    <button type="button" class="danger-button compact-button remove-team-member">Remove</button>
-  `;
-
-  return row;
-}
-
-function collectAdditionalTeamMembers() {
-  return Array.from(DOM.teamMembersList.querySelectorAll(".team-member-row"))
-    .map((row) => {
-      const role = row.querySelector(".team-member-role").value;
-      const nameField = row.querySelector(".team-member-name");
-      const raw = nameField.value;
-
-      return {
-        role,
-        name: raw,
-        trimmedName: raw.trim(),
-      };
-    })
-    .filter((member) => member.trimmedName);
-}
-
-function buildNoPortsOutputSections() {
-  return buildStandardOutputSections()
-    .filter((section) => section.build !== buildPortsSection);
-}
-
-// Procedure configs keep procedure-specific rules in one place so additional
-// operations can reuse the same collection, visibility, validation, and output engine.
 const PROCEDURES = {
   lapAppendicectomy: {
     id: "lapAppendicectomy",
@@ -1025,5 +689,125 @@ const PROCEDURES = {
     ],
     outputSections: buildNoPortsOutputSections(),
     buildOperationText: buildOpenUmbilicalHerniaRepairOperationText,
+  },
+  emergencyLaparotomy: {
+    id: "emergencyLaparotomy",
+    title: "Emergency laparotomy",
+    hint: "Emergency laparotomy-specific steps include incision, pathology/source, procedure performed, bowel resection, anastomosis, stoma, washout, temporary abdominal closure, drain, and haemostasis.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
+    fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      laparotomyIncision: { type: FIELD_TYPES.TEXT, id: "laparotomyIncision" },
+      laparotomyPathology: { type: FIELD_TYPES.TEXT, id: "laparotomyPathology" },
+      laparotomyProcedurePerformed: { type: FIELD_TYPES.TEXT, id: "laparotomyProcedurePerformed" },
+      laparotomyBowelResectionPerformed: { type: FIELD_TYPES.SELECT, id: "laparotomyBowelResectionPerformed" },
+      laparotomyBowelResectionDetails: { type: FIELD_TYPES.TEXT, id: "laparotomyBowelResectionDetails" },
+      laparotomyAnastomosisPerformed: { type: FIELD_TYPES.SELECT, id: "laparotomyAnastomosisPerformed" },
+      laparotomyAnastomosisDetails: { type: FIELD_TYPES.TEXT, id: "laparotomyAnastomosisDetails" },
+      laparotomyStomaFormed: { type: FIELD_TYPES.SELECT, id: "laparotomyStomaFormed" },
+      laparotomyStomaDetails: { type: FIELD_TYPES.TEXT, id: "laparotomyStomaDetails" },
+      laparotomyWashoutPerformed: { type: FIELD_TYPES.SELECT, id: "laparotomyWashoutPerformed" },
+      laparotomyWashoutDetails: { type: FIELD_TYPES.TEXT, id: "laparotomyWashoutDetails" },
+      laparotomyTemporaryClosure: { type: FIELD_TYPES.SELECT, id: "laparotomyTemporaryClosure" },
+      laparotomyTemporaryClosureDetails: { type: FIELD_TYPES.TEXT, id: "laparotomyTemporaryClosureDetails" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
+      {
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
+      },
+      {
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
+      },
+      {
+        targetId: "laparotomyBowelResectionDetailsField",
+        isVisible: (values) => values.laparotomyBowelResectionPerformed === "yes",
+        clearOnHide: ["laparotomyBowelResectionDetails"],
+      },
+      {
+        targetId: "laparotomyAnastomosisDetailsField",
+        isVisible: (values) => values.laparotomyAnastomosisPerformed === "yes",
+        clearOnHide: ["laparotomyAnastomosisDetails"],
+      },
+      {
+        targetId: "laparotomyStomaDetailsField",
+        isVisible: (values) => values.laparotomyStomaFormed === "yes",
+        clearOnHide: ["laparotomyStomaDetails"],
+      },
+      {
+        targetId: "laparotomyWashoutDetailsField",
+        isVisible: (values) => values.laparotomyWashoutPerformed === "yes",
+        clearOnHide: ["laparotomyWashoutDetails"],
+      },
+      {
+        targetId: "laparotomyTemporaryClosureDetailsField",
+        isVisible: (values) => values.laparotomyTemporaryClosure === "yes",
+        clearOnHide: ["laparotomyTemporaryClosureDetails"],
+      },
+      {
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
+      },
+    ],
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.specimen.trimmed
+        ? "No specimen entered. Confirm whether there was no specimen or add details."
+        : ""),
+      (values) => (!values.drainStatus
+        ? "No drain status entered. Confirm whether no drain was placed or add details."
+        : ""),
+      (values) => (values.drainStatus === "yes" && !values.drainLocation.present
+        ? "Drain marked as yes without a location. Add drain location if available."
+        : ""),
+      (values) => (values.laparotomyBowelResectionPerformed === "yes" && !values.laparotomyBowelResectionDetails.trimmed
+        ? "Bowel resection marked as performed without details. Add resection details if available."
+        : ""),
+      (values) => (values.laparotomyAnastomosisPerformed === "yes" && !values.laparotomyAnastomosisDetails.trimmed
+        ? "Anastomosis marked as performed without details. Add anastomosis details if available."
+        : ""),
+      (values) => (values.laparotomyStomaFormed === "yes" && !values.laparotomyStomaDetails.trimmed
+        ? "Stoma marked as formed without details. Add stoma details if available."
+        : ""),
+      (values) => (values.laparotomyTemporaryClosure === "yes" && !values.laparotomyTemporaryClosureDetails.trimmed
+        ? "Temporary abdominal closure marked as yes without details. Add closure details if available."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+    ],
+    outputSections: buildNoPortsOutputSections(),
+    buildOperationText: buildEmergencyLaparotomyOperationText,
   },
 };

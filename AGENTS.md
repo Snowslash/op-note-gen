@@ -1,13 +1,14 @@
 # AGENTS.md
 
 ## Project Shape
-- Static single-page app; there is no backend, package manifest, build step, or test runner.
+- Static single-page app; there is no backend or build step.
+- `package.json` only provides Node-based verification scripts; runtime remains no-build static HTML/CSS/JS.
 - Runtime files live in `docs/` for GitHub Pages: `docs/index.html`, `docs/styles.css`, and the classic no-build scripts under `docs/js/`.
 - `README.md` is the usage overview; `SPEC.md` is the source for MVP scope and clinical generation rules.
 
 ## Running And Verifying
-- Open `docs/index.html` directly in a browser to run the app.
-- Verify changes manually in the browser; there are no automated test/lint/typecheck commands configured.
+- Open `docs/index.html` directly in a browser to view the landing page, then open `docs/app.html` for the generator.
+- Run `npm run verify` before closing out code changes; this checks JavaScript syntax and the procedure smoke tests.
 - For UI changes, check both desktop layout and the mobile breakpoints in `docs/styles.css`.
 
 ## Clinical Safety Constraints
@@ -27,5 +28,5 @@
 - Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.
 
 ## Scope
-- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, incision and drainage of abscess, open inguinal hernia repair, and open umbilical hernia repair.
+- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, incision and drainage of abscess, open inguinal hernia repair, open umbilical hernia repair, and emergency laparotomy.
 - Do not add further procedures unless explicitly asked; update `SPEC.md`, `README.md`, the procedure selector, and `PROCEDURES` together.
