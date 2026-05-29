@@ -465,6 +465,14 @@ function testThemeToggleAppliesAndPersistsDarkMode() {
 
   assert.ok(html.includes('id="themeToggle"'), "Expected a dark mode toggle button in the UI.");
   assert.ok(css.includes('[data-theme="dark"]'), "Expected dark mode CSS variables/rules.");
+  assert.ok(
+    css.includes('[data-theme="dark"] .app-body'),
+    "Expected plain app chrome overrides to include dark-mode app-body variables.",
+  );
+  assert.ok(
+    html.includes('styles.css?v=20260529-appplain2'),
+    "Expected app page to request the cache-busted stylesheet containing the dark-mode app fix.",
+  );
 
   vm.runInContext('setTheme("dark")', context);
   assert.strictEqual(

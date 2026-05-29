@@ -985,6 +985,25 @@ button:disabled {
   font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 }
 
+[data-theme="dark"] .app-body {
+  --bg: #171613;
+  --panel: #211f1a;
+  --panel-muted: #1d1b17;
+  --panel-soft: #28251f;
+  --text: #eee6d8;
+  --text-strong: #fff7e8;
+  --text-muted: #c8bdab;
+  --text-subtle: #aa9e8b;
+  --brand: #9cc8ff;
+  --brand-hover: #c2ddff;
+  --accent: #9cc8ff;
+  --border: #5b5347;
+  --border-soft: #423c34;
+  --border-control: #746a5b;
+  --secondary: #342f28;
+  --secondary-hover: #443d34;
+}
+
 .app-body .site-nav {
   width: min(820px, calc(100% - 32px));
   align-items: baseline;
