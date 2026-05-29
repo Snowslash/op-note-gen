@@ -931,3 +931,226 @@ button:disabled {
     grid-template-columns: 1fr;
   }
 }
+
+/* Plain public landing page overrides.
+   The generator app keeps the styles above; these rules deliberately make the
+   marketing page feel more like a small personal project note than a SaaS page. */
+html:has(.landing-body) {
+  color-scheme: light;
+  background: #f7f4ee;
+}
+
+.landing-body {
+  --landing-paper: #f7f4ee;
+  --landing-ink: #181715;
+  --landing-muted: #5f5a51;
+  --landing-rule: #cfc7b7;
+  --landing-rule-strong: #9f927d;
+  --landing-link: #064f8c;
+  min-height: 100vh;
+  color: var(--landing-ink);
+  background: var(--landing-paper);
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.landing-body a {
+  color: var(--landing-link);
+  text-underline-offset: 0.18em;
+}
+
+.landing-body .site-nav,
+.landing-page,
+.landing-footer {
+  width: min(820px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.landing-body .site-nav {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 0 14px;
+  border-bottom: 1px solid var(--landing-rule);
+}
+
+.landing-body .site-nav-brand {
+  color: var(--landing-ink);
+  font-size: 1.08rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.landing-body .site-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 14px;
+  font-size: 0.96rem;
+}
+
+.landing-body .site-nav-links a {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--landing-link);
+  background: transparent;
+  font-weight: 400;
+  text-decoration: underline;
+}
+
+.landing-body .site-nav-links a[aria-current="page"] {
+  color: var(--landing-ink);
+  font-weight: 700;
+}
+
+.landing-page { padding: 42px 0 24px; }
+
+.landing-hero {
+  max-width: none;
+  padding: 0 0 28px;
+  border: 0;
+  border-bottom: 1px solid var(--landing-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.landing-hero h1 {
+  max-width: 12ch;
+  margin-bottom: 16px;
+  color: var(--landing-ink);
+  font-size: clamp(2.05rem, 7vw, 3.8rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+}
+
+.landing-lede {
+  max-width: 680px;
+  margin-bottom: 18px;
+  color: var(--landing-ink);
+  font-size: clamp(1.22rem, 3vw, 1.65rem);
+  line-height: 1.34;
+}
+
+.landing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+}
+
+.landing-button,
+.landing-button-primary {
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  color: var(--landing-link);
+  background: transparent;
+  box-shadow: none;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.landing-grid,
+.landing-feature-section,
+.landing-screenshots,
+.landing-notice {
+  display: block;
+  margin: 0;
+  padding: 28px 0;
+  border: 0;
+  border-bottom: 1px solid var(--landing-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.landing-card {
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--landing-rule);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.landing-card:first-child { border-top: 0; padding-top: 0; }
+
+.landing-card h2,
+.landing-feature-section h2,
+.landing-screenshots h2,
+.landing-notice h2 {
+  color: var(--landing-ink);
+  font-size: 1.38rem;
+  line-height: 1.22;
+  letter-spacing: 0;
+}
+
+.landing-card p,
+.landing-feature-section p,
+.landing-screenshots p,
+.landing-notice p,
+.landing-feature-list li,
+.landing-screenshot-grid figcaption,
+.landing-footer p {
+  color: var(--landing-muted);
+  line-height: 1.58;
+}
+
+.landing-kicker {
+  margin: 0 0 4px;
+  color: var(--landing-muted);
+  font-size: 0.9rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.landing-screenshot-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 0.95fr);
+  gap: 22px;
+  margin-top: 18px;
+}
+
+.landing-screenshot-grid img {
+  border: 1px solid var(--landing-rule-strong);
+  border-radius: 0;
+  background: #fff;
+}
+
+.landing-note-example {
+  padding: 16px;
+  border: 1px solid var(--landing-rule-strong);
+  border-radius: 0;
+  background: #fffdf8;
+}
+
+.landing-note-example h3 {
+  color: var(--landing-ink);
+}
+
+.landing-note-example pre {
+  color: var(--landing-ink);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.landing-notice {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid #dfc878;
+  background: #fff4d8;
+}
+
+.landing-footer {
+  padding: 18px 0 44px;
+}
+
+@media (max-width: 700px) {
+  .landing-body .site-nav { display: block; }
+  .landing-body .site-nav-links { justify-content: flex-start; margin-top: 10px; }
+  .landing-page { padding-top: 30px; }
+  .landing-screenshot-grid { grid-template-columns: 1fr; }
+}
