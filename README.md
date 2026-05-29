@@ -1,6 +1,6 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, and **open inguinal hernia repair**, built with:
+Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, **open inguinal hernia repair**, and **open umbilical hernia repair**, built with:
 
 - HTML
 - CSS
@@ -17,6 +17,7 @@ This version supports:
 - Diagnostic laparoscopy +/- washout / adhesiolysis
 - Incision and drainage of abscess
 - Open inguinal hernia repair
+- Open umbilical hernia repair
 
 ## Features
 
@@ -40,7 +41,7 @@ This version supports:
   - appendix, gallbladder, abdominal survey, or abscess/wound appearance
   - contamination description
   - bile or stone spillage details
-  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, and ilioinguinal nerve status
+  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, ilioinguinal nerve status, umbilical hernia defect size, and umbilical repair method
   - cholangiogram findings
   - conversion reason
   - additional operative details
@@ -53,7 +54,7 @@ This version supports:
   - bile or stone spillage
   - intraoperative cholangiogram
   - closure details
-  - mesh details for open inguinal hernia repair
+  - mesh details for open inguinal and open umbilical hernia repair
 - Non-blocking warnings for missing specimen, complications, and drain status
 
 ## Safety Rules

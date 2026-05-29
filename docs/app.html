@@ -44,7 +44,7 @@
           <span>Search procedures</span>
           <input type="search" id="procedureSearch" name="procedureSearch" placeholder="Search by operation or specialty" autocomplete="off">
         </label>
-        <p id="procedureSearchStatus" class="procedure-search-status" aria-live="polite">5 procedures shown</p>
+        <p id="procedureSearchStatus" class="procedure-search-status" aria-live="polite">6 procedures shown</p>
       </div>
 
       <div class="procedure-choice-grid" role="group" aria-label="Operation type">
@@ -68,6 +68,10 @@
           <span class="procedure-choice-title">Open inguinal hernia</span>
           <span class="procedure-choice-meta">Hernia repair</span>
         </button>
+        <button type="button" class="procedure-choice" data-procedure-choice="openUmbilicalHerniaRepair">
+          <span class="procedure-choice-title">Open umbilical hernia</span>
+          <span class="procedure-choice-meta">Hernia repair</span>
+        </button>
       </div>
 
       <label class="field procedure-selector-field procedure-select-fallback">
@@ -78,6 +82,7 @@
           <option value="diagnosticLaparoscopy">Diagnostic laparoscopy +/- washout / adhesiolysis</option>
           <option value="incisionAndDrainage">Incision and drainage of abscess</option>
           <option value="openInguinalHerniaRepair">Open inguinal hernia repair</option>
+          <option value="openUmbilicalHerniaRepair">Open umbilical hernia repair</option>
         </select>
       </label>
     </section>
@@ -573,6 +578,77 @@
                   <label class="field" id="ilioinguinalNerveStatusCustomField" hidden>
                     <span>Custom ilioinguinal nerve status</span>
                     <input type="text" id="ilioinguinalNerveStatusCustom" name="ilioinguinalNerveStatusCustom" autocomplete="off">
+                  </label>
+                </div>
+              </div>
+
+              <div class="procedure-fields field-wide" data-procedure-section="openUmbilicalHerniaRepair" hidden>
+                <div class="form-grid">
+                  <label class="field">
+                    <span>Defect size</span>
+                    <input type="text" id="umbilicalHerniaDefectSize" name="umbilicalHerniaDefectSize" autocomplete="off" placeholder="e.g. 1.5 cm fascial defect">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Hernia contents</span>
+                    <input type="text" id="umbilicalHerniaContents" name="umbilicalHerniaContents" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide">
+                    <span>Sac management</span>
+                    <textarea id="umbilicalSacManagement" name="umbilicalSacManagement" rows="3"></textarea>
+                  </label>
+
+                  <label class="field">
+                    <span>Repair method</span>
+                    <select id="umbilicalRepairMethod" name="umbilicalRepairMethod">
+                      <option value="">Select repair method</option>
+                      <option value="Primary suture repair">Primary suture repair</option>
+                      <option value="Mesh repair">Mesh repair</option>
+                      <option value="Mayo repair">Mayo repair</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="umbilicalRepairMethodCustomField" hidden>
+                    <span>Custom repair method</span>
+                    <input type="text" id="umbilicalRepairMethodCustom" name="umbilicalRepairMethodCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field">
+                    <span>Mesh used</span>
+                    <select id="umbilicalMeshUsed" name="umbilicalMeshUsed">
+                      <option value="">Select mesh status</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="umbilicalMeshTypeField" hidden>
+                    <span>Mesh type</span>
+                    <input type="text" id="umbilicalMeshType" name="umbilicalMeshType" autocomplete="off">
+                  </label>
+
+                  <label class="field" id="umbilicalMeshPositionField" hidden>
+                    <span>Mesh position</span>
+                    <select id="umbilicalMeshPosition" name="umbilicalMeshPosition">
+                      <option value="">Select mesh position</option>
+                      <option value="Onlay">Onlay</option>
+                      <option value="Sublay / retromuscular">Sublay / retromuscular</option>
+                      <option value="Preperitoneal">Preperitoneal</option>
+                      <option value="Intraperitoneal onlay mesh">Intraperitoneal onlay mesh</option>
+                      <option value="Custom / other">Custom / other</option>
+                    </select>
+                  </label>
+
+                  <label class="field" id="umbilicalMeshPositionCustomField" hidden>
+                    <span>Custom mesh position</span>
+                    <input type="text" id="umbilicalMeshPositionCustom" name="umbilicalMeshPositionCustom" autocomplete="off">
+                  </label>
+
+                  <label class="field field-wide" id="umbilicalMeshFixationField" hidden>
+                    <span>Mesh fixation</span>
+                    <textarea id="umbilicalMeshFixation" name="umbilicalMeshFixation" rows="3"></textarea>
                   </label>
                 </div>
               </div>

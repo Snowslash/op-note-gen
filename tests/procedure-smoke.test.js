@@ -302,6 +302,49 @@ function testDiagnosticLaparoscopyGeneratesStructuredNote() {
   );
 }
 
+function testOpenUmbilicalHerniaRepairGeneratesStructuredNote() {
+  const note = generateNote({
+    values: {
+      procedureSelect: "openUmbilicalHerniaRepair",
+      operationDateTime: "2026-05-29T11:20",
+      surgeon: "Dr A",
+      assistant: "Dr B",
+      anaesthetic: "GA",
+      indication: "Symptomatic umbilical hernia",
+      findings: "Umbilical hernia with viable preperitoneal fat",
+      umbilicalHerniaDefectSize: "1.5 cm fascial defect",
+      umbilicalHerniaContents: "Viable preperitoneal fat",
+      umbilicalSacManagement: "Sac dissected and reduced",
+      umbilicalRepairMethod: "Primary suture repair",
+      umbilicalMeshUsed: "no",
+      portsUsed: "stale laparoscopic ports",
+      cordStructuresManaged: "stale inguinal cord text",
+      specimen: "None",
+      bloodLoss: "Minimal",
+      complications: "none",
+      skinClosureMethod: "subcuticular Monocryl",
+      postOpPlan: "Day case discharge if criteria met, routine analgesia, avoid heavy lifting for 4-6 weeks",
+    },
+    radios: {
+      drainStatus: "no",
+      haemostasisConfirmed: "yes",
+      fascialClosurePerformed: "yes",
+    },
+  });
+
+  assertIncludes(note, "Procedure: Open umbilical hernia repair");
+  assertIncludes(note, "Date/time: 29/05/2026, 11:20");
+  assertIncludes(note, "Defect size: 1.5 cm fascial defect");
+  assertIncludes(note, "Hernia contents: Viable preperitoneal fat");
+  assertIncludes(note, "Sac management: Sac dissected and reduced");
+  assertIncludes(note, "Repair method: Primary suture repair");
+  assertIncludes(note, "Mesh used: no");
+  assertIncludes(note, "Haemostasis confirmed: yes");
+  assertIncludes(note, "Complications: No immediate complications.");
+  assert.ok(!note.includes("Ports:"), `Expected open umbilical hernia note not to include stale laparoscopic ports. Actual note:\n${note}`);
+  assert.ok(!note.includes("Cord structures:"), `Expected open umbilical hernia note not to include stale inguinal fields. Actual note:\n${note}`);
+}
+
 function testOpenInguinalHerniaRepairGeneratesStructuredNote() {
   const note = generateNote({
     values: {
@@ -365,6 +408,17 @@ function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
   assert.ok(hasProcedure, "Expected PROCEDURES.openInguinalHerniaRepair to exist.");
 }
 
+function testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const context = createFakeApp();
+  const hasProcedure = vm.runInContext("Boolean(PROCEDURES.openUmbilicalHerniaRepair)", context);
+
+  assert.ok(html.includes('value="openUmbilicalHerniaRepair"'), "Expected procedure selector to include open umbilical hernia repair.");
+  assert.ok(html.includes('data-procedure-choice="openUmbilicalHerniaRepair"'), "Expected compact procedure choice for open umbilical hernia repair.");
+  assert.ok(html.includes('data-procedure-section="openUmbilicalHerniaRepair"'), "Expected open umbilical hernia repair fields to be present in the UI.");
+  assert.ok(hasProcedure, "Expected PROCEDURES.openUmbilicalHerniaRepair to exist.");
+}
+
 function testProcedureSelectorUsesCompactChoiceGrid() {
   const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
@@ -372,8 +426,8 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
 
   assert.ok(html.includes('class="procedure-choice-grid"'), "Expected procedure selection to use a compact choice grid.");
   assert.ok(html.includes('data-procedure-choice="lapAppendicectomy"'), "Expected procedure choice button for laparoscopic appendicectomy.");
-  assert.ok(html.includes('data-procedure-choice="openInguinalHerniaRepair"'), "Expected procedure choice button for open inguinal hernia repair.");
-  assert.strictEqual(procedureChoiceCount, 5, "Expected one compact procedure choice per supported operation.");
+  assert.ok(html.includes('data-procedure-choice="openUmbilicalHerniaRepair"'), "Expected procedure choice button for open umbilical hernia repair.");
+  assert.strictEqual(procedureChoiceCount, 6, "Expected one compact procedure choice per supported operation.");
 }
 
 function testProcedureSearchFiltersChoiceCards() {
@@ -382,7 +436,7 @@ function testProcedureSearchFiltersChoiceCards() {
 
   assert.ok(html.includes('id="procedureSearch"'), "Expected procedure panel to include a search field.");
 
-  vm.runInContext('DOM.procedureSearch.value = "hernia"; filterProcedureChoices();', context);
+  vm.runInContext('DOM.procedureSearch.value = "inguinal"; filterProcedureChoices();', context);
   assert.strictEqual(
     vm.runInContext("JSON.stringify(DOM.procedureChoices.map((choice) => [choice.dataset.procedureChoice, choice.hidden]))", context),
     JSON.stringify([
@@ -391,6 +445,7 @@ function testProcedureSearchFiltersChoiceCards() {
       ["diagnosticLaparoscopy", true],
       ["incisionAndDrainage", true],
       ["openInguinalHerniaRepair", false],
+      ["openUmbilicalHerniaRepair", true],
     ]),
     "Expected procedure search to hide non-matching cards and keep the matching card visible.",
   );
@@ -491,9 +546,11 @@ function testBlankComplicationsAreNotInvented() {
 testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
 testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
+testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry();
 testProcedureSelectorUsesCompactChoiceGrid();
 testProcedureSearchFiltersChoiceCards();
 testThemeToggleAppliesAndPersistsDarkMode();
+testOpenUmbilicalHerniaRepairGeneratesStructuredNote();
 testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
 testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement();

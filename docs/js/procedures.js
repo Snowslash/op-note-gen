@@ -95,6 +95,21 @@ function buildOpenInguinalHerniaRepairOperationText(values) {
   ].filter(Boolean).join("\n");
 }
 
+function buildOpenUmbilicalHerniaRepairOperationText(values) {
+  return [
+    `Defect size: ${formatTextOperationValue(values.umbilicalHerniaDefectSize)}`,
+    `Hernia contents: ${formatTextOperationValue(values.umbilicalHerniaContents)}`,
+    `Sac management: ${formatTextOperationValue(values.umbilicalSacManagement)}`,
+    `Repair method: ${formatSelectOperationValue(values.umbilicalRepairMethod)}`,
+    `Mesh used: ${formatYesNoOperationValue(values.umbilicalMeshUsed)}`,
+    `Mesh type: ${formatTextOperationValue(values.umbilicalMeshType)}`,
+    `Mesh position: ${formatSelectOperationValue(values.umbilicalMeshPosition)}`,
+    `Mesh fixation: ${formatTextOperationValue(values.umbilicalMeshFixation)}`,
+    `Haemostasis confirmed: ${formatYesNoOperationValue(values.haemostasisConfirmed)}`,
+    formatAdditionalDetailsOperationLine(values),
+  ].filter(Boolean).join("\n");
+}
+
 function buildDrainText(values) {
   if (values.drainStatus === "no") {
     return "No drain placed";
@@ -894,5 +909,121 @@ const PROCEDURES = {
     ],
     outputSections: buildNoPortsOutputSections(),
     buildOperationText: buildOpenInguinalHerniaRepairOperationText,
+  },
+  openUmbilicalHerniaRepair: {
+    id: "openUmbilicalHerniaRepair",
+    title: "Open umbilical hernia repair",
+    hint: "Open umbilical hernia repair-specific steps include defect size, contents, sac management, repair method, mesh details, and haemostasis.",
+    validationHint: "Warnings are advisory. Indication and findings are required before generation. Unanswered structured operation fields are shown as not specified.",
+    fields: {
+      operationDateTime: { type: FIELD_TYPES.TEXT, id: "operationDateTime" },
+      surgeon: { type: FIELD_TYPES.TEXT, id: "surgeon" },
+      assistant: { type: FIELD_TYPES.TEXT, id: "assistant" },
+      supervisingConsultant: { type: FIELD_TYPES.TEXT, id: "supervisingConsultant" },
+      anaesthetic: { type: FIELD_TYPES.SELECT, id: "anaesthetic" },
+      anaesthetist: { type: FIELD_TYPES.TEXT, id: "anaesthetist" },
+      indication: { type: FIELD_TYPES.TEXT, id: "indication" },
+      findings: { type: FIELD_TYPES.TEXT, id: "findings" },
+      specimen: { type: FIELD_TYPES.TEXT, id: "specimen" },
+      bloodLoss: { type: FIELD_TYPES.TEXT, id: "bloodLoss" },
+      complications: { type: FIELD_TYPES.TEXT, id: "complications" },
+      postOpPlan: { type: FIELD_TYPES.TEXT, id: "postOpPlan" },
+      umbilicalHerniaDefectSize: { type: FIELD_TYPES.TEXT, id: "umbilicalHerniaDefectSize" },
+      umbilicalHerniaContents: { type: FIELD_TYPES.TEXT, id: "umbilicalHerniaContents" },
+      umbilicalSacManagement: { type: FIELD_TYPES.TEXT, id: "umbilicalSacManagement" },
+      umbilicalMeshUsed: { type: FIELD_TYPES.SELECT, id: "umbilicalMeshUsed" },
+      umbilicalMeshType: { type: FIELD_TYPES.TEXT, id: "umbilicalMeshType" },
+      umbilicalMeshFixation: { type: FIELD_TYPES.TEXT, id: "umbilicalMeshFixation" },
+      fascialSutureMaterial: { type: FIELD_TYPES.TEXT, id: "fascialSutureMaterial" },
+      skinClosureMethod: { type: FIELD_TYPES.TEXT, id: "skinClosureMethod" },
+      additionalOperativeDetails: { type: FIELD_TYPES.TEXT, id: "additionalOperativeDetails" },
+      drainStatus: { type: FIELD_TYPES.RADIO, name: "drainStatus" },
+      haemostasisConfirmed: { type: FIELD_TYPES.RADIO, name: "haemostasisConfirmed" },
+      fascialClosurePerformed: { type: FIELD_TYPES.RADIO, name: "fascialClosurePerformed" },
+      umbilicalRepairMethod: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "umbilicalRepairMethod",
+        customId: "umbilicalRepairMethodCustom",
+      },
+      umbilicalMeshPosition: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "umbilicalMeshPosition",
+        customId: "umbilicalMeshPositionCustom",
+      },
+      drainLocation: {
+        type: FIELD_TYPES.SELECT_OR_CUSTOM,
+        selectId: "drainLocation",
+        customId: "drainLocationCustom",
+      },
+      additionalTeamMembers: {
+        type: FIELD_TYPES.CUSTOM,
+        read: collectAdditionalTeamMembers,
+      },
+    },
+    visibilityRules: [
+      {
+        targetId: "drainLocationField",
+        isVisible: (values) => values.drainStatus === "yes",
+      },
+      {
+        targetId: "drainLocationCustomField",
+        isVisible: (values) => values.drainStatus === "yes" && values.drainLocation.selected === "Custom / other",
+        clearOnHide: ["drainLocationCustom"],
+      },
+      {
+        targetId: "umbilicalRepairMethodCustomField",
+        isVisible: (values) => values.umbilicalRepairMethod.selected === "Custom / other",
+        clearOnHide: ["umbilicalRepairMethodCustom"],
+      },
+      {
+        targetId: "umbilicalMeshTypeField",
+        isVisible: (values) => values.umbilicalMeshUsed === "yes",
+        clearOnHide: ["umbilicalMeshType"],
+      },
+      {
+        targetId: "umbilicalMeshPositionField",
+        isVisible: (values) => values.umbilicalMeshUsed === "yes",
+      },
+      {
+        targetId: "umbilicalMeshPositionCustomField",
+        isVisible: (values) => values.umbilicalMeshUsed === "yes" && values.umbilicalMeshPosition.selected === "Custom / other",
+        clearOnHide: ["umbilicalMeshPositionCustom"],
+      },
+      {
+        targetId: "umbilicalMeshFixationField",
+        isVisible: (values) => values.umbilicalMeshUsed === "yes",
+        clearOnHide: ["umbilicalMeshFixation"],
+      },
+      {
+        targetId: "fascialSutureField",
+        isVisible: (values) => values.fascialClosurePerformed === "yes",
+      },
+    ],
+    warningRules: [
+      (values) => (!values.complications.trimmed
+        ? "No complications entered. Confirm that there were no immediate complications."
+        : ""),
+      (values) => (!values.drainStatus
+        ? "No drain status entered. Confirm whether no drain was placed or add details."
+        : ""),
+      (values) => (values.drainStatus === "yes" && !values.drainLocation.present
+        ? "Drain marked as yes without a location. Add drain location if available."
+        : ""),
+      (values) => (values.umbilicalMeshUsed === "yes" && !values.umbilicalMeshType.trimmed
+        ? "Mesh marked as used without mesh type. Add mesh type if available."
+        : ""),
+      (values) => (values.umbilicalMeshUsed === "yes" && !values.umbilicalMeshPosition.present
+        ? "Mesh marked as used without mesh position. Add mesh position if available."
+        : ""),
+      (values) => (values.umbilicalMeshUsed === "yes" && !values.umbilicalMeshFixation.trimmed
+        ? "Mesh marked as used without fixation details. Add mesh fixation if available."
+        : ""),
+    ],
+    validationRules: [
+      (values) => (!values.indication.trimmed ? "indication" : ""),
+      (values) => (!values.findings.trimmed ? "findings" : ""),
+    ],
+    outputSections: buildNoPortsOutputSections(),
+    buildOperationText: buildOpenUmbilicalHerniaRepairOperationText,
   },
 };
