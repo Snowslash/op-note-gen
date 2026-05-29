@@ -197,6 +197,25 @@ body {
   max-width: 420px;
 }
 
+.procedure-search-row {
+  display: grid;
+  grid-template-columns: minmax(240px, 420px) auto;
+  gap: 12px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.procedure-search-field {
+  margin: 0;
+}
+
+.procedure-search-status {
+  margin: 0 0 10px;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
 .procedure-select-fallback {
   position: absolute;
   width: 1px;
@@ -628,6 +647,15 @@ button:disabled {
 
   .procedure-choice-grid {
     grid-template-columns: 1fr;
+  }
+
+  .procedure-search-row {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .procedure-search-status {
+    margin: -4px 0 8px;
   }
 
   .procedure-choice {

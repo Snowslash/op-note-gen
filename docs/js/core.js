@@ -11,6 +11,8 @@ const DOM = {
   operationDateTime: document.getElementById("operationDateTime"),
   themeToggle: document.getElementById("themeToggle"),
   procedureSelect: document.getElementById("procedureSelect"),
+  procedureSearch: document.getElementById("procedureSearch"),
+  procedureSearchStatus: document.getElementById("procedureSearchStatus"),
   procedureChoices: document.querySelectorAll("[data-procedure-choice]"),
   procedureTitle: document.getElementById("procedureTitle"),
   procedureHint: document.getElementById("procedureHint"),

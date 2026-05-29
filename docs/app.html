@@ -39,6 +39,14 @@
         <p>Select the operation before completing the procedure-specific fields.</p>
       </div>
 
+      <div class="procedure-search-row">
+        <label class="field procedure-search-field" for="procedureSearch">
+          <span>Search procedures</span>
+          <input type="search" id="procedureSearch" name="procedureSearch" placeholder="Search by operation or specialty" autocomplete="off">
+        </label>
+        <p id="procedureSearchStatus" class="procedure-search-status" aria-live="polite">5 procedures shown</p>
+      </div>
+
       <div class="procedure-choice-grid" role="group" aria-label="Operation type">
         <button type="button" class="procedure-choice" data-procedure-choice="lapAppendicectomy">
           <span class="procedure-choice-title">Lap appendix</span>

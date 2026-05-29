@@ -62,6 +62,30 @@ function syncProcedureChoiceState(procedure = getActiveProcedure()) {
   });
 }
 
+function getProcedureChoiceSearchText(choice) {
+  const procedure = PROCEDURES[choice.dataset.procedureChoice];
+  return [
+    procedure ? procedure.title : "",
+    procedure ? procedure.hint : "",
+    choice.textContent || "",
+  ].join(" ").toLowerCase();
+}
+
+function filterProcedureChoices() {
+  const query = DOM.procedureSearch.value.trim().toLowerCase();
+  let visibleCount = 0;
+
+  DOM.procedureChoices.forEach((choice) => {
+    const isVisible = !query || getProcedureChoiceSearchText(choice).includes(query);
+    choice.hidden = !isVisible;
+    if (isVisible) {
+      visibleCount += 1;
+    }
+  });
+
+  DOM.procedureSearchStatus.textContent = `${visibleCount} procedure${visibleCount === 1 ? "" : "s"} shown`;
+}
+
 function showValidation(missing) {
   DOM.validationMessage.textContent = `Please complete the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`;
   DOM.validationMessage.hidden = false;
@@ -154,6 +178,8 @@ DOM.procedureSelect.addEventListener("change", () => {
   selectProcedure(DOM.procedureSelect.value);
 });
 
+DOM.procedureSearch.addEventListener("input", filterProcedureChoices);
+
 DOM.procedureChoices.forEach((choice) => {
   choice.addEventListener("click", () => {
     selectProcedure(choice.dataset.procedureChoice);
@@ -187,6 +213,7 @@ initialiseTheme();
 autofillOperationDateTime();
 syncProcedureUi();
 syncConditionalFields();
+filterProcedureChoices();
 renderWarnings(buildWarnings(collectValues()));
 
 DOM.copyButton.addEventListener("click", async () => {

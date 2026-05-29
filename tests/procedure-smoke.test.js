@@ -376,6 +376,33 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
   assert.strictEqual(procedureChoiceCount, 5, "Expected one compact procedure choice per supported operation.");
 }
 
+function testProcedureSearchFiltersChoiceCards() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const context = createFakeApp();
+
+  assert.ok(html.includes('id="procedureSearch"'), "Expected procedure panel to include a search field.");
+
+  vm.runInContext('DOM.procedureSearch.value = "hernia"; filterProcedureChoices();', context);
+  assert.strictEqual(
+    vm.runInContext("JSON.stringify(DOM.procedureChoices.map((choice) => [choice.dataset.procedureChoice, choice.hidden]))", context),
+    JSON.stringify([
+      ["lapAppendicectomy", true],
+      ["lapCholecystectomy", true],
+      ["diagnosticLaparoscopy", true],
+      ["incisionAndDrainage", true],
+      ["openInguinalHerniaRepair", false],
+    ]),
+    "Expected procedure search to hide non-matching cards and keep the matching card visible.",
+  );
+
+  vm.runInContext('DOM.procedureSearch.value = "lap"; filterProcedureChoices();', context);
+  assert.strictEqual(
+    vm.runInContext("DOM.procedureSearchStatus.textContent", context),
+    "3 procedures shown",
+    "Expected procedure search status to report visible matches.",
+  );
+}
+
 function testThemeToggleAppliesAndPersistsDarkMode() {
   const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
@@ -465,6 +492,7 @@ testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
 testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
 testProcedureSelectorUsesCompactChoiceGrid();
+testProcedureSearchFiltersChoiceCards();
 testThemeToggleAppliesAndPersistsDarkMode();
 testOpenInguinalHerniaRepairGeneratesStructuredNote();
 testIncisionAndDrainageGeneratesStructuredNote();
