@@ -4,16 +4,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Operative Note Generator</title>
-  <link rel="stylesheet" href="sangeev-public-tokens.css?v=20260531-warningtext1">
-  <link rel="stylesheet" href="styles.css?v=20260531-warningtext1">
+  <link rel="stylesheet" href="sangeev-public-tokens.css?v=20260531-appnav1">
+  <link rel="stylesheet" href="styles.css?v=20260531-appnav1">
 </head>
 <body class="app-body">
   <header class="site-nav" aria-label="Site navigation">
     <a class="site-nav-brand" href="https://sangeev.me">Sangeev</a>
+    <span aria-hidden="true">/</span>
     <nav class="site-nav-links" aria-label="Primary">
       <a href="https://opnotes.sangeev.me" aria-current="page">Op notes</a>
+      <span aria-hidden="true">/</span>
       <a href="https://scratchpad.sangeev.me">Scratchpad</a>
     </nav>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light mode" aria-pressed="true">
+      <span aria-hidden="true">☀</span>
+      <span>Light</span>
+    </button>
   </header>
 
   <div class="page">
@@ -23,10 +29,6 @@
           <p class="kicker">Operative Note Generator</p>
           <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
         </div>
-        <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light mode" aria-pressed="true">
-          <span aria-hidden="true">☀</span>
-          <span>Light</span>
-        </button>
       </div>
       <p class="intro">
         Complete the structured fields below to generate a draft operative note.

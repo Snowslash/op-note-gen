@@ -1121,22 +1121,33 @@ html[data-theme="dark"] .landing-body {
 }
 
 .app-body .site-nav {
-  width: min(820px, calc(100% - 32px));
+  width: min(1400px, calc(100% - 36px));
+  display: flex;
+  flex-wrap: wrap;
   align-items: baseline;
-  padding: 28px 0 14px;
+  justify-content: flex-start;
+  gap: 8px 14px;
+  margin: 24px auto 24px;
+  padding: 0 0 12px;
   border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 14px;
 }
 
 .app-body .site-nav-brand {
-  color: var(--text-strong);
-  font-size: 1.08rem;
-  font-weight: 700;
+  color: inherit;
+  font-size: inherit;
+  font-weight: 400;
   letter-spacing: 0;
+  text-decoration: underline;
 }
 
 .app-body .site-nav-links {
-  gap: 14px;
-  font-size: 0.96rem;
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  gap: 8px 14px;
+  font-size: inherit;
 }
 
 .app-body .site-nav-links a {
@@ -1146,7 +1157,7 @@ html[data-theme="dark"] .landing-body {
   border: 0;
   border-radius: 0;
   background: transparent;
-  color: var(--brand);
+  color: inherit;
   font-weight: 400;
   text-decoration: underline;
   text-underline-offset: 0.18em;
@@ -1154,8 +1165,9 @@ html[data-theme="dark"] .landing-body {
 
 .app-body .site-nav-links a[aria-current="page"] {
   color: var(--text-strong);
-  font-weight: 700;
+  font-weight: 600;
   background: transparent;
+  text-decoration: none;
 }
 
 .app-body .page {
@@ -1197,11 +1209,15 @@ html[data-theme="dark"] .landing-body {
 }
 
 .app-body .theme-toggle {
-  border: 1px solid var(--border-control);
+  min-height: auto;
+  margin-left: auto;
+  padding: 0;
+  border: 0;
   border-radius: 0;
   background: transparent;
-  color: var(--brand);
+  color: var(--text-muted);
   box-shadow: none;
+  font: inherit;
   text-decoration: underline;
   text-underline-offset: 0.18em;
 }
@@ -1260,12 +1276,12 @@ html[data-theme="dark"] .landing-body {
 
 @media (max-width: 700px) {
   .app-body .site-nav {
-    display: block;
+    align-items: baseline;
+    flex-direction: row;
   }
 
   .app-body .site-nav-links {
     justify-content: flex-start;
-    margin-top: 10px;
   }
 
   .app-body .page-header-top {
