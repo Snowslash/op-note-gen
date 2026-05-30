@@ -5,87 +5,91 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="Operative Note Generator helps draft common general surgery operation notes from clinician-entered fields."
+      content="A small browser-only form for drafting common emergency general-surgery operation notes."
     />
-    <title>Operative Note Generator — Sangeev</title>
-    <link rel="stylesheet" href="./styles.css?v=20260529-font1" />
-    <script src="./theme.js?v=20260529-font1" defer></script>
+    <title>Operative note generator — Sangeev</title>
+    <link rel="stylesheet" href="./styles.css?v=20260530-plain1" />
+    <script src="./theme.js?v=20260530-plain1" defer></script>
   </head>
   <body class="landing-body">
-    <header class="site-nav" aria-label="Site navigation">
-      <a class="site-nav-brand" href="https://sangeev.me">Sangeev</a>
-      <div class="site-nav-actions">
+    <div class="landing-shell">
+      <header class="site-nav" aria-label="Site navigation">
+        <a class="site-nav-brand" href="https://sangeev.me">Sangeev</a>
+        <span aria-hidden="true">/</span>
         <nav class="site-nav-links" aria-label="Primary">
           <a href="https://opnotes.sangeev.me" aria-current="page">Op notes</a>
+          <span aria-hidden="true">/</span>
           <a href="https://scratchpad.sangeev.me">Scratchpad</a>
         </nav>
-      <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to light mode" aria-pressed="true">
-        <span aria-hidden="true">☀</span><span>Light</span>
-      </button>
-      </div>
-    </header>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to light mode" aria-pressed="true">
+          <span aria-hidden="true">☀</span><span>Light</span>
+        </button>
+      </header>
 
-    <main class="landing-page">
-      <section class="landing-hero" aria-labelledby="page-title">
-        <h1 id="page-title">Operative Note Generator</h1>
-        <p class="landing-lede">
-          Draft common general surgery operation notes from a short form. I started it to avoid
-          missing repetitive fields. The page has no account, backend, analytics or autosave.
-        </p>
-        <div class="landing-actions" aria-label="Project links">
-          <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
-          <a class="landing-button" href="https://github.com/Snowslash/op-note-gen">View source</a>
-        </div>
-      </section>
+      <main class="landing-page">
+        <section class="landing-hero" aria-labelledby="page-title">
+          <h1 id="page-title">Operative note generator</h1>
 
-      <section class="landing-grid" aria-label="Project summary">
-        <article class="landing-card">
-          <h2>What it is</h2>
-          <p>
-            A browser form for turning operation details into a draft note. Check it, edit it,
-            then copy it into the clinical record yourself.
+          <p class="landing-lede">
+            I made this because I was tired of retyping the same structure after common emergency general-surgery cases.
           </p>
-        </article>
-        <article class="landing-card">
-          <h2>Why it exists</h2>
-          <p>
-            Operation notes are repetitive, but the omissions still matter. The form keeps the usual fields
-            and procedure prompts in one place.
-          </p>
-        </article>
-        <article class="landing-card">
-          <h2>Current status</h2>
-          <p>
-            Personal prototype. Narrow on purpose. It covers a few common general surgery cases,
-            not every operation in theatre.
-          </p>
-        </article>
-      </section>
 
-      <section class="landing-screenshots" aria-labelledby="screenshots-heading">
-        <div class="landing-screenshots-heading">
-          <p class="landing-kicker">Example</p>
-          <h2 id="screenshots-heading">Example appendicectomy draft</h2>
           <p>
-            These screenshots use synthetic details. The tool does not store, transmit or check the clinical truth
-            of anything entered.
+            It is just a browser form that turns fields into a draft operation note. No login, backend, analytics or autosave.
           </p>
-        </div>
-        <div class="landing-screenshot-grid">
-          <figure>
-            <img
-              src="./assets/opnotes-form-example.png"
-              alt="Operative Note Generator form with example appendicectomy details entered."
-              loading="lazy"
-              width="857"
-              height="1296"
-            />
-            <figcaption>Procedure-specific fields keep the common appendicectomy details together.</figcaption>
-          </figure>
-          <figure class="landing-note-figure">
-            <article class="landing-note-example" aria-label="Example generated note excerpt">
-              <h3>Draft output excerpt</h3>
-              <pre>Procedure: Laparoscopic appendicectomy
+
+          <p class="landing-muted">Use it as a starting point, then check the note yourself.</p>
+
+          <div class="landing-actions" aria-label="Project links">
+            <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
+            <a class="landing-button" href="https://github.com/Snowslash/op-note-gen">Source on GitHub</a>
+          </div>
+        </section>
+
+        <section class="landing-safety" aria-label="Safety and privacy notes">
+          <p><strong>Do not enter patient-identifiable information.</strong></p>
+          <p>This tool runs entirely in your browser. There is no login, backend, analytics or autosave.</p>
+          <p>Review the generated text carefully before using it in any clinical record.</p>
+        </section>
+
+        <section>
+          <h2>What it does</h2>
+          <p>It turns structured fields into a plain-text draft operation note that can be checked and edited before copying into the record.</p>
+        </section>
+
+        <section>
+          <h2>Currently covered</h2>
+          <ul>
+            <li>laparoscopic appendicectomy</li>
+            <li>laparoscopic cholecystectomy</li>
+            <li>diagnostic laparoscopy +/- washout / adhesiolysis</li>
+            <li>incision and drainage of abscess</li>
+            <li>open inguinal hernia repair</li>
+            <li>open umbilical hernia repair</li>
+            <li>emergency laparotomy</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="example-heading">
+          <h2 id="example-heading">Example appendicectomy draft</h2>
+          <p class="landing-muted">Synthetic details. The tool does not store, transmit or check the clinical truth of anything entered.</p>
+
+          <div class="landing-example-grid">
+            <figure>
+              <img
+                src="./assets/opnotes-form-example.png"
+                alt="Screenshot of the operative note generator form with structured fields and a generated note preview"
+                loading="lazy"
+                width="857"
+                height="1296"
+              />
+              <figcaption>Procedure-specific fields keep common appendicectomy details together.</figcaption>
+            </figure>
+
+            <figure>
+              <article class="landing-note-example" aria-label="Example generated note excerpt">
+                <h3>Draft output excerpt</h3>
+                <pre>Procedure: Laparoscopic appendicectomy
 
 Date/time: 29/05/2026, 10:52
 
@@ -108,44 +112,26 @@ Drain: Right iliac fossa
 Post-operative plan:
 1) Return to ward
 2) Continue antibiotics</pre>
-            </article>
-            <figcaption>The generated text is deliberately plain so it can be checked and edited before use.</figcaption>
-          </figure>
-        </div>
-      </section>
+              </article>
+              <figcaption>The generated text is plain so it can be checked and edited before use.</figcaption>
+            </figure>
+          </div>
+        </section>
 
-      <section class="landing-feature-section" aria-labelledby="features-heading">
-        <div>
-          <p class="landing-kicker">Prototype</p>
-          <h2 id="features-heading">Common emergency general surgery notes</h2>
-        </div>
-        <ul class="landing-feature-list">
-          <li>Choose lap appendix, lap chole, diagnostic laparoscopy, abscess I&amp;D or open inguinal hernia repair.</li>
-          <li>Fill in admin details, anaesthetic, indication, findings, specimen, drain, closure and post-op plan.</li>
-          <li>Use procedure-specific prompts and checks before copying the note.</li>
-          <li>The tool does not infer pathology, complications or clinical decisions.</li>
-          <li>It runs in the browser. There is no backend, login, cloud sync, analytics, external AI call or data upload.</li>
-        </ul>
-      </section>
+        <section>
+          <h2>Limits</h2>
+          <p>It does not store data, make clinical decisions, validate completeness or replace local documentation standards.</p>
+        </section>
 
-      <section id="safety" class="landing-notice" aria-labelledby="safety-heading">
-        <h2 id="safety-heading">Drafting aid only. Not a clinical system.</h2>
-        <p>
-          This is a personal tool for drafting text from information entered by a clinician. It is not an EHR,
-          referral platform, NHS-approved product, clinical safety system, regulated medical device or source of truth.
-        </p>
-        <p>
-          Do not send patient-identifiable information to this website or repository. Check and correct the draft
-          before entering it into the clinical record.
-        </p>
-      </section>
-    </main>
+        <section class="landing-status">
+          <h2>Status</h2>
+          <p>Personal tool. Static site. No external services required to draft a note in the browser.</p>
+        </section>
+      </main>
 
-    <footer class="landing-footer">
-      <p>
-        Operative Note Generator is an experimental personal project by Sangeev. Treat its output as a draft,
-        not a finished operation note.
-      </p>
-    </footer>
+      <footer class="landing-footer">
+        <p>Maintained by <a href="https://sangeev.me">Sangeev</a>.</p>
+      </footer>
+    </div>
   </body>
 </html>
