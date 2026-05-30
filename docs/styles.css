@@ -4,52 +4,56 @@
 
 :root {
   color-scheme: light;
-  --bg: #f4f6f8;
-  --panel: #ffffff;
-  --panel-muted: #fbfcfd;
-  --panel-soft: #f8fbfd;
-  --text: #1f2933;
-  --text-strong: #102a43;
-  --text-muted: #52606d;
-  --text-subtle: #7b8794;
-  --brand: #0f4c81;
-  --brand-hover: #0b3c67;
-  --accent: #2680c2;
-  --border: #d9e2ec;
-  --border-soft: #e6edf3;
-  --border-control: #bcccdc;
-  --secondary: var(--border);
-  --secondary-hover: var(--border-control);
+  --bg: #f7f6f2;
+  --panel: #fffefa;
+  --panel-muted: #fbf8f0;
+  --panel-soft: #f4efe5;
+  --text: #1f2328;
+  --text-strong: #1f2328;
+  --text-muted: #5c6570;
+  --text-subtle: #756f64;
+  --brand: #184f6a;
+  --brand-hover: #113b50;
+  --accent: #184f6a;
+  --accent-hover: #113b50;
+  --border: #c9c3b7;
+  --border-soft: #d8d4ca;
+  --border-strong: #9f927d;
+  --border-control: #9f927d;
+  --secondary: #e9e2d6;
+  --secondary-hover: #ddd3c2;
   --danger-bg: #fee2e2;
   --danger-hover: #fecaca;
   --danger-text: #991b1b;
   --error-bg: #fff1f2;
   --error-border: #f8b4bd;
   --error-text: #9b1c1c;
-  --warning-bg: #fffbea;
-  --warning-border: #f5d16c;
+  --warning-bg: #fff4d8;
+  --warning-border: #d7b86d;
   --warning-text: #8d5d00;
   --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #08111f;
-  --panel: #111827;
-  --panel-muted: #0f172a;
-  --panel-soft: #0b1220;
-  --text: #e5edf7;
-  --text-strong: #f8fafc;
-  --text-muted: #a8b7ca;
-  --text-subtle: #8ea0b8;
-  --brand: #38bdf8;
-  --brand-hover: #7dd3fc;
-  --accent: #60a5fa;
-  --border: #26364a;
-  --border-soft: #1e293b;
-  --border-control: #334155;
-  --secondary: #1e293b;
-  --secondary-hover: #334155;
+  --bg: #151512;
+  --panel: #1d1c18;
+  --panel-muted: #1d1b17;
+  --panel-soft: #25231d;
+  --text: #ebe7dc;
+  --text-strong: #ebe7dc;
+  --text-muted: #b4ab9b;
+  --text-subtle: #9f9585;
+  --brand: #9fc7d7;
+  --brand-hover: #c0deea;
+  --accent: #9fc7d7;
+  --accent-hover: #c0deea;
+  --border: #4a4438;
+  --border-soft: #3a362d;
+  --border-strong: #746a5b;
+  --border-control: #746a5b;
+  --secondary: #342f28;
+  --secondary-hover: #443d34;
   --danger-bg: #3b1115;
   --danger-hover: #561920;
   --danger-text: #fecdd3;
@@ -57,7 +61,7 @@
   --error-border: #7f1d1d;
   --error-text: #fecdd3;
   --warning-bg: #2e2208;
-  --warning-border: #854d0e;
+  --warning-border: #7c5d19;
   --warning-text: #fde68a;
   --shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
 }
@@ -1056,19 +1060,21 @@ button:disabled {
 /* Plain app chrome overrides: keep the generator functional, but make the
    visible header/navigation match the public pages rather than the old SaaS skin. */
 .app-body {
-  --bg: #f7f4ee;
-  --panel: #fffdf8;
+  --bg: #f7f6f2;
+  --panel: #fffefa;
   --panel-muted: #fbf8f0;
   --panel-soft: #f4efe5;
-  --text: #181715;
-  --text-strong: #181715;
-  --text-muted: #5f5a51;
+  --text: #1f2328;
+  --text-strong: #1f2328;
+  --text-muted: #5c6570;
   --text-subtle: #756f64;
-  --brand: #064f8c;
-  --brand-hover: #043d6d;
-  --accent: #064f8c;
-  --border: #cfc7b7;
-  --border-soft: #ded6c7;
+  --brand: #184f6a;
+  --brand-hover: #113b50;
+  --accent: #184f6a;
+  --accent-hover: #113b50;
+  --border: #c9c3b7;
+  --border-soft: #d8d4ca;
+  --border-strong: #9f927d;
   --border-control: #9f927d;
   --secondary: #e9e2d6;
   --secondary-hover: #ddd3c2;
@@ -1079,28 +1085,30 @@ button:disabled {
 }
 
 html[data-theme="dark"] .landing-body {
-  --landing-paper: #171613;
-  --landing-ink: #f0ede6;
-  --landing-muted: #b7ad9d;
-  --landing-rule: #5b5347;
+  --landing-paper: #151512;
+  --landing-ink: #ebe7dc;
+  --landing-muted: #b4ab9b;
+  --landing-rule: #4a4438;
   --landing-rule-strong: #746a5b;
-  --landing-link: #8cc8ff;
+  --landing-link: #9fc7d7;
 }
 
 [data-theme="dark"] .app-body {
-  --bg: #171613;
-  --panel: #211f1a;
+  --bg: #151512;
+  --panel: #1d1c18;
   --panel-muted: #1d1b17;
-  --panel-soft: #28251f;
-  --text: #eee6d8;
-  --text-strong: #fff7e8;
-  --text-muted: #c8bdab;
-  --text-subtle: #aa9e8b;
-  --brand: #9cc8ff;
-  --brand-hover: #c2ddff;
-  --accent: #9cc8ff;
-  --border: #5b5347;
-  --border-soft: #423c34;
+  --panel-soft: #25231d;
+  --text: #ebe7dc;
+  --text-strong: #ebe7dc;
+  --text-muted: #b4ab9b;
+  --text-subtle: #9f9585;
+  --brand: #9fc7d7;
+  --brand-hover: #c0deea;
+  --accent: #9fc7d7;
+  --accent-hover: #c0deea;
+  --border: #4a4438;
+  --border-soft: #3a362d;
+  --border-strong: #746a5b;
   --border-control: #746a5b;
   --secondary: #342f28;
   --secondary-hover: #443d34;
