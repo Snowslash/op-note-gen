@@ -823,6 +823,10 @@ button:disabled {
   padding: 0;
 }
 
+.landing-intro-grid {
+  display: block;
+}
+
 .landing-hero {
   padding: 0;
   border: 0;
@@ -913,7 +917,7 @@ button:disabled {
   border: 1px solid var(--warning-border);
   background: var(--warning-bg);
   padding: 14px 16px;
-  margin: 18px 0 22px;
+  margin: 12px 0 0;
 }
 
 .landing-safety p:last-child {
@@ -997,6 +1001,23 @@ button:disabled {
   .landing-body .site-nav {
     align-items: baseline;
     flex-direction: row;
+  }
+}
+
+@media (min-width: 860px) {
+  .landing-page {
+    max-width: 980px;
+  }
+
+  .landing-intro-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 36%);
+    gap: 24px;
+    align-items: start;
+  }
+
+  .landing-safety {
+    margin-top: 8px;
   }
 }
 
