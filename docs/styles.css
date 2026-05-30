@@ -712,8 +712,8 @@ button:disabled {
   --border: #c9c3b7;
   --border-soft: #d8d4ca;
   --border-control: #9f927d;
-  --warning-bg: #fff7df;
-  --warning-border: #d8b75c;
+  --warning-bg: #fff4d8;
+  --warning-border: #d7b86d;
   --shadow: none;
   min-height: 100vh;
   background: var(--bg);
@@ -738,8 +738,8 @@ button:disabled {
   --border: #4a4438;
   --border-soft: #3a362d;
   --border-control: #746a5b;
-  --warning-bg: #272215;
-  --warning-border: #8d7741;
+  --warning-bg: #2e2208;
+  --warning-border: #7c5d19;
 }
 
 .landing-body a {
@@ -924,6 +924,12 @@ button:disabled {
   margin-bottom: 0;
 }
 
+.landing-page > section {
+  border-top: 1px solid var(--border);
+  padding-top: 22px;
+  margin-top: 24px;
+}
+
 .landing-page ul {
   margin: 8px 0 0;
   padding-left: 21px;
@@ -934,9 +940,7 @@ button:disabled {
 }
 
 .landing-status {
-  border-top: 1px solid var(--border-soft);
-  padding-top: 18px;
-  margin-top: 24px;
+  border-top-color: var(--border);
 }
 
 .landing-example-grid {
