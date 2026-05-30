@@ -920,8 +920,14 @@ button:disabled {
 .landing-safety {
   border: 1px solid var(--warning-border);
   background: var(--warning-bg);
+  color: var(--text-strong);
   padding: 14px 16px;
   margin: 12px 0 0;
+}
+
+.landing-safety p,
+.landing-safety strong {
+  color: var(--text-strong);
 }
 
 .landing-safety p:last-child {
