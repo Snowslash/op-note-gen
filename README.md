@@ -55,6 +55,9 @@ This version supports:
   - bile or stone spillage
   - intraoperative cholangiogram
   - closure details
+  - antibiotic prophylaxis
+  - DVT prophylaxis
+  - post-operative care instructions
   - mesh details for open inguinal and open umbilical hernia repair
   - emergency laparotomy modules for bowel resection, anastomosis, stoma, washout, and temporary abdominal closure
 - Non-blocking warnings for missing specimen, complications, and drain status
@@ -107,7 +110,7 @@ The generated note can include:
 - Estimated blood loss
 - Complications
 - Closure
-- Post-operative plan
+- Post-operative plan, including antibiotic prophylaxis, DVT prophylaxis, and care instructions
 
 ## Project Files
 

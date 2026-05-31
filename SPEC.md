@@ -57,7 +57,7 @@ Do not add other procedures unless explicitly scoped.
 - Estimated blood loss (text, optional)
 - Complications (text or "none")
 - Closure (text)
-- Post-operative plan (text)
+- Post-operative plan including antibiotic prophylaxis, DVT prophylaxis, and care instructions (text)
 
 ### Procedure-specific (lap appendicectomy)
 - Appendix appearance / operative findings (text)
@@ -142,7 +142,7 @@ The generated operative note must contain:
 - Estimated blood loss
 - Complications
 - Closure
-- Post-operative plan
+- Post-operative plan, including antibiotic prophylaxis, DVT prophylaxis, and care instructions
 
 ---
 

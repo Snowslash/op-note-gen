@@ -572,6 +572,9 @@ function testAppendicectomyStillGenerates() {
       stumpControl: "Endoloops",
       entryTechnique: "Hasson",
       specimen: "Appendix",
+      antibioticProphylaxis: "Co-amoxiclav given at induction",
+      dvtProphylaxis: "TED stockings and LMWH as per local protocol",
+      postOpPlan: "Ward care, oral analgesia and discharge when tolerating diet",
     },
     radios: {
       drainStatus: "no",
@@ -587,6 +590,7 @@ function testAppendicectomyStillGenerates() {
   assertIncludes(note, "Procedure: Laparoscopic appendicectomy");
   assertIncludes(note, "Date/time: 27/05/2026, 14:30");
   assertIncludes(note, "Stump control: Endoloops");
+  assertIncludes(note, "Post-operative plan:\nAntibiotic prophylaxis: Co-amoxiclav given at induction\nDVT prophylaxis: TED stockings and LMWH as per local protocol\nPost-operative care instructions: Ward care, oral analgesia and discharge when tolerating diet");
   assert.strictEqual(
     countOccurrences(note, "Drain:"),
     1,

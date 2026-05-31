@@ -259,6 +259,15 @@ function buildClosureLine(values) {
   return `Closure: ${buildClosureText(values)}`;
 }
 
+function buildPostOperativePlanLine(values) {
+  return [
+    "Post-operative plan:",
+    `Antibiotic prophylaxis: ${formatTextOperationValue(values.antibioticProphylaxis)}`,
+    `DVT prophylaxis: ${formatTextOperationValue(values.dvtProphylaxis)}`,
+    `Post-operative care instructions: ${formatTextOperationValue(values.postOpPlan)}`,
+  ].join("\n");
+}
+
 function buildStandardOutputSections() {
   return [
     {
@@ -310,7 +319,7 @@ function buildStandardOutputSections() {
       build: buildClosureLine,
     },
     {
-      build: (values) => formatBlock("Post-operative plan", values.postOpPlan),
+      build: buildPostOperativePlanLine,
     },
   ];
 }
