@@ -1121,7 +1121,7 @@ html[data-theme="dark"] .landing-body {
 }
 
 .app-body .site-nav {
-  width: min(1400px, calc(100% - 36px));
+  width: min(100% - 32px, 980px);
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
