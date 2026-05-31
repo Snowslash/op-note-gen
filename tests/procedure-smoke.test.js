@@ -540,7 +540,7 @@ function testThemeToggleAppliesAndPersistsDarkMode() {
     "Expected plain app chrome overrides to include dark-mode app-body variables.",
   );
   assert.ok(
-    html.includes('styles.css?v=20260531-appnav1'),
+    html.includes('styles.css?v=20260531-appnav2'),
     "Expected app page to request the cache-busted stylesheet containing the app navigation standardisation fix.",
   );
   assert.ok(
