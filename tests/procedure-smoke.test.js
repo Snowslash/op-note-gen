@@ -499,6 +499,21 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
   assert.strictEqual(procedureChoiceCount, 7, "Expected one compact procedure choice per supported operation.");
 }
 
+function testProcedureChoiceLabelsUseFullOperationNames() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+
+  assert.ok(html.includes('<span class="procedure-choice-title">Laparoscopic appendicectomy</span>'), "Expected appendicectomy card heading to avoid abbreviation.");
+  assert.ok(html.includes('<span class="procedure-choice-title">Laparoscopic cholecystectomy</span>'), "Expected cholecystectomy card heading to avoid abbreviation.");
+  assert.ok(html.includes('<span class="procedure-choice-title">Diagnostic laparoscopy</span>'), "Expected diagnostic laparoscopy card heading to avoid abbreviation.");
+  assert.ok(html.includes('<span class="procedure-choice-title">Incision and drainage abscess</span>'), "Expected incision and drainage card heading to avoid abbreviation.");
+  assert.ok(html.includes('data-procedure-choice="lapCholecystectomy">\n          <span class="procedure-choice-title">Laparoscopic cholecystectomy</span>\n          <span class="procedure-choice-meta">Emergency general surgery</span>'), "Expected cholecystectomy card subheading to be emergency general surgery.");
+  assert.ok(!html.includes('>Lap appendix<'), "Expected no abbreviated appendicectomy card heading.");
+  assert.ok(!html.includes('>Lap chole<'), "Expected no abbreviated cholecystectomy card heading.");
+  assert.ok(!html.includes('>Diagnostic lap<'), "Expected no abbreviated diagnostic laparoscopy card heading.");
+  assert.ok(!html.includes('>I&D abscess<'), "Expected no abbreviated incision and drainage card heading.");
+  assert.ok(!html.includes('>Gallbladder<'), "Expected cholecystectomy card not to use gallbladder subheading.");
+}
+
 function testProcedureSearchFiltersChoiceCards() {
   const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
   const context = createFakeApp();
@@ -678,6 +693,7 @@ testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
 testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry();
 testEmergencyLaparotomyIsWiredInUiAndRegistry();
 testProcedureSelectorUsesCompactChoiceGrid();
+testProcedureChoiceLabelsUseFullOperationNames();
 testProcedureSearchFiltersChoiceCards();
 testThemeToggleAppliesAndPersistsDarkMode();
 testEmergencyLaparotomyGeneratesStructuredModularNote();
