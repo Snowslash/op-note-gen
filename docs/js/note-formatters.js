@@ -268,6 +268,55 @@ function buildPostOperativePlanLine(values) {
   ].join("\n");
 }
 
+function buildStructuredPostOperativePlan(values) {
+  const lines = [];
+
+  if (values.antibioticProphylaxis.trimmed) {
+    lines.push(`Antibiotic prophylaxis: ${values.antibioticProphylaxis.raw}`);
+  }
+
+  if (values.dvtProphylaxis.trimmed) {
+    lines.push(`DVT prophylaxis: ${values.dvtProphylaxis.raw}`);
+  }
+
+  if (values.postOpPlan.trimmed) {
+    lines.push(`Post-operative care instructions: ${values.postOpPlan.raw}`);
+  }
+
+  return lines;
+}
+
+function buildPostOperativePlanOutput(values, procedure) {
+  const lines = [`Procedure: ${procedure.title}`, ...buildStructuredPostOperativePlan(values)];
+  return lines.length > 1 ? [lines.join("\n")] : [`Procedure: ${procedure.title}\nPost-operative plan: no plan details entered.`];
+}
+
+function buildHandoverOutput(values, procedure) {
+  const lines = [
+    `Procedure: ${procedure.title}`,
+    values.findings.trimmed ? `Findings: ${values.findings.raw}` : "",
+    values.drainStatus === "yes" ? `Drain: ${buildDrainText(values)}` : "",
+    values.complications.trimmed ? `Complications: ${buildComplicationsText(values)}` : "",
+    ...buildStructuredPostOperativePlan(values),
+  ].filter(Boolean);
+
+  return [lines.join("\n")];
+}
+
+function buildOutputParagraphs(values, procedure, mode = "full") {
+  if (mode === "postOp") {
+    return buildPostOperativePlanOutput(values, procedure);
+  }
+
+  if (mode === "handover") {
+    return buildHandoverOutput(values, procedure);
+  }
+
+  return procedure.outputSections
+    .map((section) => section.build(values, procedure))
+    .filter(Boolean);
+}
+
 function buildStandardOutputSections() {
   return [
     {

@@ -17,10 +17,8 @@ function validate(values, procedure = getActiveProcedure()) {
   return runRuleSet(values, procedure.validationRules);
 }
 
-function buildParagraphs(values, procedure = getActiveProcedure()) {
-  return procedure.outputSections
-    .map((section) => section.build(values, procedure))
-    .filter(Boolean);
+function buildParagraphs(values, procedure = getActiveProcedure(), mode = DOM.outputMode.value) {
+  return buildOutputParagraphs(values, procedure, mode);
 }
 
 function renderWarnings(warnings) {
@@ -44,14 +42,83 @@ function renderNote(paragraphs) {
 }
 
 function generateNote(values, procedure = getActiveProcedure()) {
-  const paragraphs = buildParagraphs(values, procedure);
+  const paragraphs = buildParagraphs(values, procedure, DOM.outputMode.value);
   APP_STATE.latestNoteText = paragraphs.join("\n\n");
+  APP_STATE.latestValues = values;
+  APP_STATE.noteFresh = true;
+  APP_STATE.reviewConfirmed = false;
+  DOM.reviewBeforeCopy.checked = false;
+  syncCopyState();
+  syncStaleOutputMessage();
   return paragraphs;
 }
 
 function clearValidation() {
   DOM.validationMessage.hidden = true;
   DOM.validationMessage.textContent = "";
+  DOM.form.querySelectorAll("[aria-invalid='true']").forEach((field) => {
+    field.removeAttribute("aria-invalid");
+    field.removeAttribute("aria-describedby");
+  });
+}
+
+function clearWarnings() {
+  DOM.warningBox.hidden = true;
+  DOM.warningList.innerHTML = "";
+}
+
+function syncCopyState() {
+  DOM.copyButton.disabled = !(APP_STATE.latestNoteText && APP_STATE.noteFresh && APP_STATE.reviewConfirmed);
+}
+
+function syncStaleOutputMessage() {
+  DOM.staleOutputMessage.hidden = !(APP_STATE.latestNoteText && !APP_STATE.noteFresh);
+}
+
+function invalidateGeneratedNote(message = "Form details changed after generation. Regenerate before copying.") {
+  if (!APP_STATE.latestNoteText) {
+    return;
+  }
+
+  APP_STATE.noteFresh = false;
+  APP_STATE.reviewConfirmed = false;
+  DOM.reviewBeforeCopy.checked = false;
+  DOM.copyFeedback.textContent = message;
+  syncCopyState();
+  syncStaleOutputMessage();
+}
+
+function resetGeneratedNoteState({ clearWarningsUi = false } = {}) {
+  APP_STATE.latestNoteText = "";
+  APP_STATE.latestValues = null;
+  APP_STATE.noteFresh = false;
+  APP_STATE.reviewConfirmed = false;
+  DOM.reviewBeforeCopy.checked = false;
+  DOM.copyFeedback.textContent = "";
+  syncCopyState();
+  syncStaleOutputMessage();
+  showEmptyNoteState();
+
+  if (clearWarningsUi) {
+    clearWarnings();
+  }
+}
+
+function markMissingFields(missing) {
+  clearValidation();
+  missing.forEach((label) => {
+    const normalisedLabel = label.toLowerCase();
+    Array.from(DOM.form.querySelectorAll("input, select, textarea")).some((field) => {
+      const wrapper = field.closest ? field.closest(".field") : null;
+      if (!wrapper || !wrapper.textContent.toLowerCase().includes(normalisedLabel)) {
+        return false;
+      }
+
+      field.setAttribute("aria-invalid", "true");
+      field.setAttribute("aria-describedby", "validationMessage");
+      return true;
+    });
+  });
 }
 
 function syncProcedureChoiceState(procedure = getActiveProcedure()) {
@@ -89,6 +156,7 @@ function filterProcedureChoices() {
 function showValidation(missing) {
   DOM.validationMessage.textContent = `Please complete the required field${missing.length > 1 ? "s" : ""}: ${missing.join(", ")}.`;
   DOM.validationMessage.hidden = false;
+  markMissingFields(missing);
 }
 
 function showEmptyNoteState() {
@@ -113,7 +181,12 @@ function syncConditionalFields(procedure = getActiveProcedure()) {
   applyVisibilityRules(procedure, values);
 }
 
-function handleFormState() {
+function handleFormState(event) {
+  if (event && (event.target === DOM.reviewBeforeCopy || event.target === DOM.outputMode)) {
+    return;
+  }
+
+  invalidateGeneratedNote();
   APP_STATE.activeProcedureId = DOM.procedureSelect.value;
   const procedure = getActiveProcedure();
   syncProcedureUi(procedure);
@@ -135,9 +208,7 @@ function selectProcedure(procedureId) {
   DOM.procedureSelect.value = procedureId;
   APP_STATE.activeProcedureId = procedureId;
   const procedure = getActiveProcedure();
-  APP_STATE.latestNoteText = "";
-  DOM.copyButton.disabled = true;
-  DOM.copyFeedback.textContent = "";
+  resetGeneratedNoteState();
   syncProcedureUi(procedure);
   syncConditionalFields(procedure);
   renderWarnings(buildWarnings(collectValues(procedure), procedure));
@@ -159,16 +230,14 @@ DOM.form.addEventListener("submit", (event) => {
   renderWarnings(buildWarnings(values, procedure));
 
   if (missing.length) {
-    APP_STATE.latestNoteText = "";
-    DOM.copyButton.disabled = true;
+    resetGeneratedNoteState();
     showValidation(missing);
-    showEmptyNoteState();
     return;
   }
 
   clearValidation();
   renderNote(generateNote(values, procedure));
-  DOM.copyButton.disabled = false;
+  DOM.copyFeedback.textContent = "Draft generated. Review it before copying.";
 });
 
 DOM.form.addEventListener("input", handleFormState);
@@ -190,6 +259,7 @@ DOM.themeToggle.addEventListener("click", toggleTheme);
 
 DOM.addTeamMemberButton.addEventListener("click", () => {
   DOM.teamMembersList.appendChild(createTeamMemberRow());
+  invalidateGeneratedNote();
 });
 
 DOM.teamMembersList.addEventListener("click", (event) => {
@@ -207,6 +277,7 @@ DOM.teamMembersList.addEventListener("click", (event) => {
   }
 
   row.remove();
+  invalidateGeneratedNote();
 });
 
 initialiseTheme();
@@ -216,8 +287,48 @@ syncConditionalFields();
 filterProcedureChoices();
 renderWarnings(buildWarnings(collectValues()));
 
+DOM.outputMode.addEventListener("change", () => {
+  if (!APP_STATE.noteFresh) {
+    invalidateGeneratedNote("Output mode changed. Regenerate before copying.");
+    return;
+  }
+
+  const procedure = getActiveProcedure();
+  const values = collectValues(procedure);
+  renderNote(generateNote(values, procedure));
+  DOM.copyFeedback.textContent = "Output mode changed. Review this draft before copying.";
+});
+
+DOM.reviewBeforeCopy.addEventListener("change", () => {
+  APP_STATE.reviewConfirmed = DOM.reviewBeforeCopy.checked;
+  syncCopyState();
+  DOM.copyFeedback.textContent = APP_STATE.reviewConfirmed
+    ? "Review confirmed. Copy is now available."
+    : "Review confirmation removed. Copy is disabled.";
+});
+
+DOM.clearNoteButton.addEventListener("click", () => {
+  resetGeneratedNoteState({ clearWarningsUi: true });
+  clearValidation();
+});
+
+DOM.clearFormButton.addEventListener("click", () => {
+  DOM.form.reset();
+  DOM.teamMembersList.innerHTML = "";
+  APP_STATE.teamMemberIdCounter = 0;
+  autofillOperationDateTime();
+  APP_STATE.activeProcedureId = DOM.procedureSelect.value;
+  syncProcedureUi();
+  syncConditionalFields();
+  clearValidation();
+  clearWarnings();
+  resetGeneratedNoteState();
+});
+
 DOM.copyButton.addEventListener("click", async () => {
-  if (!APP_STATE.latestNoteText) {
+  if (!APP_STATE.latestNoteText || !APP_STATE.noteFresh || !APP_STATE.reviewConfirmed) {
+    DOM.copyFeedback.textContent = "Review the current generated draft before copying.";
+    syncCopyState();
     return;
   }
 

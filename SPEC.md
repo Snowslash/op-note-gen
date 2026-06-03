@@ -276,3 +276,8 @@ Warnings (non-blocking):
 - Free-text shorthand parsing
 - Export to PDF/Word
 - Custom templates
+
+
+## Safety workflow controls
+
+The app must block copying stale generated text after form edits. Copying requires a fresh generated draft and an explicit review confirmation. Clear Note and Clear Form must reset output/copy/review state predictably. Alternate output modes must be rule-based and use only user-entered data.

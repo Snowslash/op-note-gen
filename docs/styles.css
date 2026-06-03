@@ -1293,3 +1293,33 @@ html[data-theme="dark"] .landing-body {
   }
 }
 
+
+.section-jump-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.section-jump-nav a {
+  border: 1px solid var(--border-subtle);
+  border-radius: 999px;
+  padding: 0.35rem 0.75rem;
+  text-decoration: none;
+}
+.output-mode-field, .review-confirmation {
+  margin-bottom: 1rem;
+}
+.review-confirmation {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+}
+@media (max-width: 760px) {
+  .section-jump-nav {
+    position: sticky;
+    top: 0;
+    z-index: 4;
+    padding: 0.5rem 0;
+    background: var(--surface);
+  }
+}

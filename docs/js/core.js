@@ -6,6 +6,11 @@ const DOM = {
   noteOutput: document.getElementById("noteOutput"),
   copyButton: document.getElementById("copyButton"),
   copyFeedback: document.getElementById("copyFeedback"),
+  clearNoteButton: document.getElementById("clearNoteButton"),
+  clearFormButton: document.getElementById("clearFormButton"),
+  outputMode: document.getElementById("outputMode"),
+  reviewBeforeCopy: document.getElementById("reviewBeforeCopy"),
+  staleOutputMessage: document.getElementById("staleOutputMessage"),
   addTeamMemberButton: document.getElementById("addTeamMemberButton"),
   teamMembersList: document.getElementById("teamMembersList"),
   operationDateTime: document.getElementById("operationDateTime"),
@@ -23,6 +28,9 @@ const DOM = {
 const APP_STATE = {
   activeProcedureId: "lapAppendicectomy",
   latestNoteText: "",
+  latestValues: null,
+  noteFresh: false,
+  reviewConfirmed: false,
   teamMemberIdCounter: 0,
 };
 
@@ -330,4 +338,9 @@ function formatAdditionalDetailsOperationLine(values) {
   return values.additionalOperativeDetails.trimmed
     ? `Additional operative details: ${values.additionalOperativeDetails.raw}`
     : "";
+}
+
+
+function isTextLikeControl(element) {
+  return element && ["INPUT", "SELECT", "TEXTAREA"].includes(element.tagName || "");
 }

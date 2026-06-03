@@ -32,7 +32,7 @@
       </div>
       <p class="intro">
         Complete the structured fields below to generate a draft operative note.
-        Review the output carefully before use.
+        Do not enter patient-identifiable information. Review the output carefully before use.
       </p>
     </header>
 
@@ -97,10 +97,19 @@
 
     <main class="layout">
       <section class="panel form-panel">
+        <nav class="section-jump-nav" aria-label="Form sections">
+          <a href="#procedure-section-title">Procedure</a>
+          <a href="#admin-details-title">Admin</a>
+          <a href="#clinical-details-title">Clinical</a>
+          <a href="#operative-steps-title">Operation</a>
+          <a href="#completion-details-title">Completion</a>
+          <a href="#generated-note-title">Output</a>
+        </nav>
+
         <form id="note-form" novalidate>
           <section class="form-section">
             <div class="section-header section-header-compact">
-              <h2>Admin details</h2>
+              <h2 id="admin-details-title">Admin details</h2>
               <p>Core identifiers for the operative note.</p>
             </div>
 
@@ -156,7 +165,7 @@
 
           <section class="form-section">
             <div class="section-header section-header-compact">
-              <h2>Clinical details</h2>
+              <h2 id="clinical-details-title">Clinical details</h2>
               <p>Required clinical context plus optional extras.</p>
             </div>
 
@@ -197,7 +206,7 @@
 
           <section class="form-section">
             <div class="section-header section-header-compact">
-              <h2>Operative steps</h2>
+              <h2 id="operative-steps-title">Operative steps</h2>
               <p id="procedureHint">Procedure-specific steps update when the selected operation changes.</p>
             </div>
 
@@ -779,7 +788,7 @@
 
           <section class="form-section">
             <div class="section-header section-header-compact">
-              <h2>Completion details</h2>
+              <h2 id="completion-details-title">Completion details</h2>
               <p>Drain, closure, and postoperative instructions.</p>
             </div>
 
@@ -851,13 +860,15 @@
 
           <div class="form-actions">
             <button type="submit" class="primary-button">Generate Note</button>
+            <button type="button" id="clearNoteButton" class="secondary-button">Clear note</button>
+            <button type="button" id="clearFormButton" class="danger-button">Clear form</button>
           </div>
         </form>
       </section>
 
       <aside class="panel note-panel">
         <div class="section-header section-header-compact">
-          <h2>Generated note</h2>
+          <h2 id="generated-note-title">Generated note</h2>
           <p id="validationHint">Warnings are advisory. Required operative fields depend on the selected procedure.</p>
         </div>
 
@@ -867,6 +878,24 @@
           <h3>Checks</h3>
           <ul id="warningList"></ul>
         </div>
+
+        <label class="field output-mode-field" for="outputMode">
+          <span>Output mode</span>
+          <select id="outputMode" name="outputMode">
+            <option value="full">Full operative note</option>
+            <option value="postOp">Post-operative plan only</option>
+            <option value="handover">Ward handover summary</option>
+          </select>
+        </label>
+
+        <div id="staleOutputMessage" class="message message-warning" hidden>
+          Form details changed after generation. Regenerate before copying.
+        </div>
+
+        <label class="review-confirmation">
+          <input type="checkbox" id="reviewBeforeCopy">
+          <span>I have reviewed this generated draft and it reflects the current form entries.</span>
+        </label>
 
         <div class="output-actions">
           <button type="button" id="copyButton" class="secondary-button" disabled>Copy to Clipboard</button>

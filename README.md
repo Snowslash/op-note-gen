@@ -127,3 +127,11 @@ The generated note can include:
 
 - [SPEC.md](./SPEC.md) captures the MVP scope and generation rules.
 - This tool is for drafting assistance, not clinical decision-making.
+
+
+## Safety workflow additions
+
+- Generated output is treated as stale after edits until regenerated.
+- Clipboard copy requires explicit review of the current generated draft.
+- Output modes include full operative note, post-operative plan only and ward handover summary.
+- The app remains static/browser-only with no backend, upload or AI rewriting.

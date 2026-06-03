@@ -50,9 +50,16 @@ function createFakeApp({ values = {}, radios = {}, checks = {}, teamMembers = []
       setAttribute(name, value) {
         this[name] = value;
       },
+      removeAttribute(name) {
+        delete this[name];
+      },
       addEventListener() {},
       appendChild() {},
       querySelectorAll(selector) {
+        if (id === "note-form" && selector === "[aria-invalid='true']") {
+          return [];
+        }
+
         if (id === "teamMembersList" && selector === ".team-member-row") {
           return teamMembers.map((member) => ({
             querySelector(childSelector) {
@@ -667,6 +674,93 @@ function testProcedureFieldDefinitionsMatchHtmlControls() {
   assert.deepStrictEqual(missing, []);
 }
 
+
+function testOutputModesUseExplicitPlanContentOnly() {
+  const context = createFakeApp({
+    values: {
+      procedureSelect: "lapAppendicectomy",
+      indication: "Acute appendicitis",
+      findings: "Inflamed appendix",
+      anaesthetic: "GA",
+      stumpControl: "Endoloops",
+      entryTechnique: "Hasson",
+      postOpPlan: "Ward care and oral analgesia",
+    },
+    radios: {
+      drainStatus: "no",
+      perforation: "no",
+      contaminationPresent: "no",
+      specimenRemovedInBag: "yes",
+      washoutPerformed: "no",
+      haemostasisConfirmed: "yes",
+    },
+  });
+
+  const postOp = vm.runInContext(
+    'DOM.outputMode.value = "postOp"; generateNote(collectValues(), getActiveProcedure()).join("\\n\\n")',
+    context,
+  );
+
+  assertIncludes(postOp, "Procedure: Laparoscopic appendicectomy");
+  assertIncludes(postOp, "Post-operative care instructions: Ward care and oral analgesia");
+  assert.ok(!postOp.includes("Antibiotic prophylaxis: not specified"));
+  assert.ok(!postOp.includes("DVT prophylaxis: not specified"));
+
+  const handover = vm.runInContext(
+    'DOM.outputMode.value = "handover"; generateNote(collectValues(), getActiveProcedure()).join("\\n\\n")',
+    context,
+  );
+
+  assertIncludes(handover, "Findings: Inflamed appendix");
+  assertIncludes(handover, "Post-operative care instructions: Ward care and oral analgesia");
+  assert.ok(!handover.includes("Complications: not specified"));
+}
+
+function testStaleDraftAndReviewGateControlCopyState() {
+  const context = createFakeApp({
+    values: {
+      procedureSelect: "lapAppendicectomy",
+      indication: "Acute appendicitis",
+      findings: "Inflamed appendix",
+      anaesthetic: "GA",
+      stumpControl: "Endoloops",
+      entryTechnique: "Hasson",
+    },
+    radios: {
+      drainStatus: "no",
+      perforation: "no",
+      contaminationPresent: "no",
+      specimenRemovedInBag: "yes",
+      washoutPerformed: "no",
+      haemostasisConfirmed: "yes",
+    },
+  });
+
+  vm.runInContext('generateNote(collectValues(), getActiveProcedure())', context);
+  assert.strictEqual(vm.runInContext('DOM.copyButton.disabled', context), true);
+
+  vm.runInContext('DOM.reviewBeforeCopy.checked = true; APP_STATE.reviewConfirmed = true; syncCopyState()', context);
+  assert.strictEqual(vm.runInContext('DOM.copyButton.disabled', context), false);
+
+  vm.runInContext('DOM.reviewBeforeCopy.checked = false; APP_STATE.reviewConfirmed = false; syncCopyState()', context);
+  assert.strictEqual(vm.runInContext('DOM.copyButton.disabled', context), true);
+
+  vm.runInContext('DOM.reviewBeforeCopy.checked = true; APP_STATE.reviewConfirmed = true; syncCopyState(); invalidateGeneratedNote()', context);
+  assert.strictEqual(vm.runInContext('APP_STATE.noteFresh', context), false);
+  assert.strictEqual(vm.runInContext('DOM.copyButton.disabled', context), true);
+  assert.strictEqual(vm.runInContext('DOM.staleOutputMessage.hidden', context), false);
+}
+
+function testClearNoteClearsWarningUiButPreservesInputs() {
+  const context = createFakeApp({ values: { indication: "Appendicitis" } });
+
+  vm.runInContext('DOM.warningBox.hidden = false; DOM.warningList.innerHTML = "<li>warning</li>"; APP_STATE.latestNoteText = "draft"; resetGeneratedNoteState({ clearWarningsUi: true })', context);
+
+  assert.strictEqual(vm.runInContext('DOM.warningBox.hidden', context), true);
+  assert.strictEqual(vm.runInContext('DOM.warningList.innerHTML', context), "");
+  assert.strictEqual(vm.runInContext("document.getElementById('indication').value", context), "Appendicitis");
+}
+
 function testBlankComplicationsAreNotInvented() {
   const note = generateNote({
     values: {
@@ -704,4 +798,7 @@ testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement();
 testDiagnosticLaparoscopyGeneratesStructuredNote();
 testProcedureFieldDefinitionsMatchHtmlControls();
 testBlankComplicationsAreNotInvented();
+testOutputModesUseExplicitPlanContentOnly();
+testStaleDraftAndReviewGateControlCopyState();
+testClearNoteClearsWarningUiButPreservesInputs();
 console.log("procedure smoke tests passed");
