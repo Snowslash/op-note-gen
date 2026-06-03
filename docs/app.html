@@ -96,17 +96,24 @@
     </section>
 
     <main class="layout">
-      <section class="panel form-panel">
-        <nav class="section-jump-nav" aria-label="Form sections">
-          <a href="#procedure-section-title">Procedure</a>
-          <a href="#admin-details-title">Admin</a>
-          <a href="#clinical-details-title">Clinical</a>
-          <a href="#operative-steps-title">Operation</a>
-          <a href="#completion-details-title">Completion</a>
-          <a href="#generated-note-title">Output</a>
-        </nav>
+      <div class="form-workspace">
+        <aside class="panel section-nav-panel" aria-labelledby="section-nav-title">
+          <div class="section-header section-header-compact">
+            <h2 id="section-nav-title">Jump to</h2>
+          </div>
 
-        <form id="note-form" novalidate>
+          <nav class="section-jump-nav" aria-label="Form sections">
+            <a href="#procedure-section-title">Procedure</a>
+            <a href="#admin-details-title">Admin</a>
+            <a href="#clinical-details-title">Clinical</a>
+            <a href="#operative-steps-title">Operation</a>
+            <a href="#completion-details-title">Completion</a>
+            <a href="#generated-note-title">Output</a>
+          </nav>
+        </aside>
+
+        <section class="panel form-panel">
+          <form id="note-form" novalidate>
           <section class="form-section">
             <div class="section-header section-header-compact">
               <h2 id="admin-details-title">Admin details</h2>
@@ -863,8 +870,9 @@
             <button type="button" id="clearNoteButton" class="secondary-button">Clear note</button>
             <button type="button" id="clearFormButton" class="danger-button">Clear form</button>
           </div>
-        </form>
-      </section>
+          </form>
+        </section>
+      </div>
 
       <aside class="panel note-panel">
         <div class="section-header section-header-compact">

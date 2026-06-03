@@ -268,7 +268,8 @@ function buildPostOperativePlanLine(values) {
   ].join("\n");
 }
 
-function buildStructuredPostOperativePlan(values) {
+function buildStructuredPostOperativePlan(values, options = {}) {
+  const { postOperativeCareLabel = "Post-operative care instructions" } = options;
   const lines = [];
 
   if (values.antibioticProphylaxis.trimmed) {
@@ -280,14 +281,17 @@ function buildStructuredPostOperativePlan(values) {
   }
 
   if (values.postOpPlan.trimmed) {
-    lines.push(`Post-operative care instructions: ${values.postOpPlan.raw}`);
+    lines.push(`${postOperativeCareLabel}: ${values.postOpPlan.raw}`);
   }
 
   return lines;
 }
 
 function buildPostOperativePlanOutput(values, procedure) {
-  const lines = [`Procedure: ${procedure.title}`, ...buildStructuredPostOperativePlan(values)];
+  const lines = [
+    `Procedure: ${procedure.title}`,
+    ...buildStructuredPostOperativePlan(values, { postOperativeCareLabel: "Care instructions" }),
+  ];
   return lines.length > 1 ? [lines.join("\n")] : [`Procedure: ${procedure.title}\nPost-operative plan: no plan details entered.`];
 }
 
@@ -297,7 +301,7 @@ function buildHandoverOutput(values, procedure) {
     values.findings.trimmed ? `Findings: ${values.findings.raw}` : "",
     values.drainStatus === "yes" ? `Drain: ${buildDrainText(values)}` : "",
     values.complications.trimmed ? `Complications: ${buildComplicationsText(values)}` : "",
-    ...buildStructuredPostOperativePlan(values),
+    ...buildStructuredPostOperativePlan(values, { postOperativeCareLabel: "Care instructions" }),
   ].filter(Boolean);
 
   return [lines.join("\n")];

@@ -702,7 +702,8 @@ function testOutputModesUseExplicitPlanContentOnly() {
   );
 
   assertIncludes(postOp, "Procedure: Laparoscopic appendicectomy");
-  assertIncludes(postOp, "Post-operative care instructions: Ward care and oral analgesia");
+  assertIncludes(postOp, "Care instructions: Ward care and oral analgesia");
+  assert.ok(!postOp.includes("Post-operative care instructions:"));
   assert.ok(!postOp.includes("Antibiotic prophylaxis: not specified"));
   assert.ok(!postOp.includes("DVT prophylaxis: not specified"));
 
@@ -712,7 +713,8 @@ function testOutputModesUseExplicitPlanContentOnly() {
   );
 
   assertIncludes(handover, "Findings: Inflamed appendix");
-  assertIncludes(handover, "Post-operative care instructions: Ward care and oral analgesia");
+  assertIncludes(handover, "Care instructions: Ward care and oral analgesia");
+  assert.ok(!handover.includes("Post-operative care instructions:"));
   assert.ok(!handover.includes("Complications: not specified"));
 }
 
