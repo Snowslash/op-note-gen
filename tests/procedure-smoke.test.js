@@ -790,7 +790,10 @@ function testAppSafetyNoticeAndHeaderDividerArePresent() {
   assert.ok(html.includes('class="app-safety-notice"'), "Expected app page to include the top safety notice box.");
   assert.ok(html.includes("Do not enter patient-identifiable information."));
   assert.ok(css.includes(".app-body .app-safety-notice"), "Expected app safety notice styling.");
+  assert.ok(css.includes(".app-body .app-safety-notice {\n  width: 100%;"), "Expected app safety notice to span the page content width.");
   assert.ok(css.includes(".app-body .page-header {\n  max-width: none;"), "Expected app header divider to span the page width.");
+  assert.ok(css.includes(".section-jump-nav a {\n  display: block;\n  border: 1px solid var(--border);"), "Expected jump links to render as bordered boxes.");
+  assert.ok(!css.includes("var(--border-subtle)"), "Jump link borders must not depend on an undefined CSS variable.");
 }
 
 testAppendicectomyStillGenerates();
