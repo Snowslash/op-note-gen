@@ -783,6 +783,16 @@ function testBlankComplicationsAreNotInvented() {
   );
 }
 
+function testAppSafetyNoticeAndHeaderDividerArePresent() {
+  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
+
+  assert.ok(html.includes('class="app-safety-notice"'), "Expected app page to include the top safety notice box.");
+  assert.ok(html.includes("Do not enter patient-identifiable information."));
+  assert.ok(css.includes(".app-body .app-safety-notice"), "Expected app safety notice styling.");
+  assert.ok(css.includes(".app-body .page-header {\n  max-width: none;"), "Expected app header divider to span the page width.");
+}
+
 testAppendicectomyStillGenerates();
 testOperationDateTimeAutofillsOnLoad();
 testOpenInguinalHerniaRepairIsWiredInUiAndRegistry();
@@ -803,4 +813,5 @@ testBlankComplicationsAreNotInvented();
 testOutputModesUseExplicitPlanContentOnly();
 testStaleDraftAndReviewGateControlCopyState();
 testClearNoteClearsWarningUiButPreservesInputs();
+testAppSafetyNoticeAndHeaderDividerArePresent();
 console.log("procedure smoke tests passed");
