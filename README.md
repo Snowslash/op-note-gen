@@ -1,16 +1,10 @@
 # Operative Note Generator
 
-Single-page operative note generator for **laparoscopic appendicectomy**, **laparoscopic cholecystectomy**, **diagnostic laparoscopy +/- washout / adhesiolysis**, **incision and drainage of abscess**, **open inguinal hernia repair**, **open umbilical hernia repair**, and **emergency laparotomy**, built with:
+A static browser-based operative note drafting tool for common emergency and general surgical procedures.
 
-- HTML
-- CSS
-- Vanilla JavaScript
+The app helps clinicians turn structured intra-operative information into a clear draft note. It does not use a backend, upload patient data, call an AI service or invent clinical details.
 
-The app is designed to speed up note drafting while keeping output structured, factual, and easy to review.
-
-## Scope
-
-This version supports:
+## Supported Procedures
 
 - Laparoscopic appendicectomy
 - Laparoscopic cholecystectomy
@@ -22,81 +16,94 @@ This version supports:
 
 ## Features
 
-- Structured input form with a compact two-column layout
-- Compact procedure choice buttons backed by an accessible fallback dropdown
-- Dark mode toggle with local preference persistence
-- Generated operative note preview
-- Copy-to-clipboard button
-- Admin/team fields including:
-  - surgeon
-  - assistant
-  - supervising consultant
-  - anaesthetic
-  - anaesthetist
-  - additional team members
-  - autofilled editable date/time
-- Raw multiline handling for:
-  - indication
-  - findings
-  - ports
-  - appendix, gallbladder, abdominal survey, or abscess/wound appearance
-  - contamination description
-  - bile or stone spillage details
-  - washout, adhesiolysis, source control, abscess site, contents, packing/drain details, hernia sac, mesh, cord structures, ilioinguinal nerve status, umbilical hernia defect size, umbilical repair method, laparotomy pathology, bowel resection, anastomosis, stoma, and temporary abdominal closure
-  - cholangiogram findings
-  - conversion reason
-  - additional operative details
-- Rule-based structured operation detail generation
-- Conditional handling for:
-  - drain details
-  - contamination
-  - washout
-  - conversion to open
-  - bile or stone spillage
-  - intraoperative cholangiogram
-  - closure details
-  - antibiotic prophylaxis
-  - DVT prophylaxis
-  - post-operative care instructions
-  - mesh details for open inguinal and open umbilical hernia repair
-  - emergency laparotomy modules for bowel resection, anastomosis, stoma, washout, and temporary abdominal closure
-- Non-blocking warnings for missing specimen, complications, and drain status
+- Single-page HTML, CSS and vanilla JavaScript app
+- Procedure-specific structured forms
+- Accessible procedure dropdown with compact procedure buttons
+- Editable auto-filled date and time
+- Team fields for surgeon, assistant, supervising consultant, anaesthetic, anaesthetist and additional staff
+- Rule-based operative note generation
+- Output modes for:
+  - full operative note
+  - post-operative plan only
+  - ward handover summary
+- Conditional fields for drains, contamination, washout, conversion to open, bile or stone spillage, cholangiogram, closure, mesh, laparotomy modules, post-operative care and prophylaxis
+- Non-blocking warnings for missing specimen, complications and drain status
+- Stale-output warning after form edits
+- Explicit review step before copying generated text
+- Dark mode with local browser preference persistence
 
-## Safety Rules
+## Safety Model
 
-- No invented clinical details
+This is a drafting aid, not a clinical decision-making tool.
+
 - No AI rewriting layer
+- No invented clinical details
 - User-entered free text is preserved as typed
 - Missing fields are omitted or shown as `not specified` where appropriate
 - Unanswered structured operation fields are shown as `not specified`
 - Required fields must be completed before note generation
-- The generated note should always be reviewed by the clinician before use
+- Generated output is marked stale after edits until regenerated
+- Clipboard copy requires explicit review of the current generated draft
+- The final note must be reviewed and corrected by the responsible clinician before use
 
-## How To Use
+## Privacy and Data Handling
 
-1. Open the landing page at [docs/index.html](./docs/index.html).
-2. Select **Open generator**, or open [docs/app.html](./docs/app.html) directly.
-3. Choose the operation using the compact procedure buttons.
-4. Complete the form.
-5. Select **Generate Note**.
-6. Review the generated note.
-7. Use **Copy to Clipboard** if needed.
+- Runs entirely in the browser
+- No backend
+- No database
+- No upload
+- No analytics
+- No AI/API calls
+- Clipboard access only occurs when the user selects **Copy to Clipboard**
+- Dark-mode preference is stored locally in the browser
 
-There is no build step and no backend. For local verification, run:
+Do not enter identifiable patient information into any hosted copy unless the deployment environment has been reviewed and approved for that use.
+
+## Quick Start
+
+Open the app directly in a browser:
+
+1. Open [docs/index.html](./docs/index.html).
+2. Select **Open generator**.
+
+You can also open [docs/app.html](./docs/app.html) directly.
+
+No build step is required.
+
+## Using the App
+
+1. Choose the operation.
+2. Complete the required fields and any relevant optional fields.
+3. Select **Generate Note**.
+4. Review the generated draft carefully.
+5. If the draft is accurate, confirm review and use **Copy to Clipboard** if needed.
+6. Paste into the approved clinical record system and make any final edits there.
+
+## Local Verification
+
+Requires Node.js and npm.
 
 ```bash
 npm run verify
 ```
 
-This performs JavaScript syntax checks and runs the procedure smoke tests.
+This runs JavaScript syntax checks and procedure smoke tests.
+
+Available scripts:
+
+```bash
+npm run check:js
+npm test
+npm run verify
+```
 
 ## Output Structure
 
-The generated note can include:
+Depending on the selected procedure and completed fields, the generated note can include:
 
 - Procedure
 - Date/time
-- Surgeon / Assistant
+- Surgeon / assistant
 - Additional team members
 - Supervising consultant
 - Anaesthetic
@@ -110,28 +117,23 @@ The generated note can include:
 - Estimated blood loss
 - Complications
 - Closure
-- Post-operative plan, including antibiotic prophylaxis, DVT prophylaxis, and care instructions
+- Post-operative plan, including antibiotic prophylaxis, DVT prophylaxis and care instructions
 
-## Project Files
+## Project Structure
 
 - [docs/index.html](./docs/index.html) - static landing page
-- [docs/app.html](./docs/app.html) - app structure and form fields
+- [docs/app.html](./docs/app.html) - app shell and form markup
 - [docs/styles.css](./docs/styles.css) - landing page and app styling
-- `docs/js/core.js` centralizes shared DOM/state helpers and formatting utilities.
-- `docs/js/note-formatters.js` centralizes common output section builders and note-formatting helpers.
-- `docs/js/procedures.js` centralizes procedure-specific configs and operation text generation.
-- `docs/js/app.js` handles validation, rendering, event listeners, and app initialisation.
-- `tests/procedure-smoke.test.js` covers procedure wiring and generated-note safety regressions.
+- [docs/theme.js](./docs/theme.js) - theme handling
+- [docs/js/core.js](./docs/js/core.js) - shared DOM, state and formatting helpers
+- [docs/js/note-formatters.js](./docs/js/note-formatters.js) - common output section builders and note-formatting helpers
+- [docs/js/procedures.js](./docs/js/procedures.js) - procedure-specific configuration and operation text generation
+- [docs/js/app.js](./docs/js/app.js) - validation, rendering, event listeners and app initialisation
+- [tests/procedure-smoke.test.js](./tests/procedure-smoke.test.js) - procedure wiring and generated-note regression tests
+- [SPEC.md](./SPEC.md) - scope and generation rules
+- [PRODUCT.md](./PRODUCT.md) - product rationale and user-facing behaviour
+- [DESIGN.md](./DESIGN.md) - visual design notes
 
-## Notes
+## Clinical Disclaimer
 
-- [SPEC.md](./SPEC.md) captures the MVP scope and generation rules.
-- This tool is for drafting assistance, not clinical decision-making.
-
-
-## Safety workflow additions
-
-- Generated output is treated as stale after edits until regenerated.
-- Clipboard copy requires explicit review of the current generated draft.
-- Output modes include full operative note, post-operative plan only and ward handover summary.
-- The app remains static/browser-only with no backend, upload or AI rewriting.
+This project produces draft text only. It does not replace clinical judgement, local documentation policy, consent requirements, operation-specific safety checks or senior review where required.

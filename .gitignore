@@ -15,3 +15,20 @@ node_modules/
 dist/
 .cache/
 *.log
+
+# local/internal planning and agent workflow notes
+docs/plans/
+docs/*WORKFLOW*.md
+*.scratch.md
+*.tmp.md
+
+# local agent state
+.hermes/
+.claude/
+.codex/
+.opencode/
+
+# local review artifacts
+screenshots/
+artifacts/
+review-artifacts/
