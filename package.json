@@ -6,6 +6,11 @@
   "scripts": {
     "check:js": "node --check docs/theme.js && node --check docs/js/core.js && node --check docs/js/note-formatters.js && node --check docs/js/procedures.js && node --check docs/js/app.js && node --check tests/procedure-smoke.test.js",
     "test": "node tests/procedure-smoke.test.js",
-    "verify": "npm run check:js && npm test"
+    "verify": "npm run check:js && npm test",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.107.1"
   }
 }
