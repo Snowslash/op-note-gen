@@ -4,66 +4,69 @@
 
 :root {
   color-scheme: light;
-  --bg: #f7f6f2;
-  --panel: #fffefa;
-  --panel-muted: #fbf8f0;
-  --panel-soft: #f4efe5;
-  --text: #1f2328;
-  --text-strong: #1f2328;
-  --text-muted: #5c6570;
-  --text-subtle: #756f64;
-  --brand: #184f6a;
-  --brand-hover: #113b50;
-  --accent: #184f6a;
-  --accent-hover: #113b50;
-  --border: #c9c3b7;
-  --border-soft: #d8d4ca;
-  --border-strong: #9f927d;
-  --border-control: #9f927d;
-  --secondary: #e9e2d6;
-  --secondary-hover: #ddd3c2;
-  --danger-bg: #fee2e2;
-  --danger-hover: #fecaca;
-  --danger-text: #991b1b;
-  --error-bg: #fff1f2;
-  --error-border: #f8b4bd;
-  --error-text: #9b1c1c;
-  --warning-bg: #fff4d8;
-  --warning-border: #d7b86d;
-  --warning-text: #8d5d00;
-  --shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+  --bg: #f4f0e8;
+  --panel: #fbf8f2;
+  --panel-muted: #f3eadf;
+  --panel-soft: #eadfce;
+  --text: #1d1b18;
+  --text-strong: #1d1b18;
+  --text-muted: #655e55;
+  --text-subtle: #776d62;
+  --brand: #8a1538;
+  --brand-hover: #641028;
+  --accent: #8a1538;
+  --accent-hover: #641028;
+  --border: #c7b8a5;
+  --border-soft: #d8cbbb;
+  --border-strong: #9b8770;
+  --border-control: #9b8770;
+  --secondary: #eadfce;
+  --secondary-hover: #e0d1be;
+  --danger-bg: #f4dada;
+  --danger-hover: #edc2c2;
+  --danger-text: #8a1538;
+  --error-bg: #f8e4e4;
+  --error-border: #d8a3a3;
+  --error-text: #8a1538;
+  --warning-bg: #f8ead3;
+  --warning-border: #c7b8a5;
+  --warning-text: #65481c;
+  --font-display: ui-serif, Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  --font-body: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+  --shadow: none;
 }
 
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: #151512;
-  --panel: #1d1c18;
-  --panel-muted: #1d1b17;
-  --panel-soft: #25231d;
-  --text: #ebe7dc;
-  --text-strong: #ebe7dc;
-  --text-muted: #b4ab9b;
-  --text-subtle: #9f9585;
-  --brand: #9fc7d7;
-  --brand-hover: #c0deea;
-  --accent: #9fc7d7;
-  --accent-hover: #c0deea;
-  --border: #4a4438;
-  --border-soft: #3a362d;
-  --border-strong: #746a5b;
-  --border-control: #746a5b;
-  --secondary: #342f28;
-  --secondary-hover: #443d34;
-  --danger-bg: #3b1115;
-  --danger-hover: #561920;
-  --danger-text: #fecdd3;
-  --error-bg: #3b1115;
-  --error-border: #7f1d1d;
-  --error-text: #fecdd3;
-  --warning-bg: #2e2208;
-  --warning-border: #7c5d19;
-  --warning-text: #fde68a;
-  --shadow: 0 12px 34px rgba(0, 0, 0, 0.32);
+  --bg: #1d1b18;
+  --panel: #24211d;
+  --panel-muted: #211f1b;
+  --panel-soft: #2b2722;
+  --text: #f4f0e8;
+  --text-strong: #f4f0e8;
+  --text-muted: #c7b8a5;
+  --text-subtle: #aa9b87;
+  --brand: #c75b7a;
+  --brand-hover: #e18aa2;
+  --accent: #c75b7a;
+  --accent-hover: #e18aa2;
+  --border: #655e55;
+  --border-soft: #514941;
+  --border-strong: #8b7b68;
+  --border-control: #8b7b68;
+  --secondary: #302b25;
+  --secondary-hover: #3a342c;
+  --danger-bg: #3b151c;
+  --danger-hover: #521d28;
+  --danger-text: #ffd8df;
+  --error-bg: #3b151c;
+  --error-border: #783040;
+  --error-text: #ffd8df;
+  --warning-bg: #2d251b;
+  --warning-border: #655e55;
+  --warning-text: #f0d49a;
+  --shadow: none;
 }
 
 [hidden] {
@@ -709,22 +712,22 @@ button:disabled {
 
 /* Static landing page */
 .landing-body {
-  --bg: #f7f6f2;
-  --panel: #fffefa;
+  --bg: #f4f0e8;
+  --panel: #fbf8f2;
   --panel-muted: #fbf8f0;
   --panel-soft: #eeebe3;
-  --text: #1f2328;
-  --text-strong: #1f2328;
-  --text-muted: #5c6570;
+  --text: #1d1b18;
+  --text-strong: #1d1b18;
+  --text-muted: #655e55;
   --text-subtle: #6f776f;
-  --brand: #184f6a;
-  --brand-hover: #113b50;
-  --accent: #184f6a;
-  --border: #c9c3b7;
+  --brand: #8a1538;
+  --brand-hover: #641028;
+  --accent: #8a1538;
+  --border: #c7b8a5;
   --border-soft: #d8d4ca;
-  --border-control: #9f927d;
-  --warning-bg: #fff4d8;
-  --warning-border: #d7b86d;
+  --border-control: #9b8770;
+  --warning-bg: #f8ead3;
+  --warning-border: #c7b8a5;
   --shadow: none;
   min-height: 100vh;
   background: var(--bg);
@@ -735,22 +738,22 @@ button:disabled {
 }
 
 [data-theme="dark"] .landing-body {
-  --bg: #151512;
-  --panel: #1d1c18;
+  --bg: #1d1b18;
+  --panel: #24211d;
   --panel-muted: #1d1b17;
   --panel-soft: #25231d;
-  --text: #ebe7dc;
-  --text-strong: #ebe7dc;
-  --text-muted: #b4ab9b;
+  --text: #f4f0e8;
+  --text-strong: #f4f0e8;
+  --text-muted: #c7b8a5;
   --text-subtle: #9f9585;
-  --brand: #9fc7d7;
-  --brand-hover: #c0deea;
-  --accent: #9fc7d7;
-  --border: #4a4438;
+  --brand: #c75b7a;
+  --brand-hover: #e18aa2;
+  --accent: #c75b7a;
+  --border: #655e55;
   --border-soft: #3a362d;
-  --border-control: #746a5b;
-  --warning-bg: #2e2208;
-  --warning-border: #7c5d19;
+  --border-control: #8b7b68;
+  --warning-bg: #2d251b;
+  --warning-border: #655e55;
 }
 
 .landing-body a {
@@ -1073,22 +1076,22 @@ button:disabled {
 /* Plain app chrome overrides: keep the generator functional, but make the
    visible header/navigation match the public pages rather than the old SaaS skin. */
 .app-body {
-  --bg: #f7f6f2;
-  --panel: #fffefa;
+  --bg: #f4f0e8;
+  --panel: #fbf8f2;
   --panel-muted: #fbf8f0;
   --panel-soft: #f4efe5;
-  --text: #1f2328;
-  --text-strong: #1f2328;
-  --text-muted: #5c6570;
+  --text: #1d1b18;
+  --text-strong: #1d1b18;
+  --text-muted: #655e55;
   --text-subtle: #756f64;
-  --brand: #184f6a;
-  --brand-hover: #113b50;
-  --accent: #184f6a;
-  --accent-hover: #113b50;
-  --border: #c9c3b7;
+  --brand: #8a1538;
+  --brand-hover: #641028;
+  --accent: #8a1538;
+  --accent-hover: #641028;
+  --border: #c7b8a5;
   --border-soft: #d8d4ca;
-  --border-strong: #9f927d;
-  --border-control: #9f927d;
+  --border-strong: #9b8770;
+  --border-control: #9b8770;
   --secondary: #e9e2d6;
   --secondary-hover: #ddd3c2;
   --shadow: none;
@@ -1098,31 +1101,31 @@ button:disabled {
 }
 
 html[data-theme="dark"] .landing-body {
-  --landing-paper: #151512;
-  --landing-ink: #ebe7dc;
-  --landing-muted: #b4ab9b;
-  --landing-rule: #4a4438;
-  --landing-rule-strong: #746a5b;
-  --landing-link: #9fc7d7;
+  --landing-paper: #1d1b18;
+  --landing-ink: #f4f0e8;
+  --landing-muted: #c7b8a5;
+  --landing-rule: #655e55;
+  --landing-rule-strong: #8b7b68;
+  --landing-link: #c75b7a;
 }
 
 [data-theme="dark"] .app-body {
-  --bg: #151512;
-  --panel: #1d1c18;
+  --bg: #1d1b18;
+  --panel: #24211d;
   --panel-muted: #1d1b17;
   --panel-soft: #25231d;
-  --text: #ebe7dc;
-  --text-strong: #ebe7dc;
-  --text-muted: #b4ab9b;
+  --text: #f4f0e8;
+  --text-strong: #f4f0e8;
+  --text-muted: #c7b8a5;
   --text-subtle: #9f9585;
-  --brand: #9fc7d7;
-  --brand-hover: #c0deea;
-  --accent: #9fc7d7;
-  --accent-hover: #c0deea;
-  --border: #4a4438;
+  --brand: #c75b7a;
+  --brand-hover: #e18aa2;
+  --accent: #c75b7a;
+  --accent-hover: #e18aa2;
+  --border: #655e55;
   --border-soft: #3a362d;
-  --border-strong: #746a5b;
-  --border-control: #746a5b;
+  --border-strong: #8b7b68;
+  --border-control: #8b7b68;
   --secondary: #342f28;
   --secondary-hover: #443d34;
 }
@@ -1376,4 +1379,180 @@ html[data-theme="dark"] .landing-body {
     flex: 0 0 auto;
     scroll-snap-align: start;
   }
+}
+
+
+/* Open Design visual language rollout — 2026-07-08.
+   Applies the warm project-note system to both the landing page and runnable generator. */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-body, system-ui, sans-serif);
+}
+
+.site-nav {
+  width: min(900px, calc(100% - 32px));
+  align-items: baseline;
+  justify-content: flex-start;
+  gap: 8px 14px;
+  margin: 0 auto 24px;
+  padding: 11px 0 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.site-nav-brand,
+.site-nav-links a {
+  color: var(--text-muted);
+  font-family: var(--font-body, system-ui, sans-serif);
+  font-weight: 400;
+  letter-spacing: 0;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+
+.site-nav-brand,
+.site-nav-links a,
+.landing-body .site-nav-brand,
+.landing-body .site-nav-links a {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 0;
+}
+
+.site-nav-links {
+  gap: 8px 14px;
+  justify-content: flex-start;
+}
+
+.site-nav-links a[aria-current="page"],
+.landing-body .site-nav-links a[aria-current="page"] {
+  color: var(--text-strong);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.theme-toggle,
+.landing-body .theme-toggle {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.page,
+.landing-shell {
+  max-width: 900px;
+}
+
+h1,
+h2,
+h3,
+.landing-body h1,
+.landing-body h2,
+.landing-body h3 {
+  font-family: var(--font-display, ui-serif, serif);
+  font-weight: 400;
+  letter-spacing: -0.018em;
+}
+
+.kicker {
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.panel,
+.landing-safety,
+.landing-note-example,
+.workflow-card,
+.procedure-choice,
+.disclosure,
+.team-members-block {
+  border-color: var(--border);
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.panel,
+.landing-note-example,
+.procedure-choice {
+  background: var(--panel);
+}
+
+button,
+.primary-button,
+.secondary-button,
+.danger-button,
+.landing-button {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.primary-button,
+.bottomAddButton,
+button.primary,
+.landing-button-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fbf8f2;
+}
+
+.secondary-button,
+.landing-button:not(.landing-button-primary) {
+  border-color: var(--border-strong);
+  color: var(--accent);
+}
+
+.procedure-choice.is-active,
+.procedure-choice[aria-pressed="true"] {
+  border-color: var(--accent);
+  background: var(--panel-soft);
+}
+
+.app-safety-notice,
+.landing-safety {
+  background: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+  color: var(--text-strong);
+}
+
+#logOutput,
+.generated-note {
+  background: var(--panel-muted);
+  border-color: var(--border);
+}
+
+/* User feedback polish — 2026-07-08. */
+.landing-hero h1 {
+  color: var(--accent);
+}
+
+.landing-button-primary:hover,
+.landing-button-primary:focus-visible {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--panel);
+}
+
+.landing-body a.landing-button-primary:hover,
+.landing-body a.landing-button-primary:focus-visible {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+  color: var(--panel);
+}
+
+.app-body .kicker {
+  color: var(--accent);
 }

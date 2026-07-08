@@ -562,12 +562,12 @@ function testThemeToggleAppliesAndPersistsDarkMode() {
     "Expected plain app chrome overrides to include dark-mode app-body variables.",
   );
   assert.ok(
-    html.includes('styles.css?v=20260531-appnav2'),
-    "Expected app page to request the cache-busted stylesheet containing the app navigation standardisation fix.",
+    html.includes('styles.css?v=20260708-od1'),
+    "Expected app page to request the cache-busted stylesheet containing the Open Design visual-language rollout.",
   );
   assert.ok(
-    html.includes('<html lang="en" data-theme="dark">'),
-    "Expected app page to render dark mode before JavaScript runs.",
+    html.includes('<html lang="en" data-theme="light">'),
+    "Expected app page to render the light Open Design theme before JavaScript runs.",
   );
 
   vm.runInContext('setTheme("dark")', context);

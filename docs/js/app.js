@@ -161,7 +161,7 @@ function showValidation(missing) {
 
 function showEmptyNoteState() {
   DOM.noteOutput.classList.add("note-output-empty");
-  DOM.noteOutput.innerHTML = "<p>Your operative note will appear here after generation.</p>";
+  DOM.noteOutput.innerHTML = "<p>Your operation note will appear here after generation.</p>";
 }
 
 function syncProcedureUi(procedure = getActiveProcedure()) {
@@ -334,7 +334,7 @@ DOM.copyButton.addEventListener("click", async () => {
 
   try {
     await navigator.clipboard.writeText(APP_STATE.latestNoteText);
-    DOM.copyFeedback.textContent = "Operative note copied to clipboard.";
+    DOM.copyFeedback.textContent = "Operation note copied to clipboard.";
   } catch (error) {
     DOM.copyFeedback.textContent = "Clipboard copy failed. Please copy the note manually.";
   }

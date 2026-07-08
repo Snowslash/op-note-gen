@@ -1,95 +1,72 @@
-# Operative Note Generator
+# Operation Note Generator
 
-A static browser-based operative note drafting tool for common emergency and general surgical procedures.
+Browser-only operation note drafting for common emergency general-surgery procedures.
 
-The app helps clinicians turn structured intra-operative information into a clear draft note. It does not use a backend, upload patient data, call an AI service or invent clinical details.
+The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store patient data or make clinical decisions.
 
-## Supported Procedures
+Live project page: https://opnotes.sangeev.me
+Source: https://github.com/Snowslash/op-note-gen
 
-- Laparoscopic appendicectomy
-- Laparoscopic cholecystectomy
-- Diagnostic laparoscopy +/- washout / adhesiolysis
-- Incision and drainage of abscess
-- Open inguinal hernia repair
-- Open umbilical hernia repair
-- Emergency laparotomy
+## What it supports
 
-## Features
+- laparoscopic appendicectomy
+- laparoscopic cholecystectomy
+- diagnostic laparoscopy +/- washout / adhesiolysis
+- incision and drainage of abscess
+- open inguinal hernia repair
+- open umbilical hernia repair
+- emergency laparotomy
 
-- Single-page HTML, CSS and vanilla JavaScript app
-- Procedure-specific structured forms
-- Accessible procedure dropdown with compact procedure buttons
-- Editable auto-filled date and time
-- Team fields for surgeon, assistant, supervising consultant, anaesthetic, anaesthetist and additional staff
-- Rule-based operative note generation
-- Output modes for:
-  - full operative note
-  - post-operative plan only
-  - ward handover summary
-- Conditional fields for drains, contamination, washout, conversion to open, bile or stone spillage, cholangiogram, closure, mesh, laparotomy modules, post-operative care and prophylaxis
-- Non-blocking warnings for missing specimen, complications and drain status
-- Stale-output warning after form edits
-- Explicit review step before copying generated text
-- Dark mode with local browser preference persistence
+## How to use it
 
-## Safety Model
+1. Open the generator.
+2. Choose the operation.
+3. Complete the required fields and any useful optional fields.
+4. Generate the note.
+5. Review and edit the generated text before copying it into the clinical record.
 
-This is a drafting aid, not a clinical decision-making tool.
+Do not enter patient-identifiable information into public pages or repositories. Any real clinical note remains the responsibility of the clinician using it.
 
-- No AI rewriting layer
-- No invented clinical details
-- User-entered free text is preserved as typed
-- Missing fields are omitted or shown as `not specified` where appropriate
-- Unanswered structured operation fields are shown as `not specified`
-- Required fields must be completed before note generation
-- Generated output is marked stale after edits until regenerated
-- Clipboard copy requires explicit review of the current generated draft
-- The final note must be reviewed and corrected by the responsible clinician before use
+## Privacy and safety boundary
 
-## Privacy and Data Handling
+- Runs entirely in the browser.
+- No login.
+- No backend or database.
+- No analytics.
+- No AI or external API calls.
+- Clipboard access happens only when the user selects the copy action.
+- Theme preference is stored locally in the browser.
 
-- Runs entirely in the browser
-- No backend
-- No database
-- No upload
-- No analytics
-- No AI/API calls
-- Clipboard access only occurs when the user selects **Copy to Clipboard**
-- Dark-mode preference is stored locally in the browser
+This is a drafting aid, not decision support, clinical validation, local policy, consent checking or senior review.
 
-Do not enter identifiable patient information into any hosted copy unless the deployment environment has been reviewed and approved for that use.
-
-## Quick Start
-
-Open the app directly in a browser:
-
-1. Open [docs/index.html](./docs/index.html).
-2. Select **Open generator**.
-
-You can also open [docs/app.html](./docs/app.html) directly.
+## Run locally
 
 No build step is required.
 
-## Using the App
+```bash
+git clone https://github.com/Snowslash/op-note-gen.git
+cd op-note-gen
+python3 -m http.server 8000 --directory docs
+```
 
-1. Choose the operation.
-2. Complete the required fields and any relevant optional fields.
-3. Select **Generate Note**.
-4. Review the generated draft carefully.
-5. If the draft is accurate, confirm review and use **Copy to Clipboard** if needed.
-6. Paste into the approved clinical record system and make any final edits there.
+Then open:
 
-## Local Verification
+```text
+http://127.0.0.1:8000/
+```
+
+The runnable app is at `docs/app.html`; the landing page is `docs/index.html`.
+
+## Verify
 
 Requires Node.js and npm.
 
 ```bash
+npm install
 npm run verify
 ```
 
-This runs JavaScript syntax checks and procedure smoke tests.
-
-Available scripts:
+Available checks:
 
 ```bash
 npm run check:js
@@ -97,43 +74,30 @@ npm test
 npm run verify
 ```
 
-## Output Structure
+`npm run verify` runs JavaScript syntax checks and the procedure smoke tests in `tests/procedure-smoke.test.js`.
 
-Depending on the selected procedure and completed fields, the generated note can include:
+## Project layout
 
-- Procedure
-- Date/time
-- Surgeon / assistant
-- Additional team members
-- Supervising consultant
-- Anaesthetic
-- Anaesthetist
-- Indication
-- Findings
-- Ports
-- Operation
-- Specimen
-- Drain
-- Estimated blood loss
-- Complications
-- Closure
-- Post-operative plan, including antibiotic prophylaxis, DVT prophylaxis and care instructions
+- `docs/index.html` — public landing page
+- `docs/app.html` — runnable generator shell and form markup
+- `docs/styles.css` — landing page and app styling
+- `docs/sangeev-public-tokens.css` — shared public-estate design tokens
+- `docs/theme.js` — local theme handling
+- `docs/js/core.js` — shared DOM, state and formatting helpers
+- `docs/js/note-formatters.js` — note section builders and formatting helpers
+- `docs/js/procedures.js` — procedure-specific configuration and operation text generation
+- `docs/js/app.js` — validation, rendering, event listeners and app initialisation
+- `tests/procedure-smoke.test.js` — procedure wiring and generated-note regression tests
+- `SPEC.md`, `PRODUCT.md`, `DESIGN.md` — project notes and behaviour/design rationale
 
-## Project Structure
+## Deployment
 
-- [docs/index.html](./docs/index.html) - static landing page
-- [docs/app.html](./docs/app.html) - app shell and form markup
-- [docs/styles.css](./docs/styles.css) - landing page and app styling
-- [docs/theme.js](./docs/theme.js) - theme handling
-- [docs/js/core.js](./docs/js/core.js) - shared DOM, state and formatting helpers
-- [docs/js/note-formatters.js](./docs/js/note-formatters.js) - common output section builders and note-formatting helpers
-- [docs/js/procedures.js](./docs/js/procedures.js) - procedure-specific configuration and operation text generation
-- [docs/js/app.js](./docs/js/app.js) - validation, rendering, event listeners and app initialisation
-- [tests/procedure-smoke.test.js](./tests/procedure-smoke.test.js) - procedure wiring and generated-note regression tests
-- [SPEC.md](./SPEC.md) - scope and generation rules
-- [PRODUCT.md](./PRODUCT.md) - product rationale and user-facing behaviour
-- [DESIGN.md](./DESIGN.md) - visual design notes
+The project is static and can be hosted by any static-site host. The current public deployment uses the files under `docs/`.
 
-## Clinical Disclaimer
+Suggested Cloudflare Pages settings:
 
-This project produces draft text only. It does not replace clinical judgement, local documentation policy, consent requirements, operation-specific safety checks or senior review where required.
+- Framework preset: None
+- Build command: blank
+- Build output directory: `docs`
+
+Do not deploy with analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.

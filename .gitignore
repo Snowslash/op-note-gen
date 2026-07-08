@@ -32,3 +32,12 @@ docs/*WORKFLOW*.md
 screenshots/
 artifacts/
 review-artifacts/
+
+# secret/certificate material
+*.pem
+*.p12
+*.pfx
+*.key
+secrets/
+credentials/
+*.local

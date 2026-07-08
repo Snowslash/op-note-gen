@@ -78,7 +78,7 @@ function setTheme(theme) {
 }
 
 function initialiseTheme() {
-  setTheme(getStoredTheme() || document.documentElement.dataset.theme || "dark");
+  setTheme(getStoredTheme() || document.documentElement.dataset.theme || "light");
 }
 
 function toggleTheme() {

@@ -1,7 +1,7 @@
-# Operative Note Generator - MVP Spec
+# Operation Note Generator - MVP Spec
 
 ## 1. Problem
-Operative notes are repetitive, time-consuming, and variable in quality.
+Operation notes are repetitive, time-consuming, and variable in quality.
 This tool standardises and accelerates note-writing while maintaining accuracy.
 
 ---
@@ -128,7 +128,7 @@ Do not add other procedures unless explicitly scoped.
 
 ## 7. Output Format (Fixed)
 
-The generated operative note must contain:
+The generated operation note must contain:
 
 - Procedure
 - Date/time

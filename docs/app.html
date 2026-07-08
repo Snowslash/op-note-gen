@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Operative Note Generator</title>
-  <link rel="stylesheet" href="sangeev-public-tokens.css?v=20260531-appnav2">
-  <link rel="stylesheet" href="styles.css?v=20260531-appnav2">
+  <title>Operation Note Generator</title>
+  <link rel="stylesheet" href="sangeev-public-tokens.css?v=20260708-od1">
+  <link rel="stylesheet" href="styles.css?v=20260708-od1">
 </head>
 <body class="app-body">
   <header class="site-nav" aria-label="Site navigation">
@@ -16,9 +16,9 @@
       <span aria-hidden="true">/</span>
       <a href="https://scratchpad.sangeev.me">Scratchpad</a>
     </nav>
-    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to light mode" aria-pressed="true">
-      <span aria-hidden="true">☀</span>
-      <span>Light</span>
+    <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" aria-pressed="false">
+      <span aria-hidden="true">☾</span>
+      <span>Dark</span>
     </button>
   </header>
 
@@ -26,12 +26,12 @@
     <header class="page-header">
       <div class="page-header-top">
         <div>
-          <p class="kicker">Operative Note Generator</p>
+          <p class="kicker">Operation Note Generator</p>
           <h1 id="procedureTitle">Laparoscopic appendicectomy</h1>
         </div>
       </div>
       <p class="intro">
-        Complete the structured fields below to generate a draft operative note.
+        Complete the structured fields below to generate a draft operation note.
         Do not enter patient-identifiable information. Review the output carefully before use.
       </p>
     </header>
@@ -123,7 +123,7 @@
           <section class="form-section">
             <div class="section-header section-header-compact">
               <h2 id="admin-details-title">Admin details</h2>
-              <p>Core identifiers for the operative note.</p>
+              <p>Core identifiers for the operation note.</p>
             </div>
 
             <div class="form-grid form-grid-admin">
@@ -896,7 +896,7 @@
         <label class="field output-mode-field" for="outputMode">
           <span>Output mode</span>
           <select id="outputMode" name="outputMode">
-            <option value="full">Full operative note</option>
+            <option value="full">Full operation note</option>
             <option value="postOp">Post-operative plan only</option>
             <option value="handover">Ward handover summary</option>
           </select>
@@ -917,7 +917,7 @@
         </div>
 
         <div id="noteOutput" class="note-output note-output-empty">
-          <p>Your operative note will appear here after generation.</p>
+          <p>Your operation note will appear here after generation.</p>
         </div>
       </aside>
     </main>
