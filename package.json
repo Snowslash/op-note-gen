@@ -5,7 +5,38 @@
   "description": "Static operation note generator for common general surgical procedures.",
   "scripts": {
     "check:js": "node --check docs/theme.js && node --check docs/js/core.js && node --check docs/js/note-formatters.js && node --check docs/js/procedures.js && node --check docs/js/app.js && node --check tests/helpers/v1-browser-harness.js && node --check tests/fixtures/v1/fixture-inputs.js && node --check tests/procedure-smoke.test.js && node --check tests/v1-parity-fixtures.test.js",
-    "test": "node tests/procedure-smoke.test.js && node tests/v1-parity-fixtures.test.js",
-    "verify": "npm run check:js && npm test"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint --deny-warnings src",
+    "test": "npm run test:contract && vitest run",
+    "test:contract": "node --test tests/v2-scaffold-contract.test.cjs",
+    "test:dist": "node --test tests/dist-output.test.cjs",
+    "test:v1": "npm run check:js && node tests/procedure-smoke.test.js && node tests/v1-parity-fixtures.test.js",
+    "verify": "npm run test:v1",
+    "check": "npm run lint && npm run test && npm run build && npm run test:dist && npm run test:v1"
+  },
+  "dependencies": {
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.24.0",
+    "radix-ui": "^1.6.2",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "tailwind-merge": "^3.6.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^26.1.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "jsdom": "^29.1.1",
+    "oxlint": "^1.73.0",
+    "tailwindcss": "^4.3.2",
+    "typescript": "^7.0.2",
+    "vite": "^8.1.4",
+    "vitest": "^4.1.10"
   }
 }

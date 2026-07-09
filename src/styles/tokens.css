@@ -1,0 +1,50 @@
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-destructive: var(--destructive);
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: Charter, Cambria, Georgia, serif;
+  --radius-sm: 0.125rem;
+  --radius-md: 0.25rem;
+}
+
+:root {
+  --background: #f4f0e8;
+  --foreground: #1d1b18;
+  --card: #fbf8f2;
+  --card-foreground: #1d1b18;
+  --primary: #8a1538;
+  --primary-foreground: #ffffff;
+  --primary-hover: #70102e;
+  --muted: #e7ded1;
+  --muted-foreground: #5f554c;
+  --border: #c7b8a5;
+  --input: #c7b8a5;
+  --ring: #8a1538;
+  --destructive: #9f1239;
+}
+
+.dark {
+  --background: #1d1b18;
+  --foreground: #f4f0e8;
+  --card: #24211d;
+  --card-foreground: #f4f0e8;
+  --primary: #a3264d;
+  --primary-foreground: #ffffff;
+  --primary-hover: #c43b63;
+  --muted: #302c27;
+  --muted-foreground: #c7b8a5;
+  --border: #52483d;
+  --input: #52483d;
+  --ring: #c43b63;
+  --destructive: #e06c88;
+}
