@@ -562,8 +562,8 @@ function testThemeToggleAppliesAndPersistsDarkMode() {
     "Expected plain app chrome overrides to include dark-mode app-body variables.",
   );
   assert.ok(
-    html.includes('styles.css?v=20260708-od1'),
-    "Expected app page to request the cache-busted stylesheet containing the Open Design visual-language rollout.",
+    html.includes('styles.css?v=20260709-burgundy1'),
+    "Expected app page to request the current cache-busted stylesheet containing the burgundy visual-language rollout.",
   );
   assert.ok(
     html.includes('<html lang="en" data-theme="light">'),
