@@ -4,8 +4,8 @@
   "private": true,
   "description": "Static operation note generator for common general surgical procedures.",
   "scripts": {
-    "check:js": "node --check docs/theme.js && node --check docs/js/core.js && node --check docs/js/note-formatters.js && node --check docs/js/procedures.js && node --check docs/js/app.js && node --check tests/procedure-smoke.test.js",
-    "test": "node tests/procedure-smoke.test.js",
+    "check:js": "node --check docs/theme.js && node --check docs/js/core.js && node --check docs/js/note-formatters.js && node --check docs/js/procedures.js && node --check docs/js/app.js && node --check tests/helpers/v1-browser-harness.js && node --check tests/fixtures/v1/fixture-inputs.js && node --check tests/procedure-smoke.test.js && node --check tests/v1-parity-fixtures.test.js",
+    "test": "node tests/procedure-smoke.test.js && node tests/v1-parity-fixtures.test.js",
     "verify": "npm run check:js && npm test"
   }
 }
