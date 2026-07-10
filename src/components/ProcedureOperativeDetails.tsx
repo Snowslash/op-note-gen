@@ -27,7 +27,6 @@ export function ProcedureOperativeDetails({
   return (
     <section aria-labelledby="operative-details-heading" className="space-y-5">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 3</p>
         <h2 id="operative-details-heading" className="font-serif text-2xl">Operative details</h2>
         <p className="mt-1 text-sm text-muted-foreground">{definition.hint}</p>
       </div>

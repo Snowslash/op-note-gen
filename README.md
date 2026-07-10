@@ -8,10 +8,7 @@ Live project page: https://opnotes.sangeev.me
 
 Source: https://github.com/Snowslash/op-note-gen
 
-The repository currently keeps two application surfaces:
-
-- `docs/` — the deployed v1 static baseline; do not replace it until the v2 cutover gates are explicitly approved.
-- `src/` — the Vite/React/TypeScript v2 candidate, built to `dist/`.
+The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the GitHub Pages deployment bundle in `docs/`.
 
 ## Supported procedures
 
@@ -68,6 +65,15 @@ npm run build
 
 The output is written to `dist/`. Security headers are copied from `public/_headers` and all runtime assets are self-hosted.
 
+Build the checked-in GitHub Pages bundle:
+
+```bash
+npm run build:pages
+npm run test:pages
+```
+
+This writes the same self-hosted application to `docs/`, preserving the existing GitHub Pages source contract used by `opnotes.sangeev.me`.
+
 ## Verify
 
 The canonical gate is:
@@ -106,16 +112,14 @@ The checked-in v1 fixture set covers all seven procedures in all three output mo
 - `tests/components/` — React journeys, all-procedure parity, accessibility, theme and privacy tests
 - `tests/domain/` — typed domain parity, warning and validation tests
 - `tests/fixtures/v1/` — deterministic synthetic v1 inputs and literal outputs
-- `docs/` — unchanged v1 production baseline
+- `docs/` — generated GitHub Pages deployment bundle for the React application
+- `legacy-v1/` — retained static v1 source for rollback and parity testing
 - `SPEC_V2.md` — v2 architecture, safety, design and cutover contract
 
 ## Deployment and cutover
 
-The application remains static-hostable. A v2 host should use:
+The application remains a static browser-only site. GitHub Pages currently publishes `main:/docs`; `opnotes.sangeev.me` is Cloudflare-proxied to that deployment. Pushing this feature branch does not alter production. Merging the verified branch into `main` publishes the React bundle through the existing GitHub Pages source while preserving the current domain and DNS path.
 
-- build command: `npm run build`
-- output directory: `dist`
-
-Do not point production at `dist/`, replace `docs/`, merge the v2 branch, or change DNS/build settings until the cutover decision is explicitly approved. Keep the existing v1 deployment available for rollback.
+Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
 
 Do not add analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.

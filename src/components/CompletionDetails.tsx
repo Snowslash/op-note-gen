@@ -20,7 +20,7 @@ export function CompletionDetails({ values, controls, onValueChange, onDrainChoi
 
   return (
     <section aria-labelledby="completion-heading" className="space-y-5">
-      <div><p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 4</p><h2 id="completion-heading" className="font-serif text-2xl">Completion</h2><p className="mt-1 text-sm text-muted-foreground">Specimen, drain, haemostasis, closure, and postoperative instructions.</p></div>
+      <div><h2 id="completion-heading" className="font-serif text-2xl">Completion</h2><p className="mt-1 text-sm text-muted-foreground">Specimen, drain, haemostasis, closure, and postoperative instructions.</p></div>
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Specimen" value={values.specimen} onChange={(value) => onValueChange("specimen", value)} />
         <YesNoField label="Drain placed" value={values.drainStatus} onChange={(value) => onValueChange("drainStatus", value)} />

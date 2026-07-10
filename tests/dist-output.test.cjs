@@ -30,7 +30,7 @@ test("production output retains browser-only headers and self-hosted assets", ()
 
   assert.ok(fs.existsSync(htmlPath), "Expected npm run build to produce dist/index.html.");
   assert.ok(fs.existsSync(headersPath), "Expected npm run build to copy public/_headers to dist/_headers.");
-  assert.equal(read("dist/_headers"), read("docs/_headers"));
+  assert.equal(read("dist/_headers"), read("legacy-v1/_headers"));
 
   const html = fs.readFileSync(htmlPath, "utf8");
   const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];

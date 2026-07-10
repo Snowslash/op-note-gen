@@ -27,7 +27,6 @@ export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: 
   return (
     <section aria-labelledby="procedure-heading" className="space-y-5">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 1</p>
         <h2 id="procedure-heading" className="font-serif text-2xl">Procedure</h2>
         <p className="mt-1 text-sm text-muted-foreground">Select the operation before completing the procedure-specific fields.</p>
       </div>

@@ -185,8 +185,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
       <div className="mx-auto max-w-6xl">
         <header className="flex items-start justify-between gap-4 border-b border-border pb-5">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Operation Note Generator v2</p>
-            <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
+            <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
           </div>
           <Button aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"} onClick={toggleTheme} size="sm" type="button" variant="outline">
@@ -199,7 +198,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
           <p className="text-sm">Review generated text carefully before use in any clinical record.</p>
         </section>
         <WorkflowSteps currentStage={currentStage} furthestStageIndex={furthestStageIndex} onStageChange={moveToStage} />
-        <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.65fr)]">
+        <div className="mt-6">
           <section className="min-w-0" aria-live="polite">
             {currentStage === "Procedure" && <ProcedurePicker selected={values?.procedureId ?? null} search={procedureSearch} onSearchChange={setProcedureSearch} onSelect={selectProcedure} />}
             {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, { role: "Assistant", name: "" }] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
@@ -207,7 +206,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
             {currentStage === "Completion" && values && <CompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
             {isReviewStage && values && (
               <section aria-labelledby="review-heading" className="space-y-5">
-                <div><p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 5</p><h2 id="review-heading" className="font-serif text-2xl">Review and copy</h2><p className="mt-1 text-sm text-muted-foreground">Generate a plain-text draft, then confirm review before copying.</p></div>
+                <div><h2 id="review-heading" className="font-serif text-2xl">Review and copy</h2><p className="mt-1 text-sm text-muted-foreground">Generate a plain-text draft, then confirm review before copying.</p></div>
                 <label className="grid max-w-md gap-1.5 text-sm font-medium" htmlFor="output-mode">Output mode<select className="h-9 rounded-sm border border-input bg-card px-3 text-sm" id="output-mode" value={outputMode} onChange={(event) => changeOutputMode(event.target.value as OutputMode)}>{OUTPUT_MODES.map((mode) => <option key={mode.value} value={mode.value}>{mode.label}</option>)}</select></label>
                 {draft.text && !draft.fresh && <Alert><AlertTitle>Draft is stale</AlertTitle><AlertDescription>{feedback || "Form details changed after generation. Regenerate before copying."}</AlertDescription></Alert>}
                 {draft.text && <WarningSummary warnings={draft.warnings} />}
@@ -230,12 +229,6 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
             {currentStage === "Core details" && Object.keys(errors).length > 0 && <Alert className="mt-5"><AlertTitle>Please complete the required fields</AlertTitle><AlertDescription>{Object.values(errors).join(" ")}</AlertDescription></Alert>}
             {!isReviewStage && <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-5"><Button disabled={currentStage === "Procedure"} onClick={moveBack} type="button" variant="outline">Back</Button><Button disabled={currentStage === "Procedure" && !values} onClick={moveNext} type="button">Next</Button></div>}
           </section>
-          <aside className="min-w-0 self-start border-t border-border pt-5 lg:sticky lg:top-5">
-            <h2 className="font-serif text-xl">Draft safety</h2>
-            <p className="mt-2 text-sm leading-6 text-muted-foreground">No entered text is saved or transmitted. Generated drafts remain separate from advisory prompts and require explicit review before copy.</p>
-            {!isReviewStage && draft.text && <WarningSummary warnings={draft.warnings} />}
-            {!isReviewStage && draft.text && <GeneratedNote text={draft.text} />}
-          </aside>
         </div>
       </div>
     </main>

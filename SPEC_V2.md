@@ -1,7 +1,7 @@
 # Operation Note Generator v2 Specification
 
-Status: planned; implementation not started
-Date: 2026-07-09
+Status: implementation complete; draft PR pending production cutover
+Date: 2026-07-11
 Owner: Sangeev
 
 ## 1. Purpose
@@ -397,10 +397,10 @@ Port, test and review one procedure at a time:
 5. open umbilical hernia repair;
 6. emergency laparotomy.
 
-### Phase 6: Preview acceptance
+### Phase 6: Candidate acceptance
 
 - Production build.
-- Cloudflare preview deployment.
+- Checked-in GitHub Pages bundle generated under `docs/`.
 - Desktop/mobile browser smoke.
 - Security-header verification.
 - Synthetic-data field test by Sangeev.
@@ -410,7 +410,7 @@ Port, test and review one procedure at a time:
 Only after every acceptance gate passes:
 
 - merge the approved v2 branch;
-- change the Cloudflare Pages build command/output to the agreed Vite production build;
+- allow the existing GitHub Pages `main:/docs` source to publish the checked-in Vite bundle;
 - verify the custom domain, generated-note journey, direct assets and security headers;
 - preserve a tested rollback route.
 
@@ -452,4 +452,4 @@ V2 must not replace v1 until all of the following are true:
 
 ## 16. Immediate next decision
 
-The specification and implementation plan may be reviewed now. React scaffolding must not begin until Sangeev explicitly authorises implementation after reviewing the planned parity and deployment boundaries.
+The React implementation and GitHub Pages bundle are complete on draft PR 2. Production remains on v1 until Sangeev explicitly authorises merging that PR. After merge, verify both the GitHub Pages URL and `opnotes.sangeev.me` with a realistic synthetic workflow, direct-asset checks and live security-header checks; revert the merge if those gates fail.

@@ -92,7 +92,7 @@ test("v2 scaffold establishes the agreed browser-only foundation", () => {
     });
   }
 
-  if (exists("public/_headers") && read("public/_headers") !== read("docs/_headers")) {
+  if (exists("public/_headers") && read("public/_headers") !== read("legacy-v1/_headers")) {
     missing.push("public/_headers matching the retained v1 CSP headers");
   }
 

@@ -10,12 +10,13 @@
 
 ## Project shape
 
-- `docs/` is the current no-build v1 production baseline. Treat it as frozen compatibility evidence during v2 work.
-- `src/` is the Vite + React + TypeScript + Tailwind CSS + owned shadcn/ui v2 candidate.
-- V2 builds to `dist/`; `public/_headers` supplies restrictive static-host security headers.
+- `src/` is the implemented Vite + React + TypeScript + Tailwind CSS + owned shadcn/ui v2 candidate.
+- `legacy-v1/` retains the static v1 rollback source and parity-test runtime.
+- V2 builds to `dist/`; `npm run build:pages` writes the checked-in GitHub Pages bundle to `docs/`.
+- GitHub Pages publishes `main:/docs`; `public/_headers` supplies the portable restrictive static-host security headers.
 - There is no backend, API, analytics, AI layer, database or clinical-text persistence.
 - `SPEC_V2.md` is authoritative for v2 architecture, workflow, design, safety and cutover gates.
-- `README.md` describes local operation and the dual v1/v2 state.
+- `README.md` describes local operation, rollback and the pending v2 production cutover.
 
 ## Running and verifying
 
@@ -25,7 +26,7 @@ npm run dev
 npm run check
 ```
 
-`npm run check` is the canonical gate. It covers lint, v2 contracts, typed domain tests, React/component/accessibility tests, production build/dist assertions and the v1 smoke/parity suite.
+`npm run check:pages` is the pre-cutover gate. It includes `npm run check`, builds the checked-in `docs/` bundle and verifies that bundle's self-hosted/static-header contract.
 
 For UI changes:
 
@@ -87,4 +88,4 @@ Do not add another procedure without explicit approval. A legitimate procedure c
 
 ## Cutover
 
-Passing tests is necessary but does not authorise deployment. Before cutover, preserve the existing v1 host/configuration for rollback and require explicit approval for the production build target, DNS/hosting changes, merge and cleanup of temporary worktrees/branches.
+Passing tests is necessary but does not authorise deployment. Before cutover, preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit approval to merge the draft PR. The merge updates the existing GitHub Pages `main:/docs` source; no DNS change is planned.

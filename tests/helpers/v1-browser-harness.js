@@ -4,10 +4,10 @@ const vm = require("vm");
 
 const ROOT = path.resolve(__dirname, "..", "..");
 const SCRIPT_FILES = [
-  "docs/js/core.js",
-  "docs/js/note-formatters.js",
-  "docs/js/procedures.js",
-  "docs/js/app.js",
+  "legacy-v1/js/core.js",
+  "legacy-v1/js/note-formatters.js",
+  "legacy-v1/js/procedures.js",
+  "legacy-v1/js/app.js",
 ];
 
 class HTMLElement {}
@@ -98,7 +98,7 @@ function createFakeApp({
     return elements.get(id);
   }
 
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   for (const [, id] of html.matchAll(/id="([^"]+)"/g)) {
     el(id);
   }

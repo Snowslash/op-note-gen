@@ -26,7 +26,6 @@ export function CoreDetails({
   return (
     <section aria-labelledby="core-details-heading" className="space-y-5">
       <div>
-        <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 2</p>
         <h2 id="core-details-heading" className="font-serif text-2xl">Core details</h2>
         <p className="mt-1 text-sm text-muted-foreground">Core identifiers and required clinical context.</p>
       </div>

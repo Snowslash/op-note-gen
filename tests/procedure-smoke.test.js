@@ -76,7 +76,7 @@ function testIncisionAndDrainageGeneratesStructuredNote() {
 }
 
 function testIncisionAndDrainageUsesClosureDetailsInsteadOfDuplicateSkinManagement() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
   const hasSkinManagementField = vm.runInContext(
     "Object.prototype.hasOwnProperty.call(PROCEDURES.incisionAndDrainage.fields, 'skinManagement')",
@@ -284,7 +284,7 @@ function testOpenInguinalHerniaRepairGeneratesStructuredNote() {
 }
 
 function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
   const hasProcedure = vm.runInContext("Boolean(PROCEDURES.openInguinalHerniaRepair)", context);
 
@@ -294,7 +294,7 @@ function testOpenInguinalHerniaRepairIsWiredInUiAndRegistry() {
 }
 
 function testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
   const hasProcedure = vm.runInContext("Boolean(PROCEDURES.openUmbilicalHerniaRepair)", context);
 
@@ -305,7 +305,7 @@ function testOpenUmbilicalHerniaRepairIsWiredInUiAndRegistry() {
 }
 
 function testEmergencyLaparotomyIsWiredInUiAndRegistry() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
   const hasProcedure = vm.runInContext("Boolean(PROCEDURES.emergencyLaparotomy)", context);
 
@@ -316,7 +316,7 @@ function testEmergencyLaparotomyIsWiredInUiAndRegistry() {
 }
 
 function testProcedureSelectorUsesCompactChoiceGrid() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
   const procedureChoiceCount = vm.runInContext("DOM.procedureChoices.length", context);
 
@@ -328,7 +328,7 @@ function testProcedureSelectorUsesCompactChoiceGrid() {
 }
 
 function testProcedureChoiceLabelsUseFullOperationNames() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
 
   assert.ok(html.includes('<span class="procedure-choice-title">Laparoscopic appendicectomy</span>'), "Expected appendicectomy card heading to avoid abbreviation.");
   assert.ok(html.includes('<span class="procedure-choice-title">Laparoscopic cholecystectomy</span>'), "Expected cholecystectomy card heading to avoid abbreviation.");
@@ -343,7 +343,7 @@ function testProcedureChoiceLabelsUseFullOperationNames() {
 }
 
 function testProcedureSearchFiltersChoiceCards() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const context = createFakeApp();
 
   assert.ok(html.includes('id="procedureSearch"'), "Expected procedure panel to include a search field.");
@@ -372,8 +372,8 @@ function testProcedureSearchFiltersChoiceCards() {
 }
 
 function testThemeToggleAppliesAndPersistsDarkMode() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
-  const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
+  const css = fs.readFileSync(path.join(ROOT, "legacy-v1/styles.css"), "utf8");
   const context = createFakeApp();
 
   assert.ok(html.includes('id="themeToggle"'), "Expected a dark mode toggle button in the UI.");
@@ -453,7 +453,7 @@ function testOperationDateTimeAutofillsOnLoad() {
 }
 
 function testProcedureFieldDefinitionsMatchHtmlControls() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
   const ids = new Set(Array.from(html.matchAll(/id="([^"]+)"/g), ([, id]) => id));
   const names = new Set(Array.from(html.matchAll(/name="([^"]+)"/g), ([, name]) => name));
   const context = createFakeApp();
@@ -605,8 +605,8 @@ function testBlankComplicationsAreNotInvented() {
 }
 
 function testAppSafetyNoticeAndHeaderDividerArePresent() {
-  const html = fs.readFileSync(path.join(ROOT, "docs/app.html"), "utf8");
-  const css = fs.readFileSync(path.join(ROOT, "docs/styles.css"), "utf8");
+  const html = fs.readFileSync(path.join(ROOT, "legacy-v1/app.html"), "utf8");
+  const css = fs.readFileSync(path.join(ROOT, "legacy-v1/styles.css"), "utf8");
 
   assert.ok(html.includes('class="app-safety-notice"'), "Expected app page to include the top safety notice box.");
   assert.ok(html.includes("Do not enter patient-identifiable information."));
