@@ -19,6 +19,7 @@ import {
   type DraftState,
   updateTeamMember,
 } from "./procedure-state";
+import { applyTheme, getAppliedTheme, type Theme } from "./theme";
 import { WORKFLOW_STAGES, WorkflowSteps, type WorkflowStage } from "./workflow/WorkflowSteps";
 
 const stageIndex = (stage: WorkflowStage) => WORKFLOW_STAGES.indexOf(stage);
@@ -39,6 +40,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const [draft, setDraft] = useState<DraftState>(createDraftState);
   const [errors, setErrors] = useState<Partial<Record<"indication" | "findings", string>>>({});
   const [feedback, setFeedback] = useState("");
+  const [theme, setTheme] = useState<Theme>(getAppliedTheme);
 
   const invalidateDraft = (message = "Form details changed after generation. Regenerate before copying.") => {
     setDraft((previous) => previous.text ? { ...previous, fresh: false, reviewed: false } : previous);
@@ -173,13 +175,23 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
 
   const isReviewStage = currentStage === "Review and copy";
 
+  const toggleTheme = () => {
+    const nextTheme: Theme = theme === "dark" ? "light" : "dark";
+    setTheme(applyTheme(nextTheme));
+  };
+
   return (
     <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-8 sm:py-10">
       <div className="mx-auto max-w-6xl">
-        <header className="border-b border-border pb-5">
-          <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Operation Note Generator v2</p>
-          <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
-          <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
+        <header className="flex items-start justify-between gap-4 border-b border-border pb-5">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Operation Note Generator v2</p>
+            <h1 className="mt-2 font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
+            <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
+          </div>
+          <Button aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"} onClick={toggleTheme} size="sm" type="button" variant="outline">
+            {theme === "dark" ? "Light" : "Dark"}
+          </Button>
         </header>
         <section aria-label="Privacy and safety information" className="my-6 grid gap-2 border-y border-border py-4 sm:grid-cols-3">
           <p className="text-sm"><strong>Do not enter patient-identifiable information.</strong></p>

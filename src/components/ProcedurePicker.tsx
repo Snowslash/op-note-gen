@@ -40,16 +40,16 @@ export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: 
           <Button
             aria-label={procedure.label}
             aria-pressed={selected === procedure.id}
-            className="h-auto min-h-20 justify-start rounded-none bg-card px-4 py-3 text-left text-foreground hover:bg-muted data-[pressed=true]:border-l-4 data-[pressed=true]:border-primary"
+            className="h-auto min-h-20 w-full min-w-0 justify-start whitespace-normal rounded-none bg-card px-4 py-3 text-left text-foreground hover:bg-muted data-[pressed=true]:border-l-4 data-[pressed=true]:border-primary"
             data-pressed={selected === procedure.id}
             key={procedure.id}
             onClick={() => onSelect(procedure.id)}
             type="button"
             variant="outline"
           >
-            <span>
-              <span className="block font-semibold">{procedure.label}</span>
-              <span className="mt-1 block text-xs font-normal text-muted-foreground">{PROCEDURE_META[procedure.id]}</span>
+            <span className="min-w-0">
+              <span className="block break-words font-semibold">{procedure.label}</span>
+              <span className="mt-1 block break-words text-xs font-normal text-muted-foreground">{PROCEDURE_META[procedure.id]}</span>
             </span>
           </Button>
         ))}

@@ -148,11 +148,17 @@ test("v2 scaffold establishes the agreed browser-only foundation", () => {
   v2SourceFiles().forEach((relativePath) => {
     const source = read(relativePath);
     forbiddenSourcePatterns.forEach(([description, pattern]) => {
-      if (pattern.test(source)) {
+      const isPermittedThemePreference = relativePath === "src/app/theme.ts" && description === "localStorage";
+      if (!isPermittedThemePreference && pattern.test(source)) {
         missing.push(`browser-only privacy boundary: ${description} in ${relativePath}`);
       }
     });
   });
+
+  const themeSource = read("src/app/theme.ts");
+  if (!themeSource.includes('THEME_STORAGE_KEY = "sangeevSiteTheme"')) {
+    missing.push("theme preference must retain the estate-wide sangeevSiteTheme key");
+  }
 
   assert.deepEqual(missing, [], `Missing v2 scaffold contract:\n- ${missing.join("\n- ")}`);
 });
