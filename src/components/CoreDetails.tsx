@@ -1,13 +1,13 @@
 import { cloneElement, isValidElement, type ReactNode } from "react";
-import type { AppendicectomyInput, TeamMember } from "../domain";
+import type { CommonProcedureInput, TeamMember } from "../domain";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 
 interface CoreDetailsProps {
-  values: AppendicectomyInput;
+  values: CommonProcedureInput;
   errors: Partial<Record<"indication" | "findings", string>>;
-  onValueChange: (field: keyof AppendicectomyInput, value: string) => void;
+  onValueChange: (field: string, value: string) => void;
   onAddTeamMember: () => void;
   onRemoveTeamMember: (index: number) => void;
   onTeamMemberChange: (index: number, changes: Partial<TeamMember>) => void;
@@ -15,7 +15,7 @@ interface CoreDetailsProps {
 
 const ANAESTHETIC_OPTIONS = ["", "GA", "Regional", "Local"];
 
-export function AppendicectomyCoreDetails({
+export function CoreDetails({
   values,
   errors,
   onValueChange,
@@ -49,7 +49,7 @@ export function AppendicectomyCoreDetails({
         </div>
         <div className="mt-3 space-y-3">
           {values.additionalTeamMembers.map((member, index) => (
-            <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-[10rem_1fr_auto]" key={`${index}-${member.role}`}>
+            <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-[10rem_1fr_auto]" key={index}>
               <Field id={`team-member-role-${index}`} label="Team member role"><select aria-label="Team member role" className="h-9 w-full rounded-sm border border-input bg-card px-3 text-sm" value={member.role} onChange={(event) => onTeamMemberChange(index, { role: event.target.value })}><option value="Surgeon">Surgeon</option><option value="Assistant">Assistant</option></select></Field>
               <Field id={`team-member-name-${index}`} label="Team member name"><Input aria-label="Team member name" value={member.name} onChange={(event) => onTeamMemberChange(index, { name: event.target.value })} /></Field>
               <Button className="self-end" onClick={() => onRemoveTeamMember(index)} size="sm" type="button" variant="outline">Remove</Button>
@@ -58,16 +58,16 @@ export function AppendicectomyCoreDetails({
         </div>
       </section>
       <div className="grid gap-4">
-        <Field error={errors.indication} label="Indication"><Textarea aria-invalid={Boolean(errors.indication)} aria-describedby={errors.indication ? "indication-error" : undefined} value={values.indication} onChange={(event) => onValueChange("indication", event.target.value)} /></Field>
+        <Field label="Indication"><Textarea aria-invalid={Boolean(errors.indication)} aria-describedby={errors.indication ? "indication-error" : undefined} value={values.indication} onChange={(event) => onValueChange("indication", event.target.value)} /></Field>
         {errors.indication && <p id="indication-error" className="text-sm text-destructive">{errors.indication}</p>}
-        <Field error={errors.findings} label="Findings"><Textarea aria-invalid={Boolean(errors.findings)} aria-describedby={errors.findings ? "findings-error" : undefined} value={values.findings} onChange={(event) => onValueChange("findings", event.target.value)} /></Field>
+        <Field label="Findings"><Textarea aria-invalid={Boolean(errors.findings)} aria-describedby={errors.findings ? "findings-error" : undefined} value={values.findings} onChange={(event) => onValueChange("findings", event.target.value)} /></Field>
         {errors.findings && <p id="findings-error" className="text-sm text-destructive">{errors.findings}</p>}
       </div>
     </section>
   );
 }
 
-function Field({ children, id, label }: { children: ReactNode; error?: string; id?: string; label: string }) {
+function Field({ children, id, label }: { children: ReactNode; id?: string; label: string }) {
   const fieldId = id ?? label.toLowerCase().replaceAll(/[^a-z0-9]+/g, "-").replaceAll(/(^-|-$)/g, "");
   return <label className="grid gap-1.5 text-sm font-medium" htmlFor={fieldId}>{label}{cloneWithId(children, fieldId)}</label>;
 }

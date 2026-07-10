@@ -1,102 +1,113 @@
 import { useState } from "react";
 import { generateNote, getAdvisoryWarnings, validateProcedureInput } from "../domain";
-import type { AppendicectomyInput, OutputMode, TeamMember } from "../domain";
-import { AppendicectomyCompletionDetails } from "../components/AppendicectomyCompletionDetails";
-import { AppendicectomyCoreDetails } from "../components/AppendicectomyCoreDetails";
-import { AppendicectomyOperativeDetails } from "../components/AppendicectomyOperativeDetails";
+import type { OutputMode, ProcedureId, ProcedureInput, TeamMember } from "../domain";
+import { CompletionDetails } from "../components/CompletionDetails";
+import { CoreDetails } from "../components/CoreDetails";
 import { GeneratedNote } from "../components/GeneratedNote";
+import { ProcedureOperativeDetails } from "../components/ProcedureOperativeDetails";
 import { ProcedurePicker } from "../components/ProcedurePicker";
 import { ReviewCopyGate } from "../components/ReviewCopyGate";
 import { WarningSummary } from "../components/WarningSummary";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
 import {
-  createAppendicectomyInput,
   createControlState,
   createDraftState,
+  createProcedureInput,
   OUTPUT_MODES,
-  type AppendicectomyControlState,
+  type ProcedureControlState,
   type DraftState,
   updateTeamMember,
-} from "./appendicectomy-state";
+} from "./procedure-state";
 import { WORKFLOW_STAGES, WorkflowSteps, type WorkflowStage } from "./workflow/WorkflowSteps";
 
 const stageIndex = (stage: WorkflowStage) => WORKFLOW_STAGES.indexOf(stage);
-const selectFieldFor = {
-  entryTechnique: "entryTechniqueChoice",
-  mesoappendixDivision: "mesoappendixDivisionChoice",
-  stumpControl: "stumpControlChoice",
-} as const;
-const customFieldFor = {
-  entryTechnique: "entryTechniqueCustom",
-  mesoappendixDivision: "mesoappendixDivisionCustom",
-  stumpControl: "stumpControlCustom",
-} as const;
 
-type SelectOrCustomField = keyof typeof selectFieldFor;
+interface AppProps {
+  initialInput?: ProcedureInput;
+  initialOutputMode?: OutputMode;
+  initialStage?: WorkflowStage;
+}
 
-export default function App() {
-  const [selectedProcedure, setSelectedProcedure] = useState(false);
+export default function App({ initialInput, initialOutputMode = "full", initialStage = "Procedure" }: AppProps) {
   const [procedureSearch, setProcedureSearch] = useState("");
-  const [currentStage, setCurrentStage] = useState<WorkflowStage>("Procedure");
-  const [furthestStageIndex, setFurthestStageIndex] = useState(0);
-  const [values, setValues] = useState<AppendicectomyInput>(createAppendicectomyInput);
-  const [controls, setControls] = useState<AppendicectomyControlState>(createControlState);
-  const [outputMode, setOutputMode] = useState<OutputMode>("full");
+  const [currentStage, setCurrentStage] = useState<WorkflowStage>(initialStage);
+  const [furthestStageIndex, setFurthestStageIndex] = useState(() => initialInput ? stageIndex(initialStage) : 0);
+  const [values, setValues] = useState<ProcedureInput | null>(() => initialInput ?? null);
+  const [controls, setControls] = useState<ProcedureControlState>(createControlState);
+  const [outputMode, setOutputMode] = useState<OutputMode>(initialOutputMode);
   const [draft, setDraft] = useState<DraftState>(createDraftState);
   const [errors, setErrors] = useState<Partial<Record<"indication" | "findings", string>>>({});
   const [feedback, setFeedback] = useState("");
-
 
   const invalidateDraft = (message = "Form details changed after generation. Regenerate before copying.") => {
     setDraft((previous) => previous.text ? { ...previous, fresh: false, reviewed: false } : previous);
     if (draft.text) setFeedback(message);
   };
 
-  const updateValue = (field: keyof AppendicectomyInput, value: string | boolean) => {
+  const selectProcedure = (procedureId: ProcedureId) => {
+    if (values?.procedureId === procedureId) return;
+    setValues(createProcedureInput(procedureId));
+    setControls(createControlState());
+    setDraft(createDraftState());
+    setErrors({});
+    setFeedback("");
+    setOutputMode("full");
+    setFurthestStageIndex(0);
+  };
+
+  const updateValue = (field: string, value: string | boolean, clearFields: string[] = []) => {
     setValues((previous) => {
-      const next = { ...previous, [field]: value } as AppendicectomyInput;
-      if (field === "convertedToOpen" && value === false) next.conversionReason = "";
-      return next;
+      if (!previous) return previous;
+      const updates = Object.fromEntries(clearFields.map((clearField) => [clearField, ""]));
+      return { ...previous, [field]: value, ...updates } as ProcedureInput;
     });
     if (field === "drainStatus" && value !== "yes" && controls.drainLocationChoice === "Custom / other") {
       setControls((previous) => ({ ...previous, drainLocationCustom: "" }));
-      setValues((previous) => ({ ...previous, drainLocation: "" }));
+      setValues((previous) => previous ? { ...previous, drainLocation: "" } as ProcedureInput : previous);
     }
     invalidateDraft();
   };
 
-  const updateCustomChoice = (field: SelectOrCustomField, choice: string) => {
-    const choiceKey = selectFieldFor[field];
-    const customKey = customFieldFor[field];
-    setControls((previous) => ({ ...previous, [choiceKey]: choice, ...(choice === "Custom / other" ? {} : { [customKey]: "" }) }));
-    setValues((previous) => ({ ...previous, [field]: choice === "Custom / other" ? "" : choice }));
-    invalidateDraft();
+  const updateCustomChoice = (field: string, choice: string, options: readonly string[]) => {
+    setControls((previous) => ({
+      ...previous,
+      choices: {
+        ...previous.choices,
+        [field]: {
+          choice,
+          custom: choice === "Custom / other" ? previous.choices[field]?.custom ?? "" : "",
+        },
+      },
+    }));
+    updateValue(field, choice === "Custom / other" ? "" : options.includes(choice) ? choice : "");
   };
 
-  const updateCustomValue = (field: SelectOrCustomField, value: string) => {
-    const customKey = customFieldFor[field];
-    setControls((previous) => ({ ...previous, [customKey]: value }));
-    setValues((previous) => ({ ...previous, [field]: value }));
-    invalidateDraft();
+  const updateCustomValue = (field: string, value: string) => {
+    setControls((previous) => ({
+      ...previous,
+      choices: {
+        ...previous.choices,
+        [field]: { choice: "Custom / other", custom: value },
+      },
+    }));
+    updateValue(field, value);
   };
 
   const updateDrainChoice = (choice: string) => {
     setControls((previous) => ({ ...previous, drainLocationChoice: choice, ...(choice === "Custom / other" ? {} : { drainLocationCustom: "" }) }));
-    setValues((previous) => ({ ...previous, drainLocation: choice === "Custom / other" ? "" : choice }));
-    invalidateDraft();
+    updateValue("drainLocation", choice === "Custom / other" ? "" : choice);
   };
 
   const updateDrainCustom = (value: string) => {
     setControls((previous) => ({ ...previous, drainLocationCustom: value }));
-    setValues((previous) => ({ ...previous, drainLocation: value }));
-    invalidateDraft();
+    updateValue("drainLocation", value);
   };
 
   const validateCoreDetails = () => {
+    if (!values) return false;
     const result = validateProcedureInput(values);
-    const nextErrors = Object.fromEntries(result.errors.map((error) => [error.field, error.message]));
-    setErrors(nextErrors);
+    setErrors(Object.fromEntries(result.errors.map((error) => [error.field, error.message])));
     return result.valid;
   };
 
@@ -106,7 +117,7 @@ export default function App() {
 
   const moveNext = () => {
     const currentIndex = stageIndex(currentStage);
-    if (currentStage === "Procedure" && !selectedProcedure) return;
+    if (currentStage === "Procedure" && !values) return;
     if (currentStage === "Core details" && !validateCoreDetails()) return;
     const nextStage = WORKFLOW_STAGES[currentIndex + 1];
     if (!nextStage) return;
@@ -120,7 +131,7 @@ export default function App() {
   };
 
   const generateDraft = () => {
-    if (!validateCoreDetails()) {
+    if (!values || !validateCoreDetails()) {
       setCurrentStage("Core details");
       return;
     }
@@ -156,7 +167,7 @@ export default function App() {
   };
 
   const changeTeamMember = (index: number, changes: Partial<TeamMember>) => {
-    setValues((previous) => ({ ...previous, additionalTeamMembers: updateTeamMember(previous.additionalTeamMembers, index, changes) }));
+    setValues((previous) => previous ? { ...previous, additionalTeamMembers: updateTeamMember(previous.additionalTeamMembers, index, changes) } as ProcedureInput : previous);
     invalidateDraft();
   };
 
@@ -178,11 +189,11 @@ export default function App() {
         <WorkflowSteps currentStage={currentStage} furthestStageIndex={furthestStageIndex} onStageChange={moveToStage} />
         <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(20rem,0.65fr)]">
           <section className="min-w-0" aria-live="polite">
-            {currentStage === "Procedure" && <ProcedurePicker selected={selectedProcedure} search={procedureSearch} onSearchChange={setProcedureSearch} onSelectAppendicectomy={() => setSelectedProcedure(true)} />}
-            {currentStage === "Core details" && <AppendicectomyCoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => ({ ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, { role: "Assistant", name: "" }] })); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => ({ ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) })); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
-            {currentStage === "Operative details" && <AppendicectomyOperativeDetails values={values} controls={controls} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} />}
-            {currentStage === "Completion" && <AppendicectomyCompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
-            {isReviewStage && (
+            {currentStage === "Procedure" && <ProcedurePicker selected={values?.procedureId ?? null} search={procedureSearch} onSearchChange={setProcedureSearch} onSelect={selectProcedure} />}
+            {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, { role: "Assistant", name: "" }] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
+            {currentStage === "Operative details" && values && <ProcedureOperativeDetails values={values} controls={controls} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} />}
+            {currentStage === "Completion" && values && <CompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
+            {isReviewStage && values && (
               <section aria-labelledby="review-heading" className="space-y-5">
                 <div><p className="text-sm font-semibold uppercase tracking-[0.12em] text-primary">Stage 5</p><h2 id="review-heading" className="font-serif text-2xl">Review and copy</h2><p className="mt-1 text-sm text-muted-foreground">Generate a plain-text draft, then confirm review before copying.</p></div>
                 <label className="grid max-w-md gap-1.5 text-sm font-medium" htmlFor="output-mode">Output mode<select className="h-9 rounded-sm border border-input bg-card px-3 text-sm" id="output-mode" value={outputMode} onChange={(event) => changeOutputMode(event.target.value as OutputMode)}>{OUTPUT_MODES.map((mode) => <option key={mode.value} value={mode.value}>{mode.label}</option>)}</select></label>
@@ -205,7 +216,7 @@ export default function App() {
               </section>
             )}
             {currentStage === "Core details" && Object.keys(errors).length > 0 && <Alert className="mt-5"><AlertTitle>Please complete the required fields</AlertTitle><AlertDescription>{Object.values(errors).join(" ")}</AlertDescription></Alert>}
-            {!isReviewStage && <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-5"><Button disabled={currentStage === "Procedure"} onClick={moveBack} type="button" variant="outline">Back</Button><Button disabled={currentStage === "Procedure" && !selectedProcedure} onClick={moveNext} type="button">Next</Button></div>}
+            {!isReviewStage && <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-5"><Button disabled={currentStage === "Procedure"} onClick={moveBack} type="button" variant="outline">Back</Button><Button disabled={currentStage === "Procedure" && !values} onClick={moveNext} type="button">Next</Button></div>}
           </section>
           <aside className="min-w-0 self-start border-t border-border pt-5 lg:sticky lg:top-5">
             <h2 className="font-serif text-xl">Draft safety</h2>

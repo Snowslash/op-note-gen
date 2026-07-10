@@ -3,10 +3,11 @@ import { resolve } from "node:path";
 
 const runtimeFiles = [
   "src/app/App.tsx",
-  "src/app/appendicectomy-state.ts",
-  "src/components/AppendicectomyCoreDetails.tsx",
-  "src/components/AppendicectomyOperativeDetails.tsx",
-  "src/components/AppendicectomyCompletionDetails.tsx",
+  "src/app/procedure-state.ts",
+  "src/app/procedure-form-definitions.ts",
+  "src/components/CoreDetails.tsx",
+  "src/components/ProcedureOperativeDetails.tsx",
+  "src/components/CompletionDetails.tsx",
   "src/components/GeneratedNote.tsx",
   "src/components/ReviewCopyGate.tsx",
 ];

@@ -82,7 +82,7 @@ describe("appendicectomy vertical workflow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
     expect(screen.getByRole("button", { name: "Laparoscopic appendicectomy" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();
-    expect(screen.getByText("Laparoscopic cholecystectomy — coming after parity verification")).toBeVisible();
+    expect(screen.getByRole("button", { name: "Laparoscopic cholecystectomy" })).toBeEnabled();
 
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
