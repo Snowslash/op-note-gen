@@ -74,7 +74,7 @@ function CollapsibleHarness() {
 }
 
 describe("v2 app shell", () => {
-  it("renders only the required privacy and safety foundation", () => {
+  it("renders the required privacy and safety foundation with the appendicectomy workflow entry point", () => {
     render(<App />);
 
     expect(screen.getByRole("heading", { name: "Operation Note Generator" })).toBeVisible();
@@ -83,7 +83,8 @@ describe("v2 app shell", () => {
       screen.getByText("This tool runs entirely in your browser. No entered data is transmitted or stored by this site."),
     ).toBeVisible();
     expect(screen.getByText("Review generated text carefully before use in any clinical record.")).toBeVisible();
-    expect(screen.queryByRole("form")).not.toBeInTheDocument();
+    expect(screen.getByRole("navigation", { name: "Workflow stages" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Laparoscopic appendicectomy" })).toBeVisible();
   });
 });
 
