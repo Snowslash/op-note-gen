@@ -3,7 +3,7 @@
   "name": "op-note-gen",
   "compatibility_date": "2026-07-08",
   "observability": {
-    "enabled": true
+    "enabled": false
   },
   "assets": {
     "directory": "docs"

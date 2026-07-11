@@ -1,13 +1,16 @@
 # Operation Note Generator
 
-Browser-only operation note drafting for common emergency general-surgery procedures.
+Browser-only operation-note drafting for common emergency general-surgery procedures.
 
-The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store patient data or make clinical decisions.
+The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store clinical text or make clinical decisions.
 
 Live project page: https://opnotes.sangeev.me
+
 Source: https://github.com/Snowslash/op-note-gen
 
-## What it supports
+The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the GitHub Pages deployment bundle in `docs/`.
+
+## Supported procedures
 
 - laparoscopic appendicectomy
 - laparoscopic cholecystectomy
@@ -17,87 +20,106 @@ Source: https://github.com/Snowslash/op-note-gen
 - open umbilical hernia repair
 - emergency laparotomy
 
+Each procedure supports a full operation note, postoperative-plan-only output and ward handover summary.
+
 ## How to use it
 
-1. Open the generator.
-2. Choose the operation.
-3. Complete the required fields and any useful optional fields.
-4. Generate the note.
-5. Review and edit the generated text before copying it into the clinical record.
+1. Choose the operation.
+2. Complete core, operative and completion fields.
+3. Select the output mode and generate the draft.
+4. Review the plain-text output and any advisory warnings.
+5. Confirm review before copying.
 
 Do not enter patient-identifiable information into public pages or repositories. Any real clinical note remains the responsibility of the clinician using it.
 
 ## Privacy and safety boundary
 
 - Runs entirely in the browser.
-- No login.
-- No backend or database.
-- No analytics.
-- No AI or external API calls.
-- Clipboard access happens only when the user selects the copy action.
-- Theme preference is stored locally in the browser.
+- No login, backend, database, analytics, AI or external API calls.
+- No clinical text is written to browser storage, cookies or URLs.
+- Clipboard access occurs only after generation and explicit review confirmation.
+- The only persisted preference is the light/dark theme under the existing `sangeevSiteTheme` key.
+- User-entered text is generated as plain text and rendered as React text content, never executable HTML.
+- Missing details remain omitted or `not specified` according to the locked v1 behaviour.
 
 This is a drafting aid, not decision support, clinical validation, local policy, consent checking or senior review.
 
-## Run locally
-
-No build step is required.
-
-```bash
-git clone https://github.com/Snowslash/op-note-gen.git
-cd op-note-gen
-python3 -m http.server 8000 --directory docs
-```
-
-Then open:
-
-```text
-http://127.0.0.1:8000/
-```
-
-The runnable app is at `docs/app.html`; the landing page is `docs/index.html`.
-
-## Verify
+## Run v2 locally
 
 Requires Node.js and npm.
 
 ```bash
-npm install
-npm run verify
+git clone https://github.com/Snowslash/op-note-gen.git
+cd op-note-gen
+npm ci
+npm run dev
 ```
 
-Available checks:
+Use the local URL printed by Vite.
+
+Build the static candidate:
 
 ```bash
-npm run check:js
-npm test
-npm run verify
+npm run build
 ```
 
-`npm run verify` runs JavaScript syntax checks and the procedure smoke tests in `tests/procedure-smoke.test.js`.
+The output is written to `dist/`. Security headers are copied from `public/_headers` and all runtime assets are self-hosted.
+
+Build the checked-in GitHub Pages bundle:
+
+```bash
+npm run build:pages
+npm run test:pages
+```
+
+This writes the same self-hosted application to `docs/`, preserving the existing GitHub Pages source contract used by `opnotes.sangeev.me`.
+
+## Verify
+
+The canonical gate is:
+
+```bash
+npm run check
+```
+
+It runs:
+
+- Oxlint over v2 source;
+- v2 scaffold/privacy contracts;
+- type-checked pure-domain tests;
+- React component, workflow, accessibility and privacy tests;
+- the production Vite build and `dist/` assertions;
+- v1 JavaScript syntax, smoke and literal parity tests.
+
+Additional useful commands:
+
+```bash
+npm run test:domain
+npm run test:v1
+npm run build
+npm audit
+```
+
+The checked-in v1 fixture set covers all seven procedures in all three output modes. Both the pure domain engine and React review stage are compared byte-for-byte against those literal outputs.
 
 ## Project layout
 
-- `docs/index.html` — public landing page
-- `docs/app.html` — runnable generator shell and form markup
-- `docs/styles.css` — landing page and app styling
-- `docs/sangeev-public-tokens.css` — shared public-estate design tokens
-- `docs/theme.js` — local theme handling
-- `docs/js/core.js` — shared DOM, state and formatting helpers
-- `docs/js/note-formatters.js` — note section builders and formatting helpers
-- `docs/js/procedures.js` — procedure-specific configuration and operation text generation
-- `docs/js/app.js` — validation, rendering, event listeners and app initialisation
-- `tests/procedure-smoke.test.js` — procedure wiring and generated-note regression tests
-- `SPEC.md`, `PRODUCT.md`, `DESIGN.md` — project notes and behaviour/design rationale
+- `src/app/` — React workflow state, theme boundary and procedure form definitions
+- `src/components/` — shared workflow, form, generated-note and owned shadcn/ui components
+- `src/domain/` — typed pure generation, validation, warnings, registry and per-procedure modules
+- `src/styles/` — Tailwind entry and warm paper/ink/burgundy design tokens
+- `public/_headers` — static-host security headers and restrictive CSP
+- `tests/components/` — React journeys, all-procedure parity, accessibility, theme and privacy tests
+- `tests/domain/` — typed domain parity, warning and validation tests
+- `tests/fixtures/v1/` — deterministic synthetic v1 inputs and literal outputs
+- `docs/` — generated GitHub Pages deployment bundle for the React application
+- `legacy-v1/` — retained static v1 source for rollback and parity testing
+- `SPEC_V2.md` — v2 architecture, safety, design and cutover contract
 
-## Deployment
+## Deployment and cutover
 
-The project is static and can be hosted by any static-site host. The current public deployment uses the files under `docs/`.
+The application remains a static browser-only site. GitHub Pages currently publishes `main:/docs`; `opnotes.sangeev.me` is Cloudflare-proxied to that deployment. Pushing this feature branch does not alter production. Merging the verified branch into `main` publishes the React bundle through the existing GitHub Pages source while preserving the current domain and DNS path.
 
-Suggested Cloudflare Pages settings:
+Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
 
-- Framework preset: None
-- Build command: blank
-- Build output directory: `docs`
-
-Do not deploy with analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.
+Do not add analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.

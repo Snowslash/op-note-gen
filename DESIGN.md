@@ -26,17 +26,22 @@ Cut generic sections such as "Why it matters", roadmaps, feature-card rows, stat
 
 ## Type
 
-- Public/project page: Charter-style serif headings.
+- All application headings use the Charter-style serif stack and the burgundy accent.
 - Body/UI: system sans.
 - Generated note examples: monospace.
-- Avoid huge editorial hero type. Current h1 max is about 46px.
+- H1: 1.875–2.25rem; H2: 1.5rem; H3: about 1.125rem.
+- Avoid huge editorial hero type.
 
 ## Colour and surface
 
-- Light: warm paper/off-white, dark ink, one restrained blue accent.
-- Dark default: warm near-black/brown, cream ink, pale blue accent.
+- Light: `#f4f0e8` background, `#fbf8f2` panels, `#1d1b18` text.
+- Dark: `#1d1b18` background, `#24211d` panels, `#f4f0e8` text.
+- Burgundy: `#8a1538` light and `#a3264d` dark, with `#c43b63` focus/hover.
+- Square/lightly rounded controls and panels: 2–4px radius; no pill geometry except semantic radio controls.
+- Buttons use a 2.25rem default height, 1rem horizontal padding and semibold labels.
 - No gradients, glow, glass, dark grids, fake app chrome or bento cards.
 - Use lines and simple bordered notices rather than shadows.
+- Theme preference key: `sangeevSiteTheme`; the root `.dark` class activates dark tokens.
 
 ## Copy
 
