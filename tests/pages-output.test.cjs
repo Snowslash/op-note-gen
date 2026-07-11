@@ -28,7 +28,7 @@ test("GitHub Pages bundle is self-contained and retains the clinical privacy hea
   assert.equal(fs.readFileSync(headersPath, "utf8"), fs.readFileSync(path.join(ROOT, "public/_headers"), "utf8"));
 
   const html = fs.readFileSync(htmlPath, "utf8");
-  assert.match(html, /<script\b[^>]*\bsrc=["']\/assets\//i, "Expected a self-hosted Vite runtime asset.");
+  assert.match(html, /<script\b[^>]*\bsrc=["']\.\/assets\//i, "Expected a relative self-hosted Vite runtime asset that works under a repository subpath.");
   assert.doesNotMatch(html, /<style\b/i, "Expected no inline runtime styles.");
   assert.doesNotMatch(html, /<script\b[^>]*>\s*[^<\s]/i, "Expected no inline runtime scripts.");
 
