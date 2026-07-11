@@ -13,7 +13,12 @@ function readCookieTheme(): Theme | null {
     .map((part) => part.trim())
     .find((part) => part.startsWith(`${THEME_STORAGE_KEY}=`));
 
-  return match ? normaliseTheme(decodeURIComponent(match.slice(THEME_STORAGE_KEY.length + 1))) : null;
+  if (!match) return null;
+  try {
+    return normaliseTheme(decodeURIComponent(match.slice(THEME_STORAGE_KEY.length + 1)));
+  } catch {
+    return null;
+  }
 }
 
 function readStoredTheme(): Theme | null {

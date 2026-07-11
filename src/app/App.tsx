@@ -7,6 +7,7 @@ import { GeneratedNote } from "../components/GeneratedNote";
 import { ProcedureOperativeDetails } from "../components/ProcedureOperativeDetails";
 import { ProcedurePicker } from "../components/ProcedurePicker";
 import { ReviewCopyGate } from "../components/ReviewCopyGate";
+import { ThemeToggle } from "../components/ThemeToggle";
 import { WarningSummary } from "../components/WarningSummary";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
@@ -188,9 +189,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
             <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
           </div>
-          <Button aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"} onClick={toggleTheme} size="sm" type="button" variant="outline">
-            {theme === "dark" ? "Light" : "Dark"}
-          </Button>
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </header>
         <section aria-label="Privacy and safety information" className="my-6 grid gap-2 border-y border-border py-4 sm:grid-cols-3">
           <p className="text-sm"><strong>Do not enter patient-identifiable information.</strong></p>
