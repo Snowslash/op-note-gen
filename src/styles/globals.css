@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "./tokens.css";
+@import "./public-estate-header.css";
 @import "./theme-toggle.css";
 
 @layer base {

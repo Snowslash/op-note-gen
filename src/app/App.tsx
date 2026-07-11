@@ -7,7 +7,7 @@ import { GeneratedNote } from "../components/GeneratedNote";
 import { ProcedureOperativeDetails } from "../components/ProcedureOperativeDetails";
 import { ProcedurePicker } from "../components/ProcedurePicker";
 import { ReviewCopyGate } from "../components/ReviewCopyGate";
-import { ThemeToggle } from "../components/ThemeToggle";
+import { PublicEstateHeader } from "../components/PublicEstateHeader";
 import { WarningSummary } from "../components/WarningSummary";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
@@ -182,14 +182,15 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   };
 
   return (
-    <main className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-8 sm:py-10">
+    <div className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-8 sm:py-10">
       <div className="mx-auto max-w-6xl">
-        <header className="flex items-start justify-between gap-4 border-b border-border pb-5">
+        <PublicEstateHeader current="opnotes" theme={theme} onToggleTheme={toggleTheme} />
+        <main>
+          <header className="border-b border-border pb-5 pt-6">
           <div>
             <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
           </div>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
         </header>
         <section aria-label="Privacy and safety information" className="my-6 grid gap-2 border-y border-border py-4 sm:grid-cols-3">
           <p className="text-sm"><strong>Do not enter patient-identifiable information.</strong></p>
@@ -229,7 +230,8 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
             {!isReviewStage && <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-5"><Button disabled={currentStage === "Procedure"} onClick={moveBack} type="button" variant="outline">Back</Button><Button disabled={currentStage === "Procedure" && !values} onClick={moveNext} type="button">Next</Button></div>}
           </section>
         </div>
+        </main>
       </div>
-    </main>
+    </div>
   );
 }

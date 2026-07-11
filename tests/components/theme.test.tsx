@@ -31,6 +31,17 @@ describe("theme preference boundary", () => {
     expect(initialiseTheme()).toBe("dark");
   });
 
+  it("uses the shared public-estate header on the hosted app", () => {
+    render(<App />);
+    const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
+    expect(navigation).toBeVisible();
+    expect(screen.getByRole("link", { name: "Sangeev" })).toHaveAttribute("href", "https://sangeev.me");
+    expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "https://sangeev.me/#tools");
+    expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Scratchpad" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "AlignEd" })).toBeVisible();
+  });
+
   it("persists only theme preference while clinical form text remains in memory", () => {
     render(<App />);
 
