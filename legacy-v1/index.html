@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en-GB" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A small browser-only form for drafting common emergency general-surgery operation notes."
+    />
+    <title>Operation note generator — Sangeev</title>
+    <link rel="stylesheet" href="./sangeev-public-tokens.css?v=20260709-burgundy1" />
+    <link rel="stylesheet" href="./styles.css?v=20260709-burgundy1" />
+    <script src="./theme.js?v=20260604-cookie1" defer></script>
+  </head>
+  <body class="landing-body">
+    <div class="landing-shell">
+      <header class="site-nav" aria-label="Site navigation">
+        <a class="site-nav-brand" href="https://sangeev.me">Sangeev</a>
+        <span aria-hidden="true">/</span>
+        <nav class="site-nav-links" aria-label="Primary">
+          <a href="https://opnotes.sangeev.me" aria-current="page">Op notes</a>
+          <span aria-hidden="true">/</span>
+          <a href="https://scratchpad.sangeev.me">Scratchpad</a>
+        </nav>
+        <button type="button" class="theme-toggle" data-theme-toggle aria-label="Switch to dark mode" aria-pressed="false">
+          <span aria-hidden="true">☾</span><span>Dark</span>
+        </button>
+      </header>
+
+      <main class="landing-page">
+        <div class="landing-intro-grid">
+          <section class="landing-hero" aria-labelledby="page-title">
+            <h1 id="page-title">Operation note generator</h1>
+
+            <p class="landing-lede">
+              I made this because I was tired of retyping the same structure after common emergency general-surgery cases.
+            </p>
+
+            <p>
+              It is just a browser form that turns fields into a draft operation note. No login, backend, analytics or autosave.
+            </p>
+
+            <p class="landing-muted">Use it as a starting point, then check the note yourself.</p>
+
+            <div class="landing-actions" aria-label="Project links">
+              <a class="landing-button landing-button-primary" href="./app.html">Open generator</a>
+              <a class="landing-button" href="https://github.com/Snowslash/op-note-gen">Source on GitHub</a>
+            </div>
+          </section>
+
+          <section class="landing-safety" aria-label="Safety and privacy notes">
+            <p><strong>Do not enter patient-identifiable information.</strong></p>
+            <p>This tool runs entirely in your browser. There is no login, backend, analytics or autosave.</p>
+            <p>Review the generated text carefully before using it in any clinical record.</p>
+          </section>
+        </div>
+
+        <section>
+          <h2>What it does</h2>
+          <p>It turns structured fields into a plain-text draft operation note that can be checked and edited before copying into the record.</p>
+        </section>
+
+        <section>
+          <h2>Currently covered</h2>
+          <ul>
+            <li>laparoscopic appendicectomy</li>
+            <li>laparoscopic cholecystectomy</li>
+            <li>diagnostic laparoscopy +/- washout / adhesiolysis</li>
+            <li>incision and drainage of abscess</li>
+            <li>open inguinal hernia repair</li>
+            <li>open umbilical hernia repair</li>
+            <li>emergency laparotomy</li>
+          </ul>
+        </section>
+
+        <section aria-labelledby="example-heading">
+          <h2 id="example-heading">Example appendicectomy draft</h2>
+          <p class="landing-muted">Synthetic details. The tool does not store, transmit or check the clinical truth of anything entered.</p>
+
+          <div class="landing-example-grid">
+            <figure>
+              <img
+                src="./assets/opnotes-form-example.png"
+                alt="Screenshot of the operation note generator form with structured fields and a generated note preview"
+                loading="lazy"
+                width="857"
+                height="1296"
+              />
+              <figcaption>Procedure-specific fields keep common appendicectomy details together.</figcaption>
+            </figure>
+
+            <figure>
+              <article class="landing-note-example" aria-label="Example generated note excerpt">
+                <h3>Draft output excerpt</h3>
+                <pre>Procedure: Laparoscopic appendicectomy
+
+Date/time: 29/05/2026, 10:52
+
+Findings:
+Pus, inflamed appendix
+
+Operation:
+Laparoscopic entry method: Hasson
+Perforation: yes
+Contamination: none
+Mesoappendix division: Electrocautery
+Stump control: Endoloops
+Washout performed: yes
+Haemostasis confirmed: yes
+
+Specimen: 1x appendix
+
+Drain: Right iliac fossa
+
+Post-operative plan:
+1) Return to ward
+2) Continue antibiotics</pre>
+              </article>
+              <figcaption>The generated text is plain so it can be checked and edited before use.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section>
+          <h2>Limits</h2>
+          <p>It does not store data, make clinical decisions, validate completeness or replace local documentation standards.</p>
+        </section>
+
+        <section class="landing-status">
+          <h2>Status</h2>
+          <p>Personal tool. Static site. No external services required to draft a note in the browser.</p>
+        </section>
+      </main>
+
+      <footer class="landing-footer">
+        <p>Maintained by <a href="https://sangeev.me">Sangeev</a>.</p>
+      </footer>
+    </div>
+  </body>
+</html>

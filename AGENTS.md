@@ -1,41 +1,91 @@
 # AGENTS.md
 
-## Agent Behaviour
+## Agent behaviour
+
 - State assumptions when they materially affect implementation. Ask before choosing between genuinely different interpretations.
-- Prefer the smallest change that satisfies the request; do not add speculative features, abstractions, configurability, or broad error handling unless asked.
-- Make surgical edits: touch only files/lines required by the task. Do not drive-by refactor, reformat, rename, or clean up unrelated code.
-- Preserve existing style and project shape even if you would design it differently.
-- If you notice unrelated issues, mention them separately rather than fixing them silently.
-- Define success criteria before substantial changes, then verify with the project's tests/build/lint/smoke checks before reporting completion.
-- Remove only dead code/imports introduced by your own changes unless explicitly asked to clean wider code.
+- Prefer the smallest change that satisfies the request; do not add speculative features, procedures, configurability or broad error handling.
+- Make surgical edits and keep v1/v2 boundaries explicit.
+- Define success criteria before substantial changes, then verify with the canonical gate before reporting completion.
+- Do not commit, merge, deploy, change DNS/hosting or replace the production baseline unless explicitly authorised.
 
-## Project Shape
-- Static single-page app; there is no backend or build step.
-- `package.json` only provides Node-based verification scripts; runtime remains no-build static HTML/CSS/JS.
-- Runtime files live in `docs/` for GitHub Pages: `docs/index.html`, `docs/styles.css`, and the classic no-build scripts under `docs/js/`.
-- `README.md` is the usage overview; `SPEC.md` is the source for MVP scope and clinical generation rules.
+## Project shape
 
-## Running And Verifying
-- Open `docs/index.html` directly in a browser to view the landing page, then open `docs/app.html` for the generator.
-- Run `npm run verify` before closing out code changes; this checks JavaScript syntax and the procedure smoke tests.
-- For UI changes, check both desktop layout and the mobile breakpoints in `docs/styles.css`.
+- `src/` is the implemented Vite + React + TypeScript + Tailwind CSS + owned shadcn/ui v2 candidate.
+- `legacy-v1/` retains the static v1 rollback source and parity-test runtime.
+- V2 builds to `dist/`; `npm run build:pages` writes the checked-in GitHub Pages bundle to `docs/`.
+- GitHub Pages publishes `main:/docs`; `public/_headers` supplies the portable restrictive static-host security headers.
+- There is no backend, API, analytics, AI layer, database or clinical-text persistence.
+- `SPEC_V2.md` is authoritative for v2 architecture, workflow, design, safety and cutover gates.
+- `README.md` describes local operation, rollback and the pending v2 production cutover.
 
-## Clinical Safety Constraints
-- Do not add an AI rewriting layer or infer clinical details.
-- Preserve user-entered free text as typed; generated HTML must remain escaped.
-- Missing values should be omitted or rendered as `not specified` only where the existing generator does that.
-- The generated note must remain clinician-reviewed drafting assistance, not decision-making.
+## Running and verifying
 
-## Code Orientation
-- `docs/index.html` is the static landing page; `docs/app.html` owns the app form fields and output containers; field IDs must match the definitions under `docs/js/`.
-- `docs/js/procedures.js` centralizes behavior in `PROCEDURES`; each supported operation gets its own procedure config.
-- Add or change form data by updating the relevant field definition, visibility rule, validation/warning rule, and output section together.
-- UI changes include compact procedure choice buttons backed by the hidden/fallback `procedureSelect`; keep both in sync and covered by tests.
-- Theme changes use CSS custom properties and `data-theme` on the document element; keep dark mode local-only and non-clinical.
-- Operation text is built by procedure-specific functions such as `buildAppendicectomyOperationText` and `buildCholecystectomyOperationText`; keep it rule-based, labelled, and factual.
-- Operation output is structured as labelled lines; unanswered structured operation fields should render as `not specified`.
-- Conditional custom select fields use `SELECT_OR_CUSTOM` plus matching visibility rules.
+```bash
+npm ci
+npm run dev
+npm run check
+```
 
-## Scope
-- Current supported procedures are laparoscopic appendicectomy, laparoscopic cholecystectomy, diagnostic laparoscopy +/- washout / adhesiolysis, incision and drainage of abscess, open inguinal hernia repair, open umbilical hernia repair, and emergency laparotomy.
-- Do not add further procedures unless explicitly asked; update `SPEC.md`, `README.md`, the procedure selector, and `PROCEDURES` together.
+`npm run check:pages` is the pre-cutover gate. It includes `npm run check`, builds the checked-in `docs/` bundle and verifies that bundle's self-hosted/static-header contract.
+
+For UI changes:
+
+- check desktop and a real narrow viewport;
+- confirm no horizontal overflow;
+- verify keyboard/label semantics and generated-note review/copy gating;
+- run `npm audit` when dependencies change.
+
+## Clinical safety constraints
+
+- Do not add AI rewriting, clinical inference or decision support.
+- Preserve user-entered free text as plain text; never render it through executable HTML APIs.
+- Missing values must remain omitted or `not specified` only where the locked v1 behaviour does that.
+- Advisory warnings must remain separate and non-blocking.
+- Generated text must be fresh and explicitly reviewed before copy is enabled.
+- Clipboard failure must leave the draft visible and provide a manual-copy fallback.
+- Never use real clinical data in tests, fixtures, screenshots, logs or commits.
+
+## Privacy boundary
+
+- No clinical text in localStorage, sessionStorage, IndexedDB, cookies, query strings, fragments or network requests.
+- `src/app/theme.ts` is the sole localStorage/cookie exception and may persist only the `sangeevSiteTheme` light/dark preference.
+- Runtime assets must be self-hosted; CSP retains `connect-src 'none'`.
+- No third-party runtime scripts, analytics, remote fonts or external APIs.
+
+## Code orientation
+
+- `src/domain/` owns typed pure behaviour:
+  - `generation.ts`, `validation.ts`, `warnings.ts`, `registry.ts`;
+  - `procedures/*.ts` for operation-specific generation/warnings;
+  - no DOM, browser storage or network APIs.
+- `src/app/procedure-state.ts` creates blank discriminated inputs and owns UI-only review/control state.
+- `src/app/procedure-form-definitions.ts` is the v2 UI field/option/visibility matrix for the seven supported procedures.
+- `src/app/App.tsx` owns the five-stage workflow and fresh/reviewed/stale copy state machine.
+- `src/components/ProcedureOperativeDetails.tsx` renders procedure-specific fields from the UI definitions.
+- `src/components/CoreDetails.tsx` and `CompletionDetails.tsx` render shared stages.
+- `tests/fixtures/v1/expected-output.json` is literal compatibility evidence. Tests must never recompute expected outputs with the implementation under test.
+
+## Procedure changes
+
+Current procedures are exactly:
+
+- laparoscopic appendicectomy;
+- laparoscopic cholecystectomy;
+- diagnostic laparoscopy +/- washout / adhesiolysis;
+- incision and drainage of abscess;
+- open inguinal hernia repair;
+- open umbilical hernia repair;
+- emergency laparotomy.
+
+Do not add another procedure without explicit approval. A legitimate procedure change must update together:
+
+- domain type and per-procedure module;
+- registry;
+- UI form definition and visibility/clear rules;
+- literal v1-compatible fixtures or an explicitly approved v2 behavioural decision;
+- domain and React workflow tests;
+- README/SPEC where the supported scope changes.
+
+## Cutover
+
+Passing tests is necessary but does not authorise deployment. Before cutover, preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit approval to merge the draft PR. The merge updates the existing GitHub Pages `main:/docs` source; no DNS change is planned.
