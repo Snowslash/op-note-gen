@@ -22,11 +22,34 @@ describe("theme preference boundary", () => {
     expect(document.documentElement).not.toHaveClass("dark");
   });
 
+  it("prefers a valid estate cookie and safely ignores malformed cookie encoding", () => {
+    window.localStorage.setItem(THEME_STORAGE_KEY, "dark");
+    document.cookie = `${THEME_STORAGE_KEY}=light; Path=/`;
+    expect(initialiseTheme()).toBe("light");
+
+    document.cookie = `${THEME_STORAGE_KEY}=%E0%A4%A; Path=/`;
+    expect(initialiseTheme()).toBe("dark");
+  });
+
+  it("uses the shared public-estate header on the hosted app", () => {
+    render(<App />);
+    const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
+    expect(navigation).toBeVisible();
+    expect(screen.getByRole("link", { name: "Sangeev" })).toHaveAttribute("href", "https://sangeev.me");
+    expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "https://sangeev.me/#tools");
+    expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
+    expect(screen.getByRole("link", { name: "Scratchpad" })).toBeVisible();
+    expect(screen.getByRole("link", { name: "AlignEd" })).toBeVisible();
+  });
+
   it("persists only theme preference while clinical form text remains in memory", () => {
     render(<App />);
 
     fireEvent.click(screen.getByRole("button", { name: "Switch to dark mode" }));
-    expect(screen.getByRole("button", { name: "Switch to light mode" })).toBeVisible();
+    const lightToggle = screen.getByRole("button", { name: "Switch to light mode" });
+    expect(lightToggle).toBeVisible();
+    expect(lightToggle).toHaveClass("theme-toggle");
+    expect(lightToggle.querySelector("svg")).not.toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.change(screen.getByLabelText("Indication"), { target: { value: "Synthetic private form text" } });
