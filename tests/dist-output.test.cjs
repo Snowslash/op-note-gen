@@ -36,7 +36,7 @@ test("production output retains browser-only headers and self-hosted assets", ()
   const scripts = [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)];
   assert.ok(scripts.length > 0, "Expected production HTML to reference the Vite runtime asset.");
   scripts.forEach((match) => {
-    assert.match(match[1], /\bsrc=["']\/assets\//i, "Expected runtime scripts to be external self-hosted assets.");
+    assert.match(match[1], /\bsrc=["']\.\/assets\//i, "Expected runtime scripts to be relative external self-hosted assets.");
     assert.match(match[2], /^\s*$/, "Expected no inline runtime script content in production HTML.");
   });
   assert.doesNotMatch(html, /<style\b/i, "Expected no inline runtime styles in production HTML.");
