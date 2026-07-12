@@ -182,11 +182,10 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   };
 
   return (
-    <div className="min-h-screen bg-background px-4 py-6 text-foreground sm:px-8 sm:py-10">
-      <div className="mx-auto max-w-6xl">
-        <PublicEstateHeader current="opnotes" theme={theme} onToggleTheme={toggleTheme} />
-        <main>
-          <header className="border-b border-border pb-5 pt-6">
+    <div className="min-h-screen bg-background text-foreground">
+      <PublicEstateHeader current="opnotes" theme={theme} onToggleTheme={toggleTheme} />
+      <main className="mx-auto max-w-6xl px-4 pb-6 sm:px-8 sm:pb-10">
+        <header className="border-b border-border pb-5 pt-6 sm:pt-10">
           <div>
             <h1 className="font-serif text-3xl font-semibold tracking-tight sm:text-4xl">Operation Note Generator</h1>
             <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">Complete structured fields to generate a clinician-reviewed draft operation note.</p>
@@ -230,8 +229,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
             {!isReviewStage && <div className="mt-8 flex items-center justify-between gap-3 border-t border-border pt-5"><Button disabled={currentStage === "Procedure"} onClick={moveBack} type="button" variant="outline">Back</Button><Button disabled={currentStage === "Procedure" && !values} onClick={moveNext} type="button">Next</Button></div>}
           </section>
         </div>
-        </main>
-      </div>
+      </main>
     </div>
   );
 }
