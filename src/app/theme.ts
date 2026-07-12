@@ -64,5 +64,6 @@ export function applyTheme(theme: Theme, persist = true): Theme {
 }
 
 export function initialiseTheme(): Theme {
-  return applyTheme(readCookieTheme() ?? readStoredTheme() ?? getAppliedTheme(), false);
+  const systemTheme: Theme = window.matchMedia?.("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return applyTheme(readCookieTheme() ?? readStoredTheme() ?? systemTheme, false);
 }

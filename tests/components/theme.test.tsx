@@ -31,10 +31,29 @@ describe("theme preference boundary", () => {
     expect(initialiseTheme()).toBe("dark");
   });
 
+  it("uses the system preference on a first visit with no estate cookie or local preference", () => {
+    const originalMatchMedia = window.matchMedia;
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: () => ({ matches: true }),
+    });
+
+    expect(initialiseTheme()).toBe("dark");
+
+    Object.defineProperty(window, "matchMedia", {
+      configurable: true,
+      value: originalMatchMedia,
+    });
+  });
+
   it("uses the shared public-estate header on the hosted app", () => {
     render(<App />);
     const navigation = screen.getByRole("navigation", { name: "Primary navigation" });
     expect(navigation).toBeVisible();
+    const estateHeader = navigation.closest("header");
+    expect(estateHeader?.parentElement).toHaveClass("min-h-screen");
+    expect(estateHeader?.parentElement).not.toHaveClass("px-4", "max-w-6xl");
+    expect(estateHeader?.nextElementSibling?.tagName).toBe("MAIN");
     expect(screen.getByRole("link", { name: "Sangeev" })).toHaveAttribute("href", "https://sangeev.me");
     expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "https://sangeev.me/#tools");
     expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
