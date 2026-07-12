@@ -17,7 +17,9 @@
     "test:v1": "npm run check:js && node tests/procedure-smoke.test.js && node tests/v1-parity-fixtures.test.js",
     "verify": "npm run test:v1",
     "check": "npm run lint && npm run test && npm run build && npm run test:dist && npm run test:v1",
-    "check:pages": "npm run check && npm run build:pages && npm run test:pages"
+    "check:pages": "npm run check && npm run build:pages && npm run test:pages",
+    "deploy": "wrangler deploy",
+    "preview": "wrangler dev"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",
@@ -42,6 +44,7 @@
     "tailwindcss": "^4.3.2",
     "typescript": "^7.0.2",
     "vite": "^8.1.4",
-    "vitest": "^4.1.10"
+    "vitest": "^4.1.10",
+    "wrangler": "^4.110.0"
   }
 }

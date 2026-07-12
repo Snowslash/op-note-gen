@@ -41,3 +41,8 @@ review-artifacts/
 secrets/
 credentials/
 *.local
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
