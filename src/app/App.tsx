@@ -15,18 +15,22 @@ import {
   createControlState,
   createDraftState,
   createProcedureInput,
+  createTeamMember,
+  ensureTeamMemberIds,
   OUTPUT_MODES,
+  type PreloadedProcedureInput,
   type ProcedureControlState,
   type DraftState,
   updateTeamMember,
 } from "./procedure-state";
 import { applyTheme, getAppliedTheme, type Theme } from "./theme";
-import { WORKFLOW_STAGES, WorkflowSteps, type WorkflowStage } from "./workflow/WorkflowSteps";
+import { WorkflowSteps } from "./workflow/WorkflowSteps";
+import { WORKFLOW_STAGES, type WorkflowStage } from "./workflow/stages";
 
 const stageIndex = (stage: WorkflowStage) => WORKFLOW_STAGES.indexOf(stage);
 
 interface AppProps {
-  initialInput?: ProcedureInput;
+  initialInput?: PreloadedProcedureInput;
   initialOutputMode?: OutputMode;
   initialStage?: WorkflowStage;
 }
@@ -35,7 +39,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const [procedureSearch, setProcedureSearch] = useState("");
   const [currentStage, setCurrentStage] = useState<WorkflowStage>(initialStage);
   const [furthestStageIndex, setFurthestStageIndex] = useState(() => initialInput ? stageIndex(initialStage) : 0);
-  const [values, setValues] = useState<ProcedureInput | null>(() => initialInput ?? null);
+  const [values, setValues] = useState<ProcedureInput | null>(() => initialInput ? ensureTeamMemberIds(initialInput) : null);
   const [controls, setControls] = useState<ProcedureControlState>(createControlState);
   const [outputMode, setOutputMode] = useState<OutputMode>(initialOutputMode);
   const [draft, setDraft] = useState<DraftState>(createDraftState);
@@ -200,7 +204,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
         <div className="mt-6">
           <section className="min-w-0" aria-live="polite">
             {currentStage === "Procedure" && <ProcedurePicker selected={values?.procedureId ?? null} search={procedureSearch} onSearchChange={setProcedureSearch} onSelect={selectProcedure} />}
-            {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, { role: "Assistant", name: "" }] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
+            {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, createTeamMember()] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
             {currentStage === "Operative details" && values && <ProcedureOperativeDetails values={values} controls={controls} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} />}
             {currentStage === "Completion" && values && <CompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
             {isReviewStage && values && (

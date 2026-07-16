@@ -12,9 +12,10 @@ interface CompletionDetailsProps {
   onDrainCustomValueChange: (value: string) => void;
 }
 
+const STANDARD_DRAIN_LOCATIONS = ["Pelvis", "Right iliac fossa", "Right paracolic gutter", "Left paracolic gutter", "Morrison's pouch"];
+
 export function CompletionDetails({ values, controls, onValueChange, onDrainChoiceChange, onDrainCustomValueChange }: CompletionDetailsProps) {
-  const standardDrainLocations = ["Pelvis", "Right iliac fossa", "Right paracolic gutter", "Left paracolic gutter", "Morrison's pouch"];
-  const valueIsStandard = standardDrainLocations.includes(values.drainLocation);
+  const valueIsStandard = STANDARD_DRAIN_LOCATIONS.includes(values.drainLocation);
   const drainChoice = controls.drainLocationChoice || (valueIsStandard ? values.drainLocation : values.drainLocation ? "Custom / other" : "");
   const drainCustom = controls.drainLocationCustom || (!valueIsStandard ? values.drainLocation : "");
 
@@ -24,7 +25,7 @@ export function CompletionDetails({ values, controls, onValueChange, onDrainChoi
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Specimen" value={values.specimen} onChange={(value) => onValueChange("specimen", value)} />
         <YesNoField label="Drain placed" value={values.drainStatus} onChange={(value) => onValueChange("drainStatus", value)} />
-        {values.drainStatus === "yes" && <SelectField label="Drain location" value={drainChoice} onChange={onDrainChoiceChange} options={[...standardDrainLocations, "Custom / other"]} />}
+        {values.drainStatus === "yes" && <SelectField label="Drain location" value={drainChoice} onChange={onDrainChoiceChange} options={[...STANDARD_DRAIN_LOCATIONS, "Custom / other"]} />}
         {values.drainStatus === "yes" && drainChoice === "Custom / other" && <TextField label="Custom drain location" value={drainCustom} onChange={onDrainCustomValueChange} />}
         <TextField label="Estimated blood loss" value={values.bloodLoss} onChange={(value) => onValueChange("bloodLoss", value)} />
         <TextField label="Complications" value={values.complications} onChange={(value) => onValueChange("complications", value)} />

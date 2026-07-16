@@ -1,14 +1,5 @@
 import { Button } from "../../components/ui/button";
-
-export const WORKFLOW_STAGES = [
-  "Procedure",
-  "Core details",
-  "Operative details",
-  "Completion",
-  "Review and copy",
-] as const;
-
-export type WorkflowStage = (typeof WORKFLOW_STAGES)[number];
+import { WORKFLOW_STAGES, type WorkflowStage } from "./stages";
 
 interface WorkflowStepsProps {
   currentStage: WorkflowStage;

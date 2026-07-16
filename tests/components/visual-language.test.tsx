@@ -8,6 +8,8 @@ const tokens = readFileSync(path.join(process.cwd(), "src/styles/tokens.css"), "
 const globals = readFileSync(path.join(process.cwd(), "src/styles/globals.css"), "utf8");
 const app = readFileSync(path.join(process.cwd(), "src/app/App.tsx"), "utf8");
 const buttons = readFileSync(path.join(process.cwd(), "src/components/ui/button.tsx"), "utf8");
+const workflowSteps = readFileSync(path.join(process.cwd(), "src/app/workflow/WorkflowSteps.tsx"), "utf8");
+const completionDetails = readFileSync(path.join(process.cwd(), "src/components/CompletionDetails.tsx"), "utf8");
 
 const sharedTokens = [
   "--background: #f4f0e8",
@@ -34,5 +36,19 @@ describe("shared visual language contract", () => {
     expect(buttons).toContain("rounded-sm");
     expect(app).not.toContain("Draft safety");
     expect(app.match(/Privacy and safety information/g)).toHaveLength(1);
+  });
+
+  it("keeps component-only modules compatible with Fast Refresh", () => {
+    expect(buttons).toContain("export { Button };");
+    expect(workflowSteps).not.toContain("export const WORKFLOW_STAGES");
+    expect(app).toContain('from "./workflow/stages"');
+  });
+
+  it("keeps static drain options at module scope", () => {
+    const optionsDeclaration = completionDetails.indexOf("const STANDARD_DRAIN_LOCATIONS");
+    const componentDeclaration = completionDetails.indexOf("export function CompletionDetails");
+
+    expect(optionsDeclaration).toBeGreaterThan(-1);
+    expect(optionsDeclaration).toBeLessThan(componentDeclaration);
   });
 });
