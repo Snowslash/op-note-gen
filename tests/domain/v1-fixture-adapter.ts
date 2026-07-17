@@ -8,14 +8,19 @@ import type {
   OpenInguinalHerniaRepairInput,
   OpenUmbilicalHerniaRepairInput,
   ProcedureInput,
-  TeamMember,
 } from "../../src/domain/types";
+
+interface LegacyTeamMember {
+  id?: string;
+  role: string;
+  name: string;
+}
 
 export interface LegacyFixtureInput {
   values?: Record<string, string>;
   radios?: Record<string, string>;
   checks?: Record<string, boolean>;
-  teamMembers?: TeamMember[];
+  teamMembers?: LegacyTeamMember[];
 }
 
 const LEGACY_PROCEDURE_IDS = {
@@ -62,7 +67,10 @@ function common(input: LegacyFixtureInput): CommonProcedureInput {
     fascialSutureMaterial: value(input, "fascialSutureMaterial"),
     skinClosureMethod: value(input, "skinClosureMethod"),
     additionalOperativeDetails: value(input, "additionalOperativeDetails"),
-    additionalTeamMembers: input.teamMembers ?? [],
+    additionalTeamMembers: (input.teamMembers ?? []).map((member, index) => ({
+      ...member,
+      id: member.id ?? `legacy-fixture-team-member-${index}`,
+    })),
   };
 }
 

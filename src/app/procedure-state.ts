@@ -31,6 +31,12 @@ export interface DraftState {
   reviewed: boolean;
 }
 
+export type PreloadedTeamMember = Omit<TeamMember, "id"> & { id?: string };
+type WithPreloadedTeamMembers<Input> = Input extends ProcedureInput
+  ? Omit<Input, "additionalTeamMembers"> & { additionalTeamMembers: PreloadedTeamMember[] }
+  : never;
+export type PreloadedProcedureInput = WithPreloadedTeamMembers<ProcedureInput>;
+
 function createCommonInput(): CommonProcedureInput {
   return {
     operationDateTime: getLocalDateTimeValue(),
@@ -182,6 +188,32 @@ export function createDraftState(): DraftState {
 export function getLocalDateTimeValue(date = new Date()): string {
   const offsetMs = date.getTimezoneOffset() * 60_000;
   return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
+}
+
+let fallbackTeamMemberId = 0;
+
+function createTeamMemberId(): string {
+  const randomId = globalThis.crypto?.randomUUID?.();
+  fallbackTeamMemberId += 1;
+  return randomId ?? `team-member-${Date.now()}-${fallbackTeamMemberId}`;
+}
+
+export function createTeamMember(): TeamMember {
+  return {
+    id: createTeamMemberId(),
+    role: "Assistant",
+    name: "",
+  };
+}
+
+export function ensureTeamMemberIds(input: PreloadedProcedureInput): ProcedureInput {
+  const seenIds = new Set<string>();
+  const additionalTeamMembers = input.additionalTeamMembers.map((member) => {
+    const id = member.id && !seenIds.has(member.id) ? member.id : createTeamMemberId();
+    seenIds.add(id);
+    return id === member.id ? member : { ...member, id };
+  });
+  return { ...input, additionalTeamMembers } as ProcedureInput;
 }
 
 export function updateTeamMember(

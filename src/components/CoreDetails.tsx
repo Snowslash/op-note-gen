@@ -48,7 +48,7 @@ export function CoreDetails({
         </div>
         <div className="mt-3 space-y-3">
           {values.additionalTeamMembers.map((member, index) => (
-            <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-[10rem_1fr_auto]" key={index}>
+            <div className="grid gap-3 border-t border-border pt-3 sm:grid-cols-[10rem_1fr_auto]" key={member.id}>
               <Field id={`team-member-role-${index}`} label="Team member role"><select aria-label="Team member role" className="h-9 w-full rounded-sm border border-input bg-card px-3 text-sm" value={member.role} onChange={(event) => onTeamMemberChange(index, { role: event.target.value })}><option value="Surgeon">Surgeon</option><option value="Assistant">Assistant</option></select></Field>
               <Field id={`team-member-name-${index}`} label="Team member name"><Input aria-label="Team member name" value={member.name} onChange={(event) => onTeamMemberChange(index, { name: event.target.value })} /></Field>
               <Button className="self-end" onClick={() => onRemoveTeamMember(index)} size="sm" type="button" variant="outline">Remove</Button>

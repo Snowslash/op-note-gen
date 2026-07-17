@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import expectedOutput from "../fixtures/v1/expected-output.json";
 import App from "../../src/app/App";
+import { createProcedureInput, type PreloadedProcedureInput } from "../../src/app/procedure-state";
 
 const appendicectomyFixture = expectedOutput["lap-appendicectomy-full"];
 const appendicectomyHandoverFixture = expectedOutput["lap-appendicectomy-full-handover"];
@@ -114,6 +115,41 @@ describe("appendicectomy vertical workflow", () => {
     fireEvent.change(screen.getByLabelText("Reason for conversion"), { target: { value: "Synthetic conversion reason" } });
     fireEvent.click(screen.getByLabelText("Converted to open"));
     expect(screen.queryByLabelText("Reason for conversion")).not.toBeInTheDocument();
+  });
+
+  it("preserves the remaining team-member row when an earlier row is removed", () => {
+    render(<App />);
+    selectAppendicectomy();
+
+    fireEvent.click(screen.getByRole("button", { name: "Add team member" }));
+    fireEvent.click(screen.getByRole("button", { name: "Add team member" }));
+    const names = screen.getAllByLabelText("Team member name");
+    fireEvent.change(names[0], { target: { value: "Synthetic First Member" } });
+    fireEvent.change(names[1], { target: { value: "Synthetic Remaining Member" } });
+    const remainingInput = names[1];
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Remove" })[0]);
+
+    expect(screen.getByLabelText("Team member name")).toBe(remainingInput);
+    expect(screen.getByLabelText("Team member name")).toHaveValue("Synthetic Remaining Member");
+  });
+
+  it("normalizes stable IDs for preloaded legacy team-member rows", () => {
+    const input: PreloadedProcedureInput = {
+      ...createProcedureInput("lap-appendicectomy"),
+      additionalTeamMembers: [
+        { role: "Surgeon", name: "Synthetic Legacy First" },
+        { role: "Assistant", name: "Synthetic Legacy Remaining" },
+      ],
+    };
+    render(<App initialInput={input} initialStage="Core details" />);
+    const names = screen.getAllByLabelText("Team member name");
+    const remainingInput = names[1];
+
+    fireEvent.click(screen.getAllByRole("button", { name: "Remove" })[0]);
+
+    expect(screen.getByLabelText("Team member name")).toBe(remainingInput);
+    expect(screen.getByLabelText("Team member name")).toHaveValue("Synthetic Legacy Remaining");
   });
 
   it("generates the checked-in full appendicectomy fixture exactly and separates advisory warnings", () => {

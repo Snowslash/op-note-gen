@@ -1,6 +1,10 @@
 import { fireEvent, render, screen } from "@testing-library/react";
 import App from "../../src/app/App";
-import { applyTheme, initialiseTheme, THEME_STORAGE_KEY } from "../../src/app/theme";
+import {
+  applyEstateTheme as applyTheme,
+  ESTATE_THEME_STORAGE_KEY as THEME_STORAGE_KEY,
+  initialiseEstateTheme as initialiseTheme,
+} from "@sangeev/estate-ui";
 
 describe("theme preference boundary", () => {
   beforeEach(() => {
@@ -55,7 +59,7 @@ describe("theme preference boundary", () => {
     expect(estateHeader?.parentElement).not.toHaveClass("px-4", "max-w-6xl");
     expect(estateHeader?.nextElementSibling?.tagName).toBe("MAIN");
     expect(screen.getByRole("link", { name: "Sangeev" })).toHaveAttribute("href", "https://sangeev.me");
-    expect(screen.getByRole("link", { name: "Tools" })).toHaveAttribute("href", "https://sangeev.me/#tools");
+    expect(screen.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "https://sangeev.me/#projects");
     expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Scratchpad" })).toBeVisible();
     expect(screen.getByRole("link", { name: "AlignEd" })).toBeVisible();
@@ -67,7 +71,7 @@ describe("theme preference boundary", () => {
     fireEvent.click(screen.getByRole("button", { name: "Switch to dark mode" }));
     const lightToggle = screen.getByRole("button", { name: "Switch to light mode" });
     expect(lightToggle).toBeVisible();
-    expect(lightToggle).toHaveClass("theme-toggle");
+    expect(lightToggle).toHaveClass("estate-theme-toggle");
     expect(lightToggle.querySelector("svg")).not.toBeNull();
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));

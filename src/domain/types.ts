@@ -10,6 +10,7 @@ export type ProcedureId =
 export type OutputMode = "full" | "postOp" | "handover";
 
 export interface TeamMember {
+  id: string;
   role: string;
   name: string;
 }
