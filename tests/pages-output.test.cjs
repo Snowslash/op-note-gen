@@ -48,7 +48,8 @@ test("GitHub Pages bundle is self-contained and retains the clinical privacy hea
     assert.equal(fs.readFileSync(deployed, "utf8"), fs.readFileSync(canonical, "utf8"));
   }
   const runtime = pageFiles.filter((filePath) => filePath.endsWith(".js")).map((filePath) => fs.readFileSync(filePath, "utf8")).join("\n");
-  assert.match(runtime, /2\.0\.0-alpha\.2/, "Expected the current estate contract version in the Pages runtime.");
+  const estatePackage = JSON.parse(fs.readFileSync(path.join(ROOT, "node_modules/@sangeev/estate-ui/package.json"), "utf8"));
+  assert.ok(runtime.includes(estatePackage.version), "Expected the installed estate contract version in the Pages runtime.");
 
   pageFiles.forEach((filePath) => {
     const content = fs.readFileSync(filePath, "utf8");

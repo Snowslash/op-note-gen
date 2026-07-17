@@ -58,7 +58,7 @@ describe("theme preference boundary", () => {
     expect(estateHeader?.parentElement).toHaveClass("min-h-screen");
     expect(estateHeader?.parentElement).not.toHaveClass("px-4", "max-w-6xl");
     expect(estateHeader?.nextElementSibling?.tagName).toBe("MAIN");
-    expect(screen.getByRole("link", { name: "Sangeev" })).toHaveAttribute("href", "https://sangeev.me");
+    expect(screen.getByRole("link", { name: "Sangeev.me" })).toHaveAttribute("href", "https://sangeev.me");
     expect(screen.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "https://sangeev.me/#projects");
     expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
     expect(screen.getByRole("link", { name: "Scratchpad" })).toBeVisible();

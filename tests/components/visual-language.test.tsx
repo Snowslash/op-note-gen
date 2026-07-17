@@ -9,6 +9,14 @@ const app = readFileSync(path.join(process.cwd(), "src/app/App.tsx"), "utf8");
 const buttons = readFileSync(path.join(process.cwd(), "src/components/ui/button.tsx"), "utf8");
 const workflowSteps = readFileSync(path.join(process.cwd(), "src/app/workflow/WorkflowSteps.tsx"), "utf8");
 const completionDetails = readFileSync(path.join(process.cwd(), "src/components/CompletionDetails.tsx"), "utf8");
+const focusSources = [
+  "src/components/ui/button.tsx",
+  "src/components/ui/checkbox.tsx",
+  "src/components/ui/input.tsx",
+  "src/components/ui/radio-group.tsx",
+  "src/components/ui/select.tsx",
+  "src/components/ui/textarea.tsx",
+].map((file) => readFileSync(path.join(process.cwd(), file), "utf8")).join("\n");
 
 describe("shared visual language contract", () => {
   it("serves a landing page at the root while keeping the generator at /app/", () => {
@@ -30,8 +38,8 @@ describe("shared visual language contract", () => {
     expect(landing).toContain('<PublicEstateHeader current="opnotes"');
     expect(landing).toContain('<EstateShell variant="landing">');
     expect(landing).toContain('href="./app/"');
-    expect(landing).toContain('className="estate-primary-action" href="https://github.com/Snowslash/op-note-gen"');
-    expect(landing).toContain("Source on GitHub");
+    expect(landing).toContain('className="estate-primary-action estate-icon-action" href="https://github.com/Snowslash/op-note-gen" aria-label="Source on GitHub" title="Source on GitHub"><GitHubMark');
+    expect(landing).not.toContain("<Code");
     expect(landing).toContain("Do not enter patient-identifiable information");
     expect(landing).toContain("Review generated text carefully");
     expect(landing).toContain('alt="Operation Note Generator showing the procedure picker');
@@ -60,6 +68,11 @@ describe("shared visual language contract", () => {
     expect(buttons).toContain("rounded-sm");
     expect(app).not.toContain("Draft safety");
     expect(app.match(/Privacy and safety information/g)).toHaveLength(1);
+  });
+
+  it("inherits one shared focus outline without component ring layers", () => {
+    expect(globals).not.toContain(":focus-visible");
+    expect(focusSources).not.toMatch(/focus-visible:(?:ring|border-ring)/);
   });
 
   it("keeps component-only modules compatible with Fast Refresh", () => {
