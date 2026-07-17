@@ -6,6 +6,8 @@ The tool turns structured fields into a plain-text draft operation note. It does
 
 Live project page: https://opnotes.sangeev.me
 
+Live generator: https://opnotes.sangeev.me/app/
+
 Source: https://github.com/Snowslash/op-note-gen
 
 The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the GitHub Pages deployment bundle in `docs/`.
@@ -24,11 +26,12 @@ Each procedure supports a full operation note, postoperative-plan-only output an
 
 ## How to use it
 
-1. Choose the operation.
-2. Complete core, operative and completion fields.
-3. Select the output mode and generate the draft.
-4. Review the plain-text output and any advisory warnings.
-5. Confirm review before copying.
+1. Open the generator from the project page.
+2. Choose the operation.
+3. Complete core, operative and completion fields.
+4. Select the output mode and generate the draft.
+5. Review the plain-text output and any advisory warnings.
+6. Confirm review before copying.
 
 Do not enter patient-identifiable information into public pages or repositories. Any real clinical note remains the responsibility of the clinician using it.
 
@@ -55,7 +58,7 @@ npm ci
 npm run dev
 ```
 
-Use the local URL printed by Vite.
+Use the local URL printed by Vite for the project page, then open `/app/` for the generator.
 
 Build the static candidate:
 
@@ -63,7 +66,7 @@ Build the static candidate:
 npm run build
 ```
 
-The output is written to `dist/`. Security headers are copied from `public/_headers` and all runtime assets are self-hosted.
+The output is written to `dist/`, with the project page at `dist/index.html` and the generator at `dist/app/index.html`. Security headers are copied from `public/_headers` and all runtime assets are self-hosted.
 
 Build the checked-in GitHub Pages bundle:
 
@@ -72,7 +75,7 @@ npm run build:pages
 npm run test:pages
 ```
 
-This writes the same self-hosted application to `docs/`, preserving the existing GitHub Pages source contract used by `opnotes.sangeev.me`.
+This writes the same project page and nested generator to `docs/`, preserving the existing GitHub Pages source contract used by `opnotes.sangeev.me`.
 
 ## Verify
 

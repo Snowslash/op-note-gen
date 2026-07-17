@@ -22,16 +22,21 @@ function assertNoRemoteRuntimeReference(content, relativePath) {
 test("GitHub Pages bundle is self-contained and retains the clinical privacy headers", () => {
   const pagesDirectory = path.join(ROOT, "docs");
   const htmlPath = path.join(pagesDirectory, "index.html");
+  const appHtmlPath = path.join(pagesDirectory, "app", "index.html");
   const headersPath = path.join(pagesDirectory, "_headers");
 
   assert.ok(fs.existsSync(htmlPath), "Expected npm run build:pages to produce docs/index.html.");
+  assert.ok(fs.existsSync(appHtmlPath), "Expected npm run build:pages to preserve the generator at docs/app/index.html.");
   assert.ok(fs.existsSync(headersPath), "Expected npm run build:pages to copy public/_headers to docs/_headers.");
   assert.equal(fs.readFileSync(headersPath, "utf8"), fs.readFileSync(path.join(ROOT, "public/_headers"), "utf8"));
 
   const html = fs.readFileSync(htmlPath, "utf8");
+  const appHtml = fs.readFileSync(appHtmlPath, "utf8");
   assert.match(html, /<script\b[^>]*\bsrc=["']\.\/assets\//i, "Expected a relative self-hosted Vite runtime asset that works under a repository subpath.");
   assert.doesNotMatch(html, /<style\b/i, "Expected no inline runtime styles.");
   assert.doesNotMatch(html, /<script\b[^>]*>\s*[^<\s]/i, "Expected no inline runtime scripts.");
+  assert.match(appHtml, /<script\b[^>]*\bsrc=["']\.\.\/assets\//i, "Expected a relative self-hosted nested app runtime asset.");
+  assert.doesNotMatch(appHtml, /<style\b/i, "Expected no inline runtime styles in the nested app HTML.");
 
   const pageFiles = filesUnder(pagesDirectory);
   assert.ok(pageFiles.some((filePath) => /Literata-Variable-.*\.ttf$/.test(filePath)), "Expected the estate heading font in the Pages bundle.");
