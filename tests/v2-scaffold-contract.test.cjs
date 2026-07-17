@@ -75,21 +75,14 @@ test("v2 scaffold establishes the agreed browser-only foundation", () => {
 
   if (exists("src/styles/tokens.css")) {
     const tokens = read("src/styles/tokens.css");
-    [
-      "#f4f0e8",
-      "#1d1b18",
-      "#fbf8f2",
-      "#8a1538",
-      "#c7b8a5",
-      "#24211d",
-      "#a3264d",
-      "#c43b63",
-      ".dark",
-    ].forEach((token) => {
+    ["--font-sans: var(--estate-font-body)", "--font-serif: var(--estate-font-heading)", "--radius-sm: var(--estate-radius)"].forEach((token) => {
       if (!tokens.includes(token)) {
-        missing.push(`house token: ${token}`);
+        missing.push(`estate token bridge: ${token}`);
       }
     });
+    if (!read("src/styles/globals.css").includes('@import "@sangeev/estate-ui/contract.css"')) {
+      missing.push("versioned estate contract CSS import");
+    }
   }
 
   if (exists("public/_headers") && read("public/_headers") !== read("legacy-v1/_headers")) {
@@ -148,16 +141,16 @@ test("v2 scaffold establishes the agreed browser-only foundation", () => {
   v2SourceFiles().forEach((relativePath) => {
     const source = read(relativePath);
     forbiddenSourcePatterns.forEach(([description, pattern]) => {
-      const isPermittedThemePreference = relativePath === "src/app/theme.ts" && description === "localStorage";
-      if (!isPermittedThemePreference && pattern.test(source)) {
+      if (pattern.test(source)) {
         missing.push(`browser-only privacy boundary: ${description} in ${relativePath}`);
       }
     });
   });
 
-  const themeSource = read("src/app/theme.ts");
-  if (!themeSource.includes('THEME_STORAGE_KEY = "sangeevSiteTheme"')) {
-    missing.push("theme preference must retain the estate-wide sangeevSiteTheme key");
+  const appSource = read("src/app/App.tsx");
+  const mainSource = read("src/main.tsx");
+  if (!appSource.includes('from "@sangeev/estate-ui"') || !mainSource.includes("initialiseEstateTheme")) {
+    missing.push("theme preference must be owned by the versioned estate package");
   }
 
   assert.deepEqual(missing, [], `Missing v2 scaffold contract:\n- ${missing.join("\n- ")}`);

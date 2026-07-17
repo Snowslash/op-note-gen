@@ -11,40 +11,8 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-destructive: var(--destructive);
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-serif: Charter, Cambria, Georgia, serif;
-  --radius-sm: 0.125rem;
-  --radius-md: 0.25rem;
-}
-
-:root {
-  --background: #f4f0e8;
-  --foreground: #1d1b18;
-  --card: #fbf8f2;
-  --card-foreground: #1d1b18;
-  --primary: #8a1538;
-  --primary-foreground: #fbf8f2;
-  --primary-hover: #641028;
-  --muted: #eee6d9;
-  --muted-foreground: #655e55;
-  --border: #c7b8a5;
-  --input: #c7b8a5;
-  --ring: #8a1538;
-  --destructive: #9f1239;
-}
-
-.dark {
-  --background: #1d1b18;
-  --foreground: #f4f0e8;
-  --card: #24211d;
-  --card-foreground: #f4f0e8;
-  --primary: #a3264d;
-  --primary-foreground: #f4f0e8;
-  --primary-hover: #c43b63;
-  --muted: #2d2924;
-  --muted-foreground: #c7b8a5;
-  --border: #655e55;
-  --input: #655e55;
-  --ring: #c43b63;
-  --destructive: #e06c88;
+  --font-sans: var(--estate-font-body);
+  --font-serif: var(--estate-font-heading);
+  --radius-sm: var(--estate-radius);
+  --radius-md: var(--estate-radius);
 }

@@ -4,6 +4,7 @@ const path = require("node:path");
 const test = require("node:test");
 
 const ROOT = path.resolve(__dirname, "..");
+const FONT_LICENSES = ["OFL-Atkinson-Hyperlegible-Next.txt", "OFL-Literata.txt"];
 
 function filesUnder(directory) {
   return fs.readdirSync(directory, { recursive: true, withFileTypes: true })
@@ -32,7 +33,19 @@ test("GitHub Pages bundle is self-contained and retains the clinical privacy hea
   assert.doesNotMatch(html, /<style\b/i, "Expected no inline runtime styles.");
   assert.doesNotMatch(html, /<script\b[^>]*>\s*[^<\s]/i, "Expected no inline runtime scripts.");
 
-  filesUnder(pagesDirectory).forEach((filePath) => {
+  const pageFiles = filesUnder(pagesDirectory);
+  assert.ok(pageFiles.some((filePath) => /Literata-Variable-.*\.ttf$/.test(filePath)), "Expected the estate heading font in the Pages bundle.");
+  assert.ok(pageFiles.some((filePath) => /AtkinsonHyperlegibleNext-Variable-.*\.ttf$/.test(filePath)), "Expected the estate body font in the Pages bundle.");
+  for (const license of FONT_LICENSES) {
+    const deployed = path.join(pagesDirectory, "licenses", license);
+    const canonical = path.join(ROOT, "node_modules", "@sangeev", "estate-ui", "LICENSES", license);
+    assert.ok(fs.existsSync(deployed), `Expected ${license} beside the deployed font binaries.`);
+    assert.equal(fs.readFileSync(deployed, "utf8"), fs.readFileSync(canonical, "utf8"));
+  }
+  const runtime = pageFiles.filter((filePath) => filePath.endsWith(".js")).map((filePath) => fs.readFileSync(filePath, "utf8")).join("\n");
+  assert.match(runtime, /2\.0\.0-alpha\.2/, "Expected the current estate contract version in the Pages runtime.");
+
+  pageFiles.forEach((filePath) => {
     const content = fs.readFileSync(filePath, "utf8");
     assertNoRemoteRuntimeReference(content, path.relative(ROOT, filePath));
   });
