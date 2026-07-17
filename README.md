@@ -10,7 +10,7 @@ Live generator: https://opnotes.sangeev.me/app/
 
 Source: https://github.com/Snowslash/op-note-gen
 
-The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the GitHub Pages deployment bundle in `docs/`.
+The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the checked-in static deployment bundle in `docs/`.
 
 ## Supported procedures
 
@@ -68,14 +68,14 @@ npm run build
 
 The output is written to `dist/`, with the project page at `dist/index.html` and the generator at `dist/app/index.html`. Security headers are copied from `public/_headers` and all runtime assets are self-hosted.
 
-Build the checked-in GitHub Pages bundle:
+Build the checked-in static deployment bundle:
 
 ```bash
 npm run build:pages
 npm run test:pages
 ```
 
-This writes the same project page and nested generator to `docs/`, preserving the existing GitHub Pages source contract used by `opnotes.sangeev.me`.
+This writes the same project page and nested generator to `docs/`. GitHub Pages publishes `main:/docs`; the production Cloudflare Worker also deploys this directory using the checked-in `wrangler.jsonc` contract.
 
 ## Verify
 
@@ -121,7 +121,7 @@ The checked-in v1 fixture set covers all seven procedures in all three output mo
 
 ## Deployment and cutover
 
-The application remains a static browser-only site. GitHub Pages currently publishes `main:/docs`; `opnotes.sangeev.me` is Cloudflare-proxied to that deployment. Pushing this feature branch does not alter production. Merging the verified branch into `main` publishes the React bundle through the existing GitHub Pages source while preserving the current domain and DNS path.
+The application remains a static browser-only site. GitHub Pages publishes `main:/docs` as a secondary origin, while production `opnotes.sangeev.me` is the custom domain of the Cloudflare Worker named `op-note-gen`. A Git push updates the Pages source but does not update that Worker. After approval, run `npm run check:pages` and `npx wrangler deploy`; `wrangler.jsonc` deploys `docs/` and preserves the nested `/app/` route without changing DNS.
 
 Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
 

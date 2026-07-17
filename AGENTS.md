@@ -12,11 +12,11 @@
 
 - `src/` is the implemented Vite + React + TypeScript + Tailwind CSS + owned shadcn/ui v2 candidate.
 - `legacy-v1/` retains the static v1 rollback source and parity-test runtime.
-- V2 builds to `dist/`; `npm run build:pages` writes the checked-in GitHub Pages bundle to `docs/`.
-- GitHub Pages publishes `main:/docs`; `public/_headers` supplies the portable restrictive static-host security headers.
+- V2 builds to `dist/`; `npm run build:pages` writes the checked-in static deployment bundle to `docs/`.
+- GitHub Pages publishes `main:/docs` as a secondary origin. Production `opnotes.sangeev.me` is the custom domain of the `op-note-gen` Cloudflare Worker, which deploys `docs/` through `wrangler.jsonc`. `public/_headers` supplies the portable restrictive static-host security headers.
 - There is no backend, API, analytics, AI layer, database or clinical-text persistence.
 - `SPEC_V2.md` is authoritative for v2 architecture, workflow, design, safety and cutover gates.
-- `README.md` describes local operation, rollback and the pending v2 production cutover.
+- `README.md` describes local operation, rollback and the current production deployment path.
 
 ## Running and verifying
 
@@ -88,4 +88,4 @@ Do not add another procedure without explicit approval. A legitimate procedure c
 
 ## Cutover
 
-Passing tests is necessary but does not authorise deployment. Before cutover, preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit approval to merge the draft PR. The merge updates the existing GitHub Pages `main:/docs` source; no DNS change is planned.
+Passing tests is necessary but does not authorise deployment. Preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit approval before merging or deploying. A production release requires `npm run check:pages` followed by `npx wrangler deploy`; the checked-in Worker contract updates `opnotes.sangeev.me` without a DNS change.
