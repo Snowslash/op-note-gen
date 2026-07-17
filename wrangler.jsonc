@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "op-note-gen",
+  "compatibility_date": "2026-07-17",
+  "observability": {
+    "enabled": false
+  },
+  "assets": {
+    "directory": "./docs",
+    "not_found_handling": "single-page-application"
+  },
+  "routes": [
+    {
+      "pattern": "opnotes.sangeev.me",
+      "custom_domain": true
+    }
+  ]
+}

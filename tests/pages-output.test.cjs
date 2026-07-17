@@ -55,3 +55,23 @@ test("GitHub Pages bundle is self-contained and retains the clinical privacy hea
     assertNoRemoteRuntimeReference(content, path.relative(ROOT, filePath));
   });
 });
+
+test("Cloudflare Worker preserves nested app routing on the production domain", () => {
+  const wranglerPath = path.join(ROOT, "wrangler.jsonc");
+  assert.ok(fs.existsSync(wranglerPath), "Expected an explicit Worker Static Assets deployment contract.");
+
+  const wrangler = JSON.parse(fs.readFileSync(wranglerPath, "utf8"));
+  assert.equal(wrangler.name, "op-note-gen");
+  assert.equal(wrangler.compatibility_date, "2026-07-17");
+  assert.deepEqual(wrangler.observability, { enabled: false });
+  assert.deepEqual(wrangler.assets, {
+    directory: "./docs",
+    not_found_handling: "single-page-application",
+  });
+  assert.deepEqual(wrangler.routes, [
+    {
+      pattern: "opnotes.sangeev.me",
+      custom_domain: true,
+    },
+  ]);
+});
