@@ -42,6 +42,9 @@ describe("shared visual language contract", () => {
     expect(landing).not.toContain("<Code");
     expect(landing).toContain("Do not enter patient-identifiable information");
     expect(landing).toContain("Review generated text carefully");
+    expect(landing).toContain("Twelve supported procedures");
+    expect(landing).toContain("Seven general-surgery procedures plus five trauma-and-orthopaedics workflows");
+    expect(landing).not.toContain("Seven common procedures");
     expect(landing).toContain('alt="Operation Note Generator showing the procedure picker');
     expect(landing).not.toContain("build-note");
     expect(landing).not.toContain("<figcaption>");

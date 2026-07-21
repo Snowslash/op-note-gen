@@ -11,7 +11,7 @@ import {
 } from "@sangeev/estate-ui";
 
 const capabilities = [
-  ["Seven common procedures", "Appendicectomy, cholecystectomy, diagnostic laparoscopy, abscess drainage, two open hernia repairs and emergency laparotomy."],
+  ["Twelve supported procedures", "Seven general-surgery procedures plus five trauma-and-orthopaedics workflows."],
   ["Procedure-specific forms", "The operative fields change with the selected procedure instead of forcing every case through one generic template."],
   ["Three plain-text outputs", "Generate a full operation note, postoperative plan or ward handover summary without AI rewriting."],
   ["Review before copy", "A fresh draft must be generated and explicitly reviewed before the copy action becomes available."],
@@ -29,7 +29,7 @@ export default function LandingPage() {
             <div className="hero-copy">
               <a className="back-link" href="https://sangeev.me/#projects"><ArrowLeft size={15} aria-hidden="true" /> Public tools</a>
               <EstatePageTitle id="page-title" variant="landing">Operation Note Generator</EstatePageTitle>
-              <p className="project-summary">A browser tool for drafting common general-surgery operation notes.</p>
+              <p className="project-summary">A browser tool for drafting selected general-surgery and trauma-and-orthopaedics operation notes.</p>
               <p className="lede">
                 I made this because I was tired of retyping the same structure after common cases. Select a procedure, complete the relevant fields and generate a plain-text draft to check before copying.
               </p>
