@@ -25,6 +25,11 @@ const operativeLandmark: Record<ProcedureId, string> = {
   "open-inguinal-hernia-repair": "Hernia side",
   "open-umbilical-hernia-repair": "Hernia defect size",
   "emergency-laparotomy": "Laparotomy incision",
+  "ankle-orif": "Fracture pattern",
+  "hip-hemiarthroplasty": "Surgical approach",
+  "dynamic-hip-screw": "Guidewire and lag-screw placement",
+  "cephalomedullary-nail": "Nail insertion details",
+  "distal-radius-orif": "Surgical approach",
 };
 
 describe("all-procedure workflow parity", () => {
@@ -47,11 +52,15 @@ describe("all-procedure workflow parity", () => {
   it.each(Object.values(PROCEDURE_DEFINITIONS))("selects $label and renders its operative workflow", (procedure) => {
     render(<App />);
 
+    if (procedure.specialty === "general-surgery") {
+      fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
+    }
     fireEvent.click(screen.getByRole("button", { name: procedure.label }));
     expect(screen.getByRole("button", { name: procedure.label })).toHaveAttribute("aria-pressed", "true");
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.change(screen.getByLabelText("Indication"), { target: { value: "Synthetic indication" } });
     fireEvent.change(screen.getByLabelText("Findings"), { target: { value: "Synthetic findings" } });
+    if (procedure.completionProfile === "orthopaedics") fireEvent.click(screen.getByLabelText("Right"));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
 
     expect(screen.getByLabelText(operativeLandmark[procedure.id])).toBeVisible();
@@ -60,6 +69,7 @@ describe("all-procedure workflow parity", () => {
   it("preserves and clears dependent details according to the v1 rules", () => {
     render(<App />);
 
+    fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic cholecystectomy" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.change(screen.getByLabelText("Indication"), { target: { value: "Synthetic indication" } });
@@ -83,6 +93,7 @@ describe("all-procedure workflow parity", () => {
   it("clears emergency laparotomy details when a yes/no controller hides them", () => {
     render(<App />);
 
+    fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
     fireEvent.click(screen.getByRole("button", { name: "Emergency laparotomy" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.change(screen.getByLabelText("Indication"), { target: { value: "Synthetic indication" } });

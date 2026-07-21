@@ -11,6 +11,9 @@ import {
 } from "../../src/domain/index.ts";
 import type { ProcedureId, ProcedureInput } from "../../src/domain/types";
 import { adaptLegacyFixtureInput, type LegacyFixtureInput } from "./v1-fixture-adapter.ts";
+import "./ankle-orif.test.ts";
+import "./hip-hemiarthroplasty.test.ts";
+import "./remaining-tno-procedures.test.ts";
 
 const require = createRequire(import.meta.url);
 const fixtures = require("../fixtures/v1/fixture-inputs.js") as FixtureCase[];
@@ -22,7 +25,7 @@ interface FixtureCase {
   input: LegacyFixtureInput;
 }
 
-const procedureIds: ProcedureId[] = [
+const legacyProcedureIds: ProcedureId[] = [
   "lap-appendicectomy",
   "lap-cholecystectomy",
   "diagnostic-laparoscopy",
@@ -30,6 +33,15 @@ const procedureIds: ProcedureId[] = [
   "open-inguinal-hernia-repair",
   "open-umbilical-hernia-repair",
   "emergency-laparotomy",
+];
+
+const procedureIds: ProcedureId[] = [
+  ...legacyProcedureIds,
+  "ankle-orif",
+  "hip-hemiarthroplasty",
+  "dynamic-hip-screw",
+  "cephalomedullary-nail",
+  "distal-radius-orif",
 ];
 
 function fixtureFor<T extends ProcedureId>(procedureId: T): Extract<ProcedureInput, { procedureId: T }> {
@@ -63,7 +75,7 @@ describe("v1 output parity", () => {
 });
 
 describe("procedure registry", () => {
-  it("contains exactly the seven authoritative procedures with stable labels and modes", () => {
+  it("contains the seven parity-locked procedures plus the approved T&O slices", () => {
     assert.deepEqual(Object.keys(PROCEDURE_DEFINITIONS).sort(), [...procedureIds].sort());
 
     assert.equal(PROCEDURE_DEFINITIONS["lap-appendicectomy"].label, "Laparoscopic appendicectomy");
@@ -76,12 +88,15 @@ describe("procedure registry", () => {
 
     for (const definition of Object.values(PROCEDURE_DEFINITIONS)) {
       assert.deepEqual(definition.supportedOutputModes, ["full", "postOp", "handover"]);
+      assert.ok(definition.category.trim());
+      assert.ok(definition.keywords.length > 0);
+      assert.equal(definition.completionProfile, definition.specialty === "general-surgery" ? "general-surgery" : "orthopaedics");
     }
   });
 });
 
 describe("required-field validation", () => {
-  for (const procedureId of procedureIds) {
+  for (const procedureId of legacyProcedureIds) {
     it(`accepts a complete ${procedureId} input`, () => {
       assert.deepEqual(validateProcedureInput(fixtureFor(procedureId)), { valid: true, errors: [] });
     });

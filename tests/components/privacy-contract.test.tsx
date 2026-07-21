@@ -6,6 +6,7 @@ const runtimeFiles = [
   "src/app/procedure-state.ts",
   "src/app/procedure-form-definitions.ts",
   "src/components/CoreDetails.tsx",
+  "src/components/ImplantRows.tsx",
   "src/components/ProcedureOperativeDetails.tsx",
   "src/components/CompletionDetails.tsx",
   "src/components/GeneratedNote.tsx",
@@ -16,7 +17,7 @@ function readRuntimeSource() {
   return runtimeFiles.map((file) => readFileSync(resolve(process.cwd(), file), "utf8")).join("\n");
 }
 
-describe("appendicectomy privacy and rendering boundary", () => {
+describe("application privacy and rendering boundary", () => {
   it("contains no clinical storage, network, HTML injection, or browser-form submission APIs", () => {
     const source = readRuntimeSource();
 
@@ -27,6 +28,9 @@ describe("appendicectomy privacy and rendering boundary", () => {
       "fetch(",
       "XMLHttpRequest",
       "sendBeacon",
+      "WebSocket",
+      "EventSource",
+      "console.",
       "dangerouslySetInnerHTML",
       "execCommand",
       "<form",

@@ -1,12 +1,12 @@
 import { cloneElement, isValidElement, type ReactNode } from "react";
-import type { CommonProcedureInput, TeamMember } from "../domain";
+import type { FieldValidationError, ProcedureInput, TeamMember } from "../domain";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 
 interface CoreDetailsProps {
-  values: CommonProcedureInput;
-  errors: Partial<Record<"indication" | "findings", string>>;
+  values: ProcedureInput;
+  errors: Partial<Record<FieldValidationError["field"], string>>;
   onValueChange: (field: string, value: string) => void;
   onAddTeamMember: () => void;
   onRemoveTeamMember: (index: number) => void;
@@ -23,6 +23,8 @@ export function CoreDetails({
   onRemoveTeamMember,
   onTeamMemberChange,
 }: CoreDetailsProps) {
+  const isOrthopaedic = "caseClassification" in values;
+
   return (
     <section aria-labelledby="core-details-heading" className="space-y-5">
       <div>
@@ -30,7 +32,30 @@ export function CoreDetails({
         <p className="mt-1 text-sm text-muted-foreground">Core identifiers and required clinical context.</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
-        <Field label="Date/time"><Input type="datetime-local" value={values.operationDateTime} onChange={(event) => onValueChange("operationDateTime", event.target.value)} /></Field>
+        <Field label={isOrthopaedic ? "Operation date and time" : "Date/time"}><Input type="datetime-local" value={values.operationDateTime} onChange={(event) => onValueChange("operationDateTime", event.target.value)} /></Field>
+        {isOrthopaedic && (
+          <>
+            <Field label="Case classification">
+              <select className="h-9 w-full rounded-sm border border-input bg-card px-3 text-sm" value={values.caseClassification} onChange={(event) => onValueChange("caseClassification", event.target.value)}>
+                <option value="">Select case classification</option>
+                <option value="Elective">Elective</option>
+                <option value="Non-elective">Non-elective</option>
+              </select>
+            </Field>
+            <fieldset aria-describedby={errors.side ? "side-error" : undefined} aria-invalid={Boolean(errors.side)} className="grid gap-1.5 text-sm font-medium">
+              <legend>Side</legend>
+              <div className="flex min-h-9 items-center gap-5 rounded-sm border border-input bg-card px-3">
+                {["Right", "Left"].map((side) => (
+                  <label className="flex items-center gap-2 font-normal" key={side}>
+                    <input checked={values.side === side} name="side" onChange={() => onValueChange("side", side)} type="radio" value={side} />
+                    {side}
+                  </label>
+                ))}
+              </div>
+              {errors.side && <span id="side-error" className="text-sm text-destructive">{errors.side}</span>}
+            </fieldset>
+          </>
+        )}
         <Field label="Surgeon"><Input value={values.surgeon} onChange={(event) => onValueChange("surgeon", event.target.value)} /></Field>
         <Field label="Assistant"><Input value={values.assistant} onChange={(event) => onValueChange("assistant", event.target.value)} /></Field>
         <Field label="Supervising consultant"><Input value={values.supervisingConsultant} onChange={(event) => onValueChange("supervisingConsultant", event.target.value)} /></Field>
@@ -57,6 +82,7 @@ export function CoreDetails({
         </div>
       </section>
       <div className="grid gap-4">
+        {isOrthopaedic && <Field label="Operative diagnosis"><Textarea value={values.operativeDiagnosis} onChange={(event) => onValueChange("operativeDiagnosis", event.target.value)} /></Field>}
         <Field label="Indication"><Textarea aria-invalid={Boolean(errors.indication)} aria-describedby={errors.indication ? "indication-error" : undefined} value={values.indication} onChange={(event) => onValueChange("indication", event.target.value)} /></Field>
         {errors.indication && <p id="indication-error" className="text-sm text-destructive">{errors.indication}</p>}
         <Field label="Findings"><Textarea aria-invalid={Boolean(errors.findings)} aria-describedby={errors.findings ? "findings-error" : undefined} value={values.findings} onChange={(event) => onValueChange("findings", event.target.value)} /></Field>

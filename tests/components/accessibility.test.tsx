@@ -29,6 +29,32 @@ describe("automated accessibility acceptance", () => {
     await expectNoStructuralViolations();
   });
 
+  it("passes axe with two accessible repeatable implant rows", async () => {
+    const input = createProcedureInput("dynamic-hip-screw");
+    if (!("implants" in input)) {
+      throw new Error("Expected an orthopaedic procedure input");
+    }
+    input.indication = "Synthetic indication";
+    input.findings = "Synthetic findings";
+    input.implantsUsed = "yes";
+    input.implants = [
+      { id: "synthetic-implant-1", component: "", manufacturer: "", productOrSystem: "", size: "", lotSerialOrReference: "" },
+      { id: "synthetic-implant-2", component: "", manufacturer: "", productOrSystem: "", size: "", lotSerialOrReference: "" },
+    ];
+
+    render(<App initialInput={input} initialStage="Operative details" />);
+
+    expect(screen.getByRole("group", { name: "Implant 1" })).toBeVisible();
+    expect(screen.getByRole("group", { name: "Implant 2" })).toBeVisible();
+    expect(screen.getByRole("textbox", { name: "Implant 1 component" })).toBeVisible();
+    expect(screen.getByRole("textbox", { name: "Implant 2 component" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Move implant 1 up" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Move implant 2 down" })).toBeDisabled();
+    expect(screen.getByRole("button", { name: "Move implant 1 down" })).toBeEnabled();
+    expect(screen.getByRole("button", { name: "Move implant 2 up" })).toBeEnabled();
+    await expectNoStructuralViolations();
+  });
+
   it("passes axe on generated review and copy controls", async () => {
     const input = createProcedureInput("lap-appendicectomy");
     input.indication = "Synthetic indication";

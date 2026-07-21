@@ -73,6 +73,7 @@ describe("theme preference boundary", () => {
     expect(lightToggle).toBeVisible();
     expect(lightToggle).toHaveClass("estate-theme-toggle");
     expect(lightToggle.querySelector("svg")).not.toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
     fireEvent.click(screen.getByRole("button", { name: "Next" }));
     fireEvent.change(screen.getByLabelText("Indication"), { target: { value: "Synthetic private form text" } });

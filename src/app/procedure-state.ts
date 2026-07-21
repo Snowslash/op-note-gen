@@ -1,15 +1,24 @@
 import type {
+  AnkleOrifInput,
   AppendicectomyInput,
+  CephalomedullaryNailInput,
   CommonProcedureInput,
   DiagnosticLaparoscopyInput,
+  DistalRadiusOrifInput,
+  DynamicHipScrewInput,
   EmergencyLaparotomyInput,
+  HipHemiarthroplastyInput,
+  ImplantRecord,
   IncisionAndDrainageInput,
   LaparoscopicCholecystectomyInput,
   OpenInguinalHerniaRepairInput,
   OpenUmbilicalHerniaRepairInput,
+  OrthopaedicCommonInput,
+  OrthopaedicProcedureInput,
   OutputMode,
   ProcedureId,
   ProcedureInput,
+  SharedProcedureInput,
   TeamMember,
 } from "../domain";
 
@@ -32,14 +41,18 @@ export interface DraftState {
 }
 
 export type PreloadedTeamMember = Omit<TeamMember, "id"> & { id?: string };
-type WithPreloadedTeamMembers<Input> = Input extends ProcedureInput
-  ? Omit<Input, "additionalTeamMembers"> & { additionalTeamMembers: PreloadedTeamMember[] }
-  : never;
-export type PreloadedProcedureInput = WithPreloadedTeamMembers<ProcedureInput>;
+export type PreloadedImplantRecord = Omit<ImplantRecord, "id"> & { id?: string };
+type WithPreloadedRows<Input extends ProcedureInput> = Input extends OrthopaedicCommonInput
+  ? Omit<Input, "additionalTeamMembers" | "implants"> & {
+      additionalTeamMembers: PreloadedTeamMember[];
+      implants: PreloadedImplantRecord[];
+    }
+  : Omit<Input, "additionalTeamMembers"> & { additionalTeamMembers: PreloadedTeamMember[] };
+export type PreloadedProcedureInput = WithPreloadedRows<ProcedureInput>;
 
-function createCommonInput(): CommonProcedureInput {
+function createSharedInput(operationDateTime: string): SharedProcedureInput {
   return {
-    operationDateTime: getLocalDateTimeValue(),
+    operationDateTime,
     surgeon: "",
     assistant: "",
     supervisingConsultant: "",
@@ -47,21 +60,59 @@ function createCommonInput(): CommonProcedureInput {
     anaesthetist: "",
     indication: "",
     findings: "",
-    portsUsed: "",
-    specimen: "",
     bloodLoss: "",
     complications: "",
     antibioticProphylaxis: "",
     dvtProphylaxis: "",
     postOpPlan: "",
+    additionalOperativeDetails: "",
+    additionalTeamMembers: [],
+  };
+}
+
+function createCommonInput(): CommonProcedureInput {
+  return {
+    ...createSharedInput(getLocalDateTimeValue()),
+    portsUsed: "",
+    specimen: "",
     drainStatus: "",
     drainLocation: "",
     haemostasisConfirmed: "",
     fascialClosurePerformed: "",
     fascialSutureMaterial: "",
     skinClosureMethod: "",
-    additionalOperativeDetails: "",
-    additionalTeamMembers: [],
+  };
+}
+
+function createOrthopaedicCommonInput(): OrthopaedicCommonInput {
+  return {
+    ...createSharedInput(""),
+    caseClassification: "",
+    side: "",
+    operativeDiagnosis: "",
+    positionAndTableSetup: "",
+    tourniquetUsed: "",
+    tourniquetSite: "",
+    tourniquetPressure: "",
+    tourniquetDuration: "",
+    imageIntensifierUsed: "",
+    finalImagingFindings: "",
+    additionalProcedurePerformed: "",
+    additionalProcedureDetails: "",
+    additionalProcedureReason: "",
+    specimensOrSamples: "",
+    tissueDetails: "",
+    implantsUsed: "",
+    implants: [],
+    haemostasisDetails: "",
+    closureDetails: "",
+    dressingAndImmobilisation: "",
+    loadingInstructions: "",
+    postoperativeMonitoring: "",
+    postoperativeImaging: "",
+    woundCare: "",
+    followUp: "",
+    rehabilitationPlan: "",
   };
 }
 
@@ -174,6 +225,96 @@ export function createProcedureInput(procedureId: ProcedureId): ProcedureInput {
         laparotomyTemporaryClosure: "",
         laparotomyTemporaryClosureDetails: "",
       } satisfies EmergencyLaparotomyInput;
+    case "ankle-orif": {
+      const orthopaedic = createOrthopaedicCommonInput();
+      return {
+        ...orthopaedic,
+        procedureId,
+        ankleFracturePattern: "",
+        ankleApproachAndIncision: "",
+        ankleReductionMethod: "",
+        ankleReductionDetails: "",
+        fibularFixationPerformed: "",
+        fibularFixationDetails: "",
+        medialMalleolusFixationPerformed: "",
+        medialMalleolusFixationDetails: "",
+        posteriorMalleolusFixationPerformed: "",
+        posteriorMalleolusFixationDetails: "",
+        syndesmosisAssessed: "",
+        syndesmosisAssessmentDetails: "",
+        syndesmosisStabilised: "",
+        syndesmosisFixationDetails: "",
+        ankleIrrigationDetails: "",
+      } satisfies AnkleOrifInput;
+    }
+    case "hip-hemiarthroplasty": {
+      const orthopaedic = createOrthopaedicCommonInput();
+      return {
+        ...orthopaedic,
+        procedureId,
+        hemiApproach: "",
+        hemiApproachAndIncisionDetails: "",
+        hemiCapsuleManagement: "",
+        hemiFemoralHeadExcision: "",
+        hemiNativeHeadSize: "",
+        hemiCanalPreparation: "",
+        hemiStemFixation: "",
+        hemiCementDetails: "",
+        hemiTrialAndReduction: "",
+        hemiStabilityAssessment: "",
+        hemiLegLengthAndOffset: "",
+        hemiCapsuleAndAbductorRepair: "",
+      } satisfies HipHemiarthroplastyInput;
+    }
+    case "dynamic-hip-screw": {
+      const orthopaedic = createOrthopaedicCommonInput();
+      return {
+        ...orthopaedic,
+        procedureId,
+        dhsFracturePattern: "",
+        dhsReductionMethod: "",
+        dhsReductionDetails: "",
+        dhsApproachAndIncision: "",
+        dhsGuidewireAndLagScrewDetails: "",
+        dhsPlateFixationDetails: "",
+        dhsCompressionApplied: "",
+        dhsIrrigationDetails: "",
+      } satisfies DynamicHipScrewInput;
+    }
+    case "cephalomedullary-nail": {
+      const orthopaedic = createOrthopaedicCommonInput();
+      return {
+        ...orthopaedic,
+        procedureId,
+        cmnFracturePattern: "",
+        cmnReductionMethod: "",
+        cmnReductionDetails: "",
+        cmnEntryPointAndIncision: "",
+        cmnCanalPreparation: "",
+        cmnNailInsertionDetails: "",
+        cmnProximalFixationDetails: "",
+        cmnDistalLockingPerformed: "",
+        cmnDistalLockingDetails: "",
+        cmnCompressionApplied: "",
+        cmnIrrigationDetails: "",
+      } satisfies CephalomedullaryNailInput;
+    }
+    case "distal-radius-orif": {
+      const orthopaedic = createOrthopaedicCommonInput();
+      return {
+        ...orthopaedic,
+        procedureId,
+        distalRadiusFracturePattern: "",
+        distalRadiusApproach: "",
+        distalRadiusApproachAndIncision: "",
+        distalRadiusReductionDetails: "",
+        distalRadiusFixationDetails: "",
+        distalRadiusDrujAssessed: "",
+        distalRadiusDrujDetails: "",
+        distalRadiusTendonAssessment: "",
+        distalRadiusIrrigationDetails: "",
+      } satisfies DistalRadiusOrifInput;
+    }
   }
 }
 
@@ -190,12 +331,20 @@ export function getLocalDateTimeValue(date = new Date()): string {
   return new Date(date.getTime() - offsetMs).toISOString().slice(0, 16);
 }
 
-let fallbackTeamMemberId = 0;
+let fallbackRepeatableRowId = 0;
+
+function createStableRowId(prefix: string): string {
+  const randomId = globalThis.crypto?.randomUUID?.();
+  fallbackRepeatableRowId += 1;
+  return randomId ?? `${prefix}-${Date.now()}-${fallbackRepeatableRowId}`;
+}
 
 function createTeamMemberId(): string {
-  const randomId = globalThis.crypto?.randomUUID?.();
-  fallbackTeamMemberId += 1;
-  return randomId ?? `team-member-${Date.now()}-${fallbackTeamMemberId}`;
+  return createStableRowId("team-member");
+}
+
+function createImplantId(): string {
+  return createStableRowId("implant");
 }
 
 export function createTeamMember(): TeamMember {
@@ -206,14 +355,37 @@ export function createTeamMember(): TeamMember {
   };
 }
 
+export function createImplantRecord(): ImplantRecord {
+  return {
+    id: createImplantId(),
+    component: "",
+    manufacturer: "",
+    productOrSystem: "",
+    size: "",
+    lotSerialOrReference: "",
+  };
+}
+
 export function ensureTeamMemberIds(input: PreloadedProcedureInput): ProcedureInput {
-  const seenIds = new Set<string>();
+  const seenTeamMemberIds = new Set<string>();
   const additionalTeamMembers = input.additionalTeamMembers.map((member) => {
-    const id = member.id && !seenIds.has(member.id) ? member.id : createTeamMemberId();
-    seenIds.add(id);
-    return id === member.id ? member : { ...member, id };
+    const id = member.id && !seenTeamMemberIds.has(member.id) ? member.id : createTeamMemberId();
+    seenTeamMemberIds.add(id);
+    return id === member.id ? member as TeamMember : { ...member, id };
   });
-  return { ...input, additionalTeamMembers } as ProcedureInput;
+
+  if (!("implants" in input)) {
+    return { ...input, additionalTeamMembers } as ProcedureInput;
+  }
+
+  const seenImplantIds = new Set<string>();
+  const implants = input.implants.map((implant) => {
+    const id = implant.id && !seenImplantIds.has(implant.id) ? implant.id : createImplantId();
+    seenImplantIds.add(id);
+    return id === implant.id ? implant as ImplantRecord : { ...implant, id };
+  });
+
+  return { ...input, additionalTeamMembers, implants } as OrthopaedicProcedureInput;
 }
 
 export function updateTeamMember(
@@ -222,6 +394,28 @@ export function updateTeamMember(
   changes: Partial<TeamMember>,
 ): TeamMember[] {
   return members.map((member, memberIndex) => memberIndex === index ? { ...member, ...changes } : member);
+}
+
+export function updateImplantRecord(
+  implants: ImplantRecord[],
+  id: string,
+  changes: Partial<Omit<ImplantRecord, "id">>,
+): ImplantRecord[] {
+  return implants.map((implant) => implant.id === id ? { ...implant, ...changes } : implant);
+}
+
+export function moveImplantRecord(
+  implants: ImplantRecord[],
+  id: string,
+  direction: "up" | "down",
+): ImplantRecord[] {
+  const sourceIndex = implants.findIndex((implant) => implant.id === id);
+  const targetIndex = direction === "up" ? sourceIndex - 1 : sourceIndex + 1;
+  if (sourceIndex < 0 || targetIndex < 0 || targetIndex >= implants.length) return implants;
+
+  const reordered = [...implants];
+  [reordered[sourceIndex], reordered[targetIndex]] = [reordered[targetIndex], reordered[sourceIndex]];
+  return reordered;
 }
 
 export const OUTPUT_MODES: ReadonlyArray<{ value: OutputMode; label: string }> = [

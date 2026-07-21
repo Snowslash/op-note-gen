@@ -1,6 +1,7 @@
-import type { ProcedureInput } from "../domain";
+import type { FieldValidationError, ImplantRecord, ProcedureInput } from "../domain";
 import type { ProcedureControlState } from "../app/procedure-state";
 import { PROCEDURE_FORM_DEFINITIONS, type ProcedureFieldDefinition, type SelectCustomFieldDefinition } from "../app/procedure-form-definitions";
+import { ImplantRows } from "./ImplantRows";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
@@ -9,25 +10,37 @@ import { Textarea } from "./ui/textarea";
 interface ProcedureOperativeDetailsProps {
   values: ProcedureInput;
   controls: ProcedureControlState;
+  errors?: Partial<Record<FieldValidationError["field"], string>>;
   onValueChange: (field: string, value: string | boolean, clearFields?: string[]) => void;
   onCustomChoiceChange: (field: string, choice: string, options: readonly string[]) => void;
   onCustomValueChange: (field: string, value: string) => void;
+  onAddImplant?: () => void;
+  onRemoveImplant?: (id: string) => void;
+  onMoveImplant?: (id: string, direction: "up" | "down") => void;
+  onImplantChange?: (id: string, changes: Partial<Omit<ImplantRecord, "id">>) => void;
 }
 
 export function ProcedureOperativeDetails({
   values,
   controls,
+  errors = {},
   onValueChange,
   onCustomChoiceChange,
   onCustomValueChange,
+  onAddImplant,
+  onRemoveImplant,
+  onMoveImplant,
+  onImplantChange,
 }: ProcedureOperativeDetailsProps) {
   const definition = PROCEDURE_FORM_DEFINITIONS[values.procedureId];
-  const record = values as unknown as Record<string, string | boolean>;
+  const record = values as unknown as Record<string, unknown>;
+  const isAnkleOrif = values.procedureId === "ankle-orif";
+  const isOrthopaedic = "implants" in values;
 
   return (
     <section aria-labelledby="operative-details-heading" className="space-y-5">
       <div>
-        <h2 id="operative-details-heading" className="font-serif text-2xl">Operative details</h2>
+        <h2 id="operative-details-heading" className="font-serif text-2xl">{isAnkleOrif ? "Ankle ORIF details" : "Operative details"}</h2>
         <p className="mt-1 text-sm text-muted-foreground">{definition.hint}</p>
       </div>
       <div className="grid gap-4 sm:grid-cols-2">
@@ -36,19 +49,27 @@ export function ProcedureOperativeDetails({
             key={field.field}
             definition={field}
             procedureId={values.procedureId}
-            value={record[field.field] ?? ""}
+            value={scalarValue(record[field.field])}
             control={controls.choices[field.field]}
+            error={field.field === "implantsUsed" ? errors.implantsUsed : undefined}
             onValueChange={onValueChange}
             onCustomChoiceChange={onCustomChoiceChange}
             onCustomValueChange={onCustomValueChange}
           />
         ) : null)}
+        {isOrthopaedic && values.implantsUsed === "yes" && onAddImplant && onRemoveImplant && onMoveImplant && onImplantChange && (
+          <ImplantRows implants={values.implants} onAdd={onAddImplant} onRemove={onRemoveImplant} onMove={onMoveImplant} onChange={onImplantChange} />
+        )}
       </div>
     </section>
   );
 }
 
-function isVisible(field: ProcedureFieldDefinition, values: Record<string, string | boolean>) {
+function scalarValue(value: unknown): string | boolean {
+  return typeof value === "string" || typeof value === "boolean" ? value : "";
+}
+
+function isVisible(field: ProcedureFieldDefinition, values: Record<string, unknown>) {
   return !field.showWhen || values[field.showWhen.field] === field.showWhen.equals;
 }
 
@@ -57,6 +78,7 @@ interface ProcedureFieldProps {
   procedureId: string;
   value: string | boolean;
   control?: { choice: string; custom: string };
+  error?: string;
   onValueChange: (field: string, value: string | boolean, clearFields?: string[]) => void;
   onCustomChoiceChange: (field: string, choice: string, options: readonly string[]) => void;
   onCustomValueChange: (field: string, value: string) => void;
@@ -67,6 +89,7 @@ function ProcedureField({
   procedureId,
   value,
   control,
+  error,
   onValueChange,
   onCustomChoiceChange,
   onCustomValueChange,
@@ -101,8 +124,9 @@ function ProcedureField({
   }
 
   if (definition.kind === "radio") {
+    const errorId = error ? `${id}-error` : undefined;
     return (
-      <fieldset className={definition.wide ? "grid gap-2 sm:col-span-2" : "grid gap-2"}>
+      <fieldset aria-describedby={errorId} aria-invalid={Boolean(error)} className={definition.wide ? "grid gap-2 sm:col-span-2" : "grid gap-2"}>
         <legend className="text-sm font-medium">{definition.label}</legend>
         <RadioGroup aria-label={definition.label} className="flex flex-wrap gap-4" value={String(value)} onValueChange={(next) => onValueChange(definition.field, next, next === definition.clearRule?.unless ? undefined : definition.clearRule?.fields)}>
           {definition.options.map((option) => (
@@ -112,6 +136,7 @@ function ProcedureField({
             </span>
           ))}
         </RadioGroup>
+        {error && <span className="text-sm text-destructive" id={errorId}>{error}</span>}
       </fieldset>
     );
   }
@@ -138,7 +163,6 @@ function ProcedureField({
 
   if (definition.kind !== "select-custom") return null;
   const customDefinition = definition as SelectCustomFieldDefinition;
-
   const valueString = String(value);
   const valueIsStandard = customDefinition.options.includes(valueString);
   const choice = control?.choice || (valueIsStandard ? valueString : valueString ? "Custom / other" : "");

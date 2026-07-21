@@ -1,6 +1,6 @@
 # Operation Note Generator
 
-Browser-only operation-note drafting for common emergency general-surgery procedures.
+Browser-only operation-note drafting for common emergency general-surgery procedures, with an explicitly review-gated trauma-and-orthopaedics expansion in the current v2 source candidate.
 
 The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store clinical text or make clinical decisions.
 
@@ -12,7 +12,9 @@ Source: https://github.com/Snowslash/op-note-gen
 
 The repository keeps the React application source in `src/`, the retained v1 rollback source in `legacy-v1/` and the checked-in static deployment bundle in `docs/`.
 
-## Supported procedures
+## Procedure scope
+
+The deployed parity set remains:
 
 - laparoscopic appendicectomy
 - laparoscopic cholecystectomy
@@ -22,7 +24,17 @@ The repository keeps the React application source in `src/`, the retained v1 rol
 - open umbilical hernia repair
 - emergency laparotomy
 
-Each procedure supports a full operation note, postoperative-plan-only output and ward handover summary.
+The current undeployed v2 source candidate also includes:
+
+- open reduction and internal fixation of ankle fracture
+- hip hemiarthroplasty for fracture
+- dynamic hip screw fixation
+- cephalomedullary nail fixation
+- open reduction and internal fixation of distal radius fracture
+
+Ankle ORIF has completed synthetic generated-text clinical review. The other four T&O procedures are implemented against their approved form/data contracts but remain pending procedure-specific synthetic generated-text clinical review. All five remain undeployed; presence in source is not deployment approval.
+
+Each listed procedure supports a full operation note, postoperative-plan-only output and ward handover summary.
 
 ## How to use it
 
@@ -43,7 +55,7 @@ Do not enter patient-identifiable information into public pages or repositories.
 - Clipboard access occurs only after generation and explicit review confirmation.
 - The only persisted preference is the light/dark theme under the existing `sangeevSiteTheme` key.
 - User-entered text is generated as plain text and rendered as React text content, never executable HTML.
-- Missing details remain omitted or `not specified` according to the locked v1 behaviour.
+- The seven legacy procedures retain their locked v1 omission/output behaviour. All five T&O candidates use the explicit blank-safe rules in `SPEC_TNO.md`.
 
 This is a drafting aid, not decision support, clinical validation, local policy, consent checking or senior review.
 
@@ -118,11 +130,14 @@ The checked-in v1 fixture set covers all seven procedures in all three output mo
 - `docs/` — generated GitHub Pages deployment bundle for the React application
 - `legacy-v1/` — retained static v1 source for rollback and parity testing
 - `SPEC_V2.md` — v2 architecture, safety, design and cutover contract
+- `SPEC_TNO.md` — approved T&O architecture and five-procedure implementation contract; generated-text review remains pending for four procedures and deployment remains pending for all five
 
 ## Deployment and cutover
 
 The application remains a static browser-only site. GitHub Pages publishes `main:/docs` as a secondary origin, while production `opnotes.sangeev.me` is the custom domain of the Cloudflare Worker named `op-note-gen`. A Git push updates the Pages source but does not update that Worker. After approval, run `npm run check:pages` and `npx wrangler deploy`; `wrangler.jsonc` deploys `docs/` and preserves the nested `/app/` route without changing DNS.
 
 Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
+
+Do not deploy the T&O candidate until each procedure's synthetic generated-text review and all remaining `SPEC_TNO.md` approval gates are explicitly completed.
 
 Do not add analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.

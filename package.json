@@ -2,7 +2,7 @@
   "name": "op-note-gen",
   "version": "0.1.0",
   "private": true,
-  "description": "Static operation note generator for common general surgical procedures.",
+  "description": "Static browser-only operation-note drafting for general surgery and review-gated trauma and orthopaedics.",
   "scripts": {
     "check:js": "node --check legacy-v1/theme.js && node --check legacy-v1/js/core.js && node --check legacy-v1/js/note-formatters.js && node --check legacy-v1/js/procedures.js && node --check legacy-v1/js/app.js && node --check tests/helpers/v1-browser-harness.js && node --check tests/fixtures/v1/fixture-inputs.js && node --check tests/procedure-smoke.test.js && node --check tests/v1-parity-fixtures.test.js",
     "dev": "vite",

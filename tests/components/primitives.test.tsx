@@ -84,6 +84,8 @@ describe("v2 app shell", () => {
     ).toBeVisible();
     expect(screen.getByText("Review generated text carefully before use in any clinical record.")).toBeVisible();
     expect(screen.getByRole("navigation", { name: "Workflow stages" })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Trauma and orthopaedics" })).toHaveAttribute("aria-expanded", "true");
+    fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
     expect(screen.getByRole("button", { name: "Laparoscopic appendicectomy" })).toBeVisible();
   });
 });

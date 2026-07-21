@@ -7,6 +7,7 @@ const appendicectomyFixture = expectedOutput["lap-appendicectomy-full"];
 const appendicectomyHandoverFixture = expectedOutput["lap-appendicectomy-full-handover"];
 
 function selectAppendicectomy() {
+  fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
   fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
   fireEvent.click(screen.getByRole("button", { name: "Next" }));
 }
@@ -80,6 +81,7 @@ describe("appendicectomy vertical workflow", () => {
     expect(screen.getByRole("button", { name: "Next" })).toBeDisabled();
     expect(screen.queryByText("No complications entered. Confirm that there were no immediate complications.")).not.toBeInTheDocument();
 
+    fireEvent.click(screen.getByRole("button", { name: "General surgery" }));
     fireEvent.click(screen.getByRole("button", { name: "Laparoscopic appendicectomy" }));
     expect(screen.getByRole("button", { name: "Laparoscopic appendicectomy" })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByRole("button", { name: "Next" })).toBeEnabled();

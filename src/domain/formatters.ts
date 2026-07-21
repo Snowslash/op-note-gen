@@ -1,4 +1,4 @@
-import type { CommonProcedureInput } from "./types.ts";
+import type { CommonProcedureInput, SharedProcedureInput } from "./types.ts";
 
 export function hasText(value: string): boolean {
   return Boolean(value.trim());
@@ -109,7 +109,7 @@ export function buildDrainText(values: CommonProcedureInput): string {
   return "not specified";
 }
 
-export function buildComplicationsText(values: CommonProcedureInput): string {
+export function buildComplicationsText(values: SharedProcedureInput): string {
   const normalised = values.complications.trim().toLowerCase().replace(/[.!]+$/, "");
 
   if (!hasText(values.complications)) {
@@ -141,7 +141,7 @@ export function buildClosureText(values: CommonProcedureInput): string {
   return sentences.length ? sentences.join(" ") : "not specified";
 }
 
-export function buildAdditionalTeamMembersLine(values: CommonProcedureInput): string {
+export function buildAdditionalTeamMembersLine(values: SharedProcedureInput): string {
   const members = values.additionalTeamMembers
     .filter((member) => hasText(member.name))
     .map((member) => `${member.role} ${member.name}`)

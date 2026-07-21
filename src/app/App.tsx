@@ -7,7 +7,7 @@ import {
   useEstateTheme,
 } from "@sangeev/estate-ui";
 import { generateNote, getAdvisoryWarnings, validateProcedureInput } from "../domain";
-import type { OutputMode, ProcedureId, ProcedureInput, TeamMember } from "../domain";
+import type { FieldValidationError, ImplantRecord, OutputMode, ProcedureId, ProcedureInput, TeamMember } from "../domain";
 import { CompletionDetails } from "../components/CompletionDetails";
 import { CoreDetails } from "../components/CoreDetails";
 import { GeneratedNote } from "../components/GeneratedNote";
@@ -21,14 +21,17 @@ import { Button } from "../components/ui/button";
 import {
   createControlState,
   createDraftState,
+  createImplantRecord,
   createProcedureInput,
   createTeamMember,
   ensureTeamMemberIds,
+  moveImplantRecord,
   OUTPUT_MODES,
   type PreloadedProcedureInput,
   type ProcedureControlState,
   type DraftState,
   updateTeamMember,
+  updateImplantRecord,
 } from "./procedure-state";
 
 import { WorkflowSteps } from "./workflow/WorkflowSteps";
@@ -50,7 +53,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const [controls, setControls] = useState<ProcedureControlState>(createControlState);
   const [outputMode, setOutputMode] = useState<OutputMode>(initialOutputMode);
   const [draft, setDraft] = useState<DraftState>(createDraftState);
-  const [errors, setErrors] = useState<Partial<Record<"indication" | "findings", string>>>({});
+  const [errors, setErrors] = useState<Partial<Record<FieldValidationError["field"], string>>>({});
   const [feedback, setFeedback] = useState("");
   const { theme, toggleTheme } = useEstateTheme();
 
@@ -73,7 +76,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const updateValue = (field: string, value: string | boolean, clearFields: string[] = []) => {
     setValues((previous) => {
       if (!previous) return previous;
-      const updates = Object.fromEntries(clearFields.map((clearField) => [clearField, ""]));
+      const updates = Object.fromEntries(clearFields.map((clearField) => [clearField, clearField === "implants" ? [] : ""]));
       return { ...previous, [field]: value, ...updates } as ProcedureInput;
     });
     if (field === "drainStatus" && value !== "yes" && controls.drainLocationChoice === "Custom / other") {
@@ -121,8 +124,9 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const validateCoreDetails = () => {
     if (!values) return false;
     const result = validateProcedureInput(values);
-    setErrors(Object.fromEntries(result.errors.map((error) => [error.field, error.message])));
-    return result.valid;
+    const coreErrors = result.errors.filter((error) => error.field !== "implantsUsed");
+    setErrors(Object.fromEntries(coreErrors.map((error) => [error.field, error.message])));
+    return coreErrors.length === 0;
   };
 
   const moveToStage = (stage: WorkflowStage) => {
@@ -145,8 +149,11 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   };
 
   const generateDraft = () => {
-    if (!values || !validateCoreDetails()) {
-      setCurrentStage("Core details");
+    if (!values) return;
+    const validation = validateProcedureInput(values);
+    setErrors(Object.fromEntries(validation.errors.map((error) => [error.field, error.message])));
+    if (!validation.valid) {
+      setCurrentStage(validation.errors.some((error) => error.field === "implantsUsed") ? "Operative details" : "Core details");
       return;
     }
     setDraft({
@@ -185,6 +192,34 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
     invalidateDraft();
   };
 
+  const addImplant = () => {
+    setValues((previous) => previous && "implants" in previous
+      ? { ...previous, implants: [...previous.implants, createImplantRecord()] }
+      : previous);
+    invalidateDraft();
+  };
+
+  const removeImplant = (id: string) => {
+    setValues((previous) => previous && "implants" in previous
+      ? { ...previous, implants: previous.implants.filter((implant) => implant.id !== id) }
+      : previous);
+    invalidateDraft();
+  };
+
+  const changeImplant = (id: string, changes: Partial<Omit<ImplantRecord, "id">>) => {
+    setValues((previous) => previous && "implants" in previous
+      ? { ...previous, implants: updateImplantRecord(previous.implants, id, changes) }
+      : previous);
+    invalidateDraft();
+  };
+
+  const moveImplant = (id: string, direction: "up" | "down") => {
+    setValues((previous) => previous && "implants" in previous
+      ? { ...previous, implants: moveImplantRecord(previous.implants, id, direction) }
+      : previous);
+    invalidateDraft();
+  };
+
   const isReviewStage = currentStage === "Review and copy";
 
   return (
@@ -207,7 +242,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
           <section className="min-w-0" aria-live="polite">
             {currentStage === "Procedure" && <ProcedurePicker selected={values?.procedureId ?? null} search={procedureSearch} onSearchChange={setProcedureSearch} onSelect={selectProcedure} />}
             {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, createTeamMember()] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
-            {currentStage === "Operative details" && values && <ProcedureOperativeDetails values={values} controls={controls} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} />}
+            {currentStage === "Operative details" && values && <ProcedureOperativeDetails values={values} controls={controls} errors={errors} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} onAddImplant={addImplant} onRemoveImplant={removeImplant} onMoveImplant={moveImplant} onImplantChange={changeImplant} />}
             {currentStage === "Completion" && values && <CompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
             {isReviewStage && values && (
               <section aria-labelledby="review-heading" className="space-y-5">
