@@ -1,6 +1,6 @@
 # Operation Note Generator
 
-Browser-only operation-note drafting for common emergency general-surgery procedures, with an explicitly review-gated trauma-and-orthopaedics expansion in the current v2 source candidate.
+Browser-only operation-note drafting for common emergency general-surgery procedures, with a clinically reviewed trauma-and-orthopaedics expansion in the current v2 release candidate.
 
 The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store clinical text or make clinical decisions.
 
@@ -24,7 +24,7 @@ The deployed parity set remains:
 - open umbilical hernia repair
 - emergency laparotomy
 
-The current undeployed v2 source candidate also includes:
+The clinically approved v2 release candidate also includes:
 
 - open reduction and internal fixation of ankle fracture
 - hip hemiarthroplasty for fracture
@@ -32,7 +32,7 @@ The current undeployed v2 source candidate also includes:
 - cephalomedullary nail fixation
 - open reduction and internal fixation of distal radius fracture
 
-Ankle ORIF has completed synthetic generated-text clinical review. The other four T&O procedures are implemented against their approved form/data contracts but remain pending procedure-specific synthetic generated-text clinical review. All five remain undeployed; presence in source is not deployment approval.
+All five T&O procedures have completed form/data and synthetic generated-text clinical review. Production deployment was explicitly authorised on 21 July 2026; the deployment status is verified separately from source presence.
 
 Each listed procedure supports a full operation note, postoperative-plan-only output and ward handover summary.
 

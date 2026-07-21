@@ -1,7 +1,7 @@
 # Trauma and Orthopaedics Clinical Content Contract
 
-Status: all five T&O form/data contracts approved and implemented in the undeployed v2 candidate; ankle ORIF generated text approved; remaining generated-text previews and deployment pending
-Date: 2026-07-20
+Status: all five T&O form/data and generated-text contracts approved; production deployment explicitly authorised and pending execution
+Date: 2026-07-21
 Owner and clinical approver: Sangeev
 Drafted by: Hermes from the approved product scope, the current repository behaviour and the primary sources in section 15
 
@@ -11,7 +11,7 @@ Implementation target: the Vite + React + TypeScript v2 application in `src/`. `
 
 This specification defines the first trauma and orthopaedics expansion of the browser-only Operation Note Generator.
 
-It fixes the proposed field names, form controls, dependency rules, generated-note labels, advisory warnings and review gates before production code is changed. The clinical wording remains a draft until Sangeev explicitly approves it procedure by procedure.
+It fixes the proposed field names, form controls, dependency rules, generated-note labels, advisory warnings and review gates before production code is changed. The clinical wording remained a draft until Sangeev explicitly approved it procedure by procedure; all five first-release procedures are now approved.
 
 The expansion must preserve the existing seven general-surgery procedures and all captured output-parity fixtures.
 
@@ -25,7 +25,7 @@ The trauma-first roadmap is:
 4. Cephalomedullary nail fixation (`cephalomedullary-nail`)
 5. Open reduction and internal fixation of distal radius fracture (`distal-radius-orif`)
 
-The shared T&O model and all five procedure form/data contracts are approved and implemented in the undeployed v2 candidate. Ankle ORIF has completed generated-text review; the other four procedure templates still require procedure-specific synthetic generated-text review before deployment.
+The shared T&O model and all five procedure form/data contracts are approved and implemented in the undeployed v2 candidate. All five procedure templates have completed generated-text review and are approved for the authorised production release.
 
 Implementation order:
 
@@ -823,12 +823,12 @@ Clinical approval must be recorded procedure by procedure. Approval of ankle ORI
 
 | Contract area | Form/data review | Generated-text review | Approver/date |
 | --- | --- | --- | --- |
-| Shared T&O fields, dependencies and warning principles | Approved for implementation | Approved through ankle ORIF synthetic preview | Sangeev, 2026-07-20 |
+| Shared T&O fields, dependencies and warning principles | Approved for implementation | Approved across all five synthetic previews | Sangeev, 2026-07-21 |
 | Ankle ORIF | Approved for implementation | Approved | Sangeev, 2026-07-20 |
-| Hip hemiarthroplasty for fracture | Approved for implementation | Pending synthetic preview | Sangeev, 2026-07-20 |
-| Dynamic hip screw fixation | Approved for implementation | Pending synthetic preview | Sangeev, 2026-07-20 |
-| Cephalomedullary nail fixation | Approved for implementation | Pending synthetic preview | Sangeev, 2026-07-20 |
-| Distal radius ORIF | Approved for implementation | Pending synthetic preview | Sangeev, 2026-07-20 |
+| Hip hemiarthroplasty for fracture | Approved for implementation | Approved | Sangeev, 2026-07-21 |
+| Dynamic hip screw fixation | Approved for implementation | Approved | Sangeev, 2026-07-21 |
+| Cephalomedullary nail fixation | Approved for implementation | Approved | Sangeev, 2026-07-21 |
+| Distal radius ORIF | Approved for implementation | Approved | Sangeev, 2026-07-21 |
 
 A status changes from `Pending` only after explicit clinical approval. Passing automated tests is not clinical approval.
 
@@ -862,9 +862,9 @@ The scope, ankle-first implementation order and structured implant rows were acc
 - the exact shared and ankle warning set in sections 10.2 and 10.3 is accepted, including which blank fields remain silent;
 - no Cardiff and Vale antibiotic, thromboprophylaxis, imaging, rehabilitation or follow-up protocol is encoded until a current local source is separately reviewed.
 
-On 20 July 2026, Sangeev approved the existing form/data contracts, labels and warning sets for the four remaining roadmap procedures and authorised their implementation. Approval to implement is not approval to deploy: procedure-specific synthetic generated-text review and the release gates in sections 12 and 13 still apply to those four procedures.
+On 20 July 2026, Sangeev approved the existing form/data contracts, labels and warning sets for the four remaining roadmap procedures and authorised their implementation. On 21 July 2026, after review of the checked-in synthetic outputs, Sangeev explicitly approved the generated text for hip hemiarthroplasty, dynamic hip screw fixation, cephalomedullary nail fixation and distal radius ORIF, and separately authorised production deployment of the complete five-procedure T&O release.
 
-Implementation status on 20 July 2026: all five roadmap procedures are present in the undeployed v2 source candidate. Automated contract, warning, direct-state leakage, implant-consistency, React workflow, accessibility, privacy, build and v1-parity gates pass. The checked-in synthetic full-note, postoperative-plan and handover literals are review evidence only; generated-text clinical approval for hip hemiarthroplasty, dynamic hip screw, cephalomedullary nail and distal radius ORIF remains pending in the table above.
+Release status on 21 July 2026: all five roadmap procedures are present in the v2 release candidate. Automated contract, warning, direct-state leakage, implant-consistency, React workflow, accessibility, privacy, build and v1-parity gates pass. The checked-in synthetic full-note, postoperative-plan and handover literals have completed clinical review. Production deployment is explicitly authorised, with the previous Worker version retained as the rollback point.
 
 ## 15. Primary sources
 
