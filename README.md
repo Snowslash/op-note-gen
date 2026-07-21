@@ -1,6 +1,6 @@
 # Operation Note Generator
 
-Browser-only operation-note drafting for common emergency general-surgery procedures, with a clinically reviewed trauma-and-orthopaedics expansion in the current v2 release candidate.
+Browser-only operation-note drafting for common emergency general-surgery procedures, with a clinically reviewed trauma-and-orthopaedics expansion in the deployed v2 release.
 
 The tool turns structured fields into a plain-text draft operation note. It does not use AI, call a backend, upload form contents, store clinical text or make clinical decisions.
 
@@ -14,7 +14,7 @@ The repository keeps the React application source in `src/`, the retained v1 rol
 
 ## Procedure scope
 
-The deployed parity set remains:
+The deployed general-surgery parity set is:
 
 - laparoscopic appendicectomy
 - laparoscopic cholecystectomy
@@ -24,7 +24,7 @@ The deployed parity set remains:
 - open umbilical hernia repair
 - emergency laparotomy
 
-The clinically approved v2 release candidate also includes:
+The deployed T&O expansion adds:
 
 - open reduction and internal fixation of ankle fracture
 - hip hemiarthroplasty for fracture
@@ -32,7 +32,7 @@ The clinically approved v2 release candidate also includes:
 - cephalomedullary nail fixation
 - open reduction and internal fixation of distal radius fracture
 
-All five T&O procedures have completed form/data and synthetic generated-text clinical review. Production deployment was explicitly authorised on 21 July 2026; the deployment status is verified separately from source presence.
+All five T&O procedures completed form/data and synthetic generated-text clinical review before production deployment on 21 July 2026. Deployment status is verified separately from source presence.
 
 Each listed procedure supports a full operation note, postoperative-plan-only output and ward handover summary.
 

@@ -59,7 +59,7 @@ For UI changes:
   - `procedures/*.ts` for operation-specific generation/warnings;
   - no DOM, browser storage or network APIs.
 - `src/app/procedure-state.ts` creates blank discriminated inputs and owns UI-only review/control state.
-- `src/app/procedure-form-definitions.ts` is the v2 UI field/option/visibility matrix for the seven supported procedures.
+- `src/app/procedure-form-definitions.ts` is the v2 UI field/option/visibility matrix for the supported procedures.
 - `src/app/App.tsx` owns the five-stage workflow and fresh/reviewed/stale copy state machine.
 - `src/components/ProcedureOperativeDetails.tsx` renders procedure-specific fields from the UI definitions.
 - `src/components/CoreDetails.tsx` and `CompletionDetails.tsx` render shared stages.
@@ -67,7 +67,7 @@ For UI changes:
 
 ## Procedure changes
 
-Current procedures are exactly:
+Current deployed procedures are exactly:
 
 - laparoscopic appendicectomy;
 - laparoscopic cholecystectomy;
@@ -75,7 +75,12 @@ Current procedures are exactly:
 - incision and drainage of abscess;
 - open inguinal hernia repair;
 - open umbilical hernia repair;
-- emergency laparotomy.
+- emergency laparotomy;
+- open reduction and internal fixation of ankle fracture;
+- hip hemiarthroplasty for fracture;
+- dynamic hip screw fixation;
+- cephalomedullary nail fixation;
+- open reduction and internal fixation of distal radius fracture.
 
 Do not add another procedure without explicit approval. A legitimate procedure change must update together:
 

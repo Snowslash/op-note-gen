@@ -1,6 +1,6 @@
 # Trauma and Orthopaedics Clinical Content Contract
 
-Status: all five T&O form/data and generated-text contracts approved; production deployment explicitly authorised and pending execution
+Status: all five T&O form/data and generated-text contracts approved and deployed; live route, asset, security-header and synthetic-workflow verification passed
 Date: 2026-07-21
 Owner and clinical approver: Sangeev
 Drafted by: Hermes from the approved product scope, the current repository behaviour and the primary sources in section 15
@@ -25,7 +25,7 @@ The trauma-first roadmap is:
 4. Cephalomedullary nail fixation (`cephalomedullary-nail`)
 5. Open reduction and internal fixation of distal radius fracture (`distal-radius-orif`)
 
-The shared T&O model and all five procedure form/data contracts are approved and implemented in the undeployed v2 candidate. All five procedure templates have completed generated-text review and are approved for the authorised production release.
+The shared T&O model and all five procedure form/data contracts are approved and implemented in the deployed v2 release. All five procedure templates completed generated-text review before the authorised production release.
 
 Implementation order:
 
@@ -864,7 +864,7 @@ The scope, ankle-first implementation order and structured implant rows were acc
 
 On 20 July 2026, Sangeev approved the existing form/data contracts, labels and warning sets for the four remaining roadmap procedures and authorised their implementation. On 21 July 2026, after review of the checked-in synthetic outputs, Sangeev explicitly approved the generated text for hip hemiarthroplasty, dynamic hip screw fixation, cephalomedullary nail fixation and distal radius ORIF, and separately authorised production deployment of the complete five-procedure T&O release.
 
-Release status on 21 July 2026: all five roadmap procedures are present in the v2 release candidate. Automated contract, warning, direct-state leakage, implant-consistency, React workflow, accessibility, privacy, build and v1-parity gates pass. The checked-in synthetic full-note, postoperative-plan and handover literals have completed clinical review. Production deployment is explicitly authorised, with the previous Worker version retained as the rollback point.
+Release status on 21 July 2026: all five roadmap procedures are deployed in production. Automated contract, warning, direct-state leakage, implant-consistency, React workflow, accessibility, privacy, build and v1-parity gates passed. The checked-in synthetic full-note, postoperative-plan and handover literals completed clinical review. Cloudflare Worker version `585b93cf-3369-4f57-967d-bc00506b3e8e` was deployed from source commit `ee883cb`; live root and nested-app routes, byte-identical first-party assets, security headers and a synthetic hip-hemiarthroplasty generate/review/copy journey were verified. Worker version `ff42c10e-370b-4c5a-88bb-7f022617a41a` remains the pre-T&O rollback point.
 
 ## 15. Primary sources
 
