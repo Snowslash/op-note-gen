@@ -76,3 +76,12 @@ test("Cloudflare Worker preserves nested app routing on the production domain", 
     },
   ]);
 });
+
+test("Cloudflare Worker bundle contains canonical crawler discovery files", () => {
+  const robotsPath = path.join(ROOT, "docs", "robots.txt");
+  const sitemapPath = path.join(ROOT, "docs", "sitemap.xml");
+  assert.ok(fs.existsSync(robotsPath), "Expected docs/robots.txt in the Worker bundle.");
+  assert.ok(fs.existsSync(sitemapPath), "Expected docs/sitemap.xml in the Worker bundle.");
+  assert.equal(fs.readFileSync(robotsPath, "utf8"), "User-agent: *\nAllow: /\n\nSitemap: https://opnotes.sangeev.me/sitemap.xml\n");
+  assert.match(fs.readFileSync(sitemapPath, "utf8"), /<loc>https:\/\/opnotes\.sangeev\.me\/<\/loc>/);
+});

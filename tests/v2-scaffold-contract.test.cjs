@@ -155,3 +155,16 @@ test("v2 scaffold establishes the agreed browser-only foundation", () => {
 
   assert.deepEqual(missing, [], `Missing v2 scaffold contract:\n- ${missing.join("\n- ")}`);
 });
+
+test("public source publishes canonical crawler discovery files", () => {
+  assert.ok(exists("public/robots.txt"), "Expected public/robots.txt.");
+  assert.ok(exists("public/sitemap.xml"), "Expected public/sitemap.xml.");
+
+  const robots = read("public/robots.txt");
+  const sitemap = read("public/sitemap.xml");
+  assert.equal(robots, "User-agent: *\nAllow: /\n\nSitemap: https://opnotes.sangeev.me/sitemap.xml\n");
+  assert.match(sitemap, /^<\?xml version="1\.0" encoding="UTF-8"\?>/);
+  assert.match(sitemap, /<urlset xmlns="http:\/\/www\.sitemaps\.org\/schemas\/sitemap\/0\.9">/);
+  assert.match(sitemap, /<loc>https:\/\/opnotes\.sangeev\.me\/<\/loc>/);
+  assert.doesNotMatch(sitemap, /<html\b/i);
+});
