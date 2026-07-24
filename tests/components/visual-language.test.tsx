@@ -67,6 +67,18 @@ describe("shared visual language contract", () => {
     expect(app).toContain('<EstateBoundary');
   });
 
+  it("keeps headings and landing-link hover states contrast-safe", () => {
+    const landingCss = readFileSync(path.join(process.cwd(), "src/landing/styles.css"), "utf8");
+
+    expect(globals).toMatch(/h1,\s*h2,\s*h3\s*\{\s*color:\s*var\(--foreground\);/);
+    expect(landingCss).not.toContain(".back-link:hover { color: var(--accent); }");
+    expect(landingCss).not.toContain(".status-band > a:hover { color: var(--accent); }");
+    expect(landingCss).not.toContain("footer a:hover { color: var(--accent); }");
+    expect(landingCss).toContain(".back-link:hover { text-decoration-line: underline; }");
+    expect(landingCss).toContain(".status-band > a:hover { text-decoration-line: underline; }");
+    expect(landingCss).toContain("footer a:hover { text-decoration-line: underline; }");
+  });
+
   it("keeps square buttons and a single safety boundary", () => {
     expect(buttons).toContain("rounded-sm");
     expect(app).not.toContain("Draft safety");
