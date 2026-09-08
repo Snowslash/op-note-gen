@@ -130,7 +130,7 @@ The checked-in v1 fixture set covers all seven procedures in all three output mo
 - `docs/` — generated GitHub Pages deployment bundle for the React application
 - `legacy-v1/` — retained static v1 source for rollback and parity testing
 - `SPEC_V2.md` — v2 architecture, safety, design and cutover contract
-- `SPEC_TNO.md` — approved T&O architecture and five-procedure implementation contract; generated-text review remains pending for four procedures and deployment remains pending for all five
+- `SPEC_TNO.md` — approved T&O architecture and five-procedure implementation contract, with procedure-by-procedure clinical approval and the historical 21 July 2026 production release record
 
 ## Deployment and cutover
 
@@ -138,6 +138,6 @@ The application remains a static browser-only site. GitHub Pages publishes `main
 
 Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
 
-Do not deploy the T&O candidate until each procedure's synthetic generated-text review and all remaining `SPEC_TNO.md` approval gates are explicitly completed.
+The five-procedure T&O release was approved and deployed on 21 July 2026, as recorded in `SPEC_TNO.md` sections 12 and 14. That historical approval does not authorise fresh clinical-content changes or another deployment: future procedure/template changes require the relevant explicit clinical review and separate release authorisation under the `SPEC_TNO.md` gates.
 
 Do not add analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.
