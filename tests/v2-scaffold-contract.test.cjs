@@ -168,3 +168,10 @@ test("public source publishes canonical crawler discovery files", () => {
   assert.match(sitemap, /<loc>https:\/\/opnotes\.sangeev\.me\/<\/loc>/);
   assert.doesNotMatch(sitemap, /<html\b/i);
 });
+
+test('Deep Atlas boot chrome is consistent on landing and app routes', () => {
+  for (const html of ['index.html', 'app/index.html']) {
+    assert.match(read(html), /name="theme-color" content="#061e1d"/);
+  }
+  assert.match(read('src/landing/styles.css'), /border-block-end: 1px solid var\(--estate-rule\)/);
+});
