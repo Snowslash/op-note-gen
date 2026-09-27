@@ -49,7 +49,7 @@ describe("shared visual language contract", () => {
     expect(landing).not.toContain("build-note");
     expect(landing).not.toContain("<figcaption>");
     expect(landing).not.toContain("This is the current generator with empty synthetic fields");
-    expect(landingCss).toContain("border-block-end: 1px solid var(--estate-shoal)");
+    expect(landingCss).toContain("border-block-end: 1px solid var(--estate-rule)");
     expect(landingCss).toContain(".hero::after");
     expect(landingCss).toContain("background: var(--estate-coral)");
     expect(landingEntry).toContain("initialiseEstateTheme()");
@@ -103,4 +103,11 @@ describe("shared visual language contract", () => {
     expect(optionsDeclaration).toBeGreaterThan(-1);
     expect(optionsDeclaration).toBeLessThan(componentDeclaration);
   });
+});
+
+
+it("uses the decorative rule rather than control-edge colour behind the procedure grid", () => {
+  const picker = readFileSync(path.join(process.cwd(), "src/components/ProcedurePicker.tsx"), "utf8");
+  expect(picker).toContain("border-t border-border bg-[var(--estate-rule)]");
+  expect(picker).not.toContain("border-t border-border bg-border");
 });

@@ -64,7 +64,7 @@ export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: 
                 </CollapsibleTrigger>
               </h3>
               <CollapsibleContent className="p-0 text-foreground">
-                <div className="grid gap-px border-t border-border bg-border sm:grid-cols-2">
+                <div className="grid gap-px border-t border-border bg-[var(--estate-rule)] sm:grid-cols-2">
                   {specialtyProcedures.map((procedure) => (
                     <Button
                       aria-label={procedure.label}
