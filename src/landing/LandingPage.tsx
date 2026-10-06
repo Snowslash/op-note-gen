@@ -22,7 +22,7 @@ export default function LandingPage() {
 
   return (
     <>
-      <PublicEstateHeader current="opnotes" theme={theme} onToggleTheme={toggleTheme} />
+      <PublicEstateHeader current="opnotes" navigation="projects" theme={theme} onToggleTheme={toggleTheme} />
       <EstateShell variant="landing">
         <main>
           <section className="hero" aria-labelledby="page-title">

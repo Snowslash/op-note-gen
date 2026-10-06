@@ -60,9 +60,8 @@ describe("theme preference boundary", () => {
     expect(estateHeader?.nextElementSibling?.tagName).toBe("MAIN");
     expect(screen.getByRole("link", { name: "Sangeev.me" })).toHaveAttribute("href", "https://sangeev.me");
     expect(screen.getByRole("link", { name: "Projects" })).toHaveAttribute("href", "https://sangeev.me/#projects");
-    expect(screen.getByRole("link", { name: "Op notes" })).toHaveAttribute("aria-current", "page");
-    expect(screen.getByRole("link", { name: "Scratchpad" })).toBeVisible();
-    expect(screen.getByRole("link", { name: "AlignEd" })).toBeVisible();
+    expect(navigation.querySelectorAll("a")).toHaveLength(2);
+    expect(screen.getByRole("link", { name: "GitHub" })).toHaveAttribute("href", "https://github.com/Snowslash");
   });
 
   it("persists only theme preference while clinical form text remains in memory", () => {

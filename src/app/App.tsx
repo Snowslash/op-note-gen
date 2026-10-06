@@ -224,7 +224,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <PublicEstateHeader current="opnotes" theme={theme} onToggleTheme={toggleTheme} />
+      <PublicEstateHeader current="opnotes" navigation="projects" theme={theme} onToggleTheme={toggleTheme} />
       <EstateShell as="main" variant="standard-app" className="pb-6 sm:pb-10">
         <header className="border-b border-border pb-5 pt-6 sm:pt-10">
           <div>
