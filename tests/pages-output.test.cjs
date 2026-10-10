@@ -4,6 +4,20 @@ const path = require("node:path");
 const test = require("node:test");
 
 const ROOT = path.resolve(__dirname, "..");
+test("missing paths have a standalone 404 document, not the landing or app shell", () => {
+  const source = fs.readFileSync(path.join(ROOT, "public/404.html"), "utf8");
+  assert.match(source, /<h1>Page not found<\/h1>/);
+  assert.match(source, /href="\/"/);
+  assert.match(source, /href="\/app\/"/);
+  assert.doesNotMatch(source, /<script\b|id="root"/i);
+  assert.equal(fs.readFileSync(path.join(ROOT, "docs/404.html"), "utf8"), source);
+});
+
+test("published landing has its self-canonical without an app indexing change", () => {
+  assert.match(fs.readFileSync(path.join(ROOT, "docs/index.html"), "utf8"), /<link rel="canonical" href="https:\/\/opnotes\.sangeev\.me\/" \/>/);
+  assert.doesNotMatch(fs.readFileSync(path.join(ROOT, "docs/app/index.html"), "utf8"), /rel="canonical"|name="robots"/i);
+});
+
 const FONT_LICENSES = ["OFL-Atkinson-Hyperlegible-Next.txt", "OFL-Literata.txt"];
 
 function filesUnder(directory) {
@@ -13,6 +27,8 @@ function filesUnder(directory) {
 }
 
 function assertNoRemoteRuntimeReference(content, relativePath) {
+  // A self-canonical is metadata, not a fetched runtime asset.
+  content = content.replace('<link rel="canonical" href="https://opnotes.sangeev.me/" />', "");
   assert.doesNotMatch(content, /(?:src|href)\s*=\s*["']https?:\/\//i, `Expected no remote asset reference in ${relativePath}.`);
   assert.doesNotMatch(content, /@import\s+(?:url\()?\s*["']?https?:\/\//i, `Expected no remote stylesheet in ${relativePath}.`);
   assert.doesNotMatch(content, /url\(\s*["']?https?:\/\//i, `Expected no remote CSS asset in ${relativePath}.`);
@@ -67,7 +83,7 @@ test("Cloudflare Worker preserves nested app routing on the production domain", 
   assert.deepEqual(wrangler.observability, { enabled: false });
   assert.deepEqual(wrangler.assets, {
     directory: "./docs",
-    not_found_handling: "single-page-application",
+    not_found_handling: "404-page",
   });
   assert.deepEqual(wrangler.routes, [
     {

@@ -9,6 +9,19 @@ function read(relativePath) {
   return fs.readFileSync(path.join(ROOT, relativePath), "utf8");
 }
 
+test("production build emits the standalone missing-page document", () => {
+  assert.equal(read("dist/404.html"), read("public/404.html"));
+  assert.match(read("dist/404.html"), /<h1>Page not found<\/h1>/);
+});
+
+test("only the indexable landing has its self-canonical", () => {
+  const canonical = '<link rel="canonical" href="https://opnotes.sangeev.me/" />';
+  assert.ok(read("index.html").includes(canonical));
+  assert.ok(read("dist/index.html").includes(canonical));
+  assert.doesNotMatch(read("app/index.html"), /rel="canonical"|name="robots"/i);
+  assert.doesNotMatch(read("dist/app/index.html"), /rel="canonical"|name="robots"/i);
+});
+
 function filesUnder(directory) {
   return fs.readdirSync(directory, { recursive: true, withFileTypes: true })
     .filter((entry) => entry.isFile())
@@ -16,6 +29,8 @@ function filesUnder(directory) {
 }
 
 function assertNoRemoteRuntimeReference(content, relativePath) {
+  // A self-canonical is metadata, not a fetched runtime asset.
+  content = content.replace('<link rel="canonical" href="https://opnotes.sangeev.me/" />', "");
   assert.doesNotMatch(content, /(?:src|href)\s*=\s*["']https?:\/\//i, `Expected no remote asset reference in ${relativePath}.`);
   assert.doesNotMatch(content, /@import\s+(?:url\()?\s*["']?https?:\/\//i, `Expected no remote stylesheet in ${relativePath}.`);
   assert.doesNotMatch(content, /url\(\s*["']?https?:\/\//i, `Expected no remote CSS asset in ${relativePath}.`);

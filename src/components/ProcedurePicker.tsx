@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useId, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { PROCEDURE_DEFINITIONS } from "../domain";
 import type { ProcedureDefinition, ProcedureId, SurgicalSpecialty } from "../domain";
@@ -26,26 +26,27 @@ function matchesQuery(procedure: ProcedureDefinition, query: string): boolean {
 }
 
 export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: ProcedurePickerProps) {
+  const pickerId = useId();
   const query = search.trim().toLowerCase();
   const visibleProcedures = Object.values(PROCEDURE_DEFINITIONS).filter((procedure) => matchesQuery(procedure, query));
   const selectedSpecialty = selected ? PROCEDURE_DEFINITIONS[selected].specialty : null;
   const [openSpecialty, setOpenSpecialty] = useState<SurgicalSpecialty | null>(selectedSpecialty ?? "trauma-orthopaedics");
 
   return (
-    <section aria-labelledby="procedure-heading" className="space-y-5">
+    <section aria-labelledby={`${pickerId}-heading`} className="space-y-5">
       <div>
-        <h2 id="procedure-heading" className="font-serif text-2xl">Procedure</h2>
+        <h2 id={`${pickerId}-heading`} className="font-serif text-2xl">Procedure</h2>
         <p className="mt-1 text-sm text-muted-foreground">Select the operation before completing the procedure-specific fields.</p>
       </div>
       <div className="max-w-lg space-y-2">
-        <label htmlFor="procedure-search" className="text-sm font-medium">Search procedures</label>
-        <Input id="procedure-search" type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search by operation, specialty or keyword" />
+        <label htmlFor={`${pickerId}-search`} className="text-sm font-medium">Search procedures</label>
+        <Input id={`${pickerId}-search`} type="search" value={search} onChange={(event) => onSearchChange(event.target.value)} placeholder="Search by operation, specialty or keyword" />
       </div>
       <div className="space-y-6">
         {SPECIALTY_ORDER.map((specialty) => {
           const specialtyProcedures = visibleProcedures.filter((procedure) => procedure.specialty === specialty);
           if (!specialtyProcedures.length) return null;
-          const headingId = `specialty-${specialty}`;
+          const headingId = `${pickerId}-specialty-${specialty}`;
           const isOpen = query ? true : openSpecialty === specialty;
           return (
             <Collapsible
@@ -67,7 +68,8 @@ export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: 
                 <div className="grid gap-px border-t border-border bg-[var(--estate-rule)] sm:grid-cols-2">
                   {specialtyProcedures.map((procedure) => (
                     <Button
-                      aria-label={procedure.label}
+                      aria-labelledby={`${pickerId}-${procedure.id}-title`}
+                      aria-describedby={`${pickerId}-${procedure.id}-category`}
                       aria-pressed={selected === procedure.id}
                       className="h-auto min-h-20 w-full min-w-0 justify-start whitespace-normal rounded-none bg-card px-4 py-3 text-left text-foreground hover:bg-muted data-[pressed=true]:border-l-4 data-[pressed=true]:border-primary"
                       data-pressed={selected === procedure.id}
@@ -77,8 +79,8 @@ export function ProcedurePicker({ selected, search, onSearchChange, onSelect }: 
                       variant="outline"
                     >
                       <span className="min-w-0">
-                        <span className="block break-words font-semibold">{procedure.label}</span>
-                        <span className="mt-1 block break-words text-xs font-normal text-muted-foreground">{procedure.category}</span>
+                        <span id={`${pickerId}-${procedure.id}-title`} className="block break-words font-semibold">{procedure.label}</span>
+                        <span id={`${pickerId}-${procedure.id}-category`} className="mt-1 block break-words text-xs font-normal text-muted-foreground">{procedure.category}</span>
                       </span>
                     </Button>
                   ))}
