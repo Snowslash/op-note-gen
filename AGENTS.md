@@ -93,4 +93,6 @@ Do not add another procedure without explicit approval. A legitimate procedure c
 
 ## Cutover
 
-Passing tests is necessary but does not authorise deployment. Preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit approval before merging or deploying. A production release requires `npm run check:pages` followed by `npx wrangler deploy`; the checked-in Worker contract updates `opnotes.sangeev.me` without a DNS change.
+Passing tests is necessary but does not authorise deployment. Preserve `legacy-v1/` and the pre-cutover `main` commit, then require explicit release approval before pushing or merging to `main`: the existing Cloudflare Git integration automatically runs `Workers Builds: op-note-gen`, while GitHub Pages also publishes `main:/docs`. The repository's GitHub Actions `Checks` workflow is verification-only, not the deployment trigger.
+
+Run `npm run check:pages` before publication. After pushing, verify the exact commit's Checks, Workers Builds and GitHub Pages results, then the landing page and `/app/` on both origins. Use `npx wrangler deploy` only for a separately authorised manual fallback, after checking that no automatic build is in progress; do not duplicate a Git-triggered deployment. Both deployment paths use the checked-in Worker contract to publish `docs/` to `opnotes.sangeev.me` without a DNS change.

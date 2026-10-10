@@ -134,7 +134,11 @@ The checked-in v1 fixture set covers all seven procedures in all three output mo
 
 ## Deployment and cutover
 
-The application remains a static browser-only site. GitHub Pages publishes `main:/docs` as a secondary origin, while production `opnotes.sangeev.me` is the custom domain of the Cloudflare Worker named `op-note-gen`. A Git push updates the Pages source but does not update that Worker. After approval, run `npm run check:pages` and `npx wrangler deploy`; `wrangler.jsonc` deploys `docs/` and preserves the nested `/app/` route without changing DNS.
+The application remains a static browser-only site. GitHub Pages publishes `main:/docs` as a secondary origin, while production `opnotes.sangeev.me` is the custom domain of the Cloudflare Worker named `op-note-gen`. The existing Cloudflare Git integration runs **Workers Builds: op-note-gen** when `main` is pushed, independently of the checks-only GitHub Actions workflow. Treat a push to `main` as a production release, not just source publication.
+
+Before an authorised release, run `npm run check:pages` and include the reviewed `docs/` output. After pushing, verify the exact commit's GitHub Checks, Workers Builds and GitHub Pages results, then verify the landing page and `/app/` on both hosting origins. A successful build alone is not live-route acceptance.
+
+Use `npx wrangler deploy` only for a separately authorised manual deployment when the Git-triggered path cannot be used. Check for an automatic build in progress first; do not upload the same release twice. Both paths use `wrangler.jsonc` to publish `docs/` without changing DNS.
 
 Keep `legacy-v1/` and the pre-cutover `main` commit available until the React deployment has passed a realistic synthetic browser smoke on both the GitHub Pages URL and the production custom domain.
 
