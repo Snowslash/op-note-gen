@@ -145,3 +145,9 @@ Keep `legacy-v1/` and the pre-cutover `main` commit available until the React de
 The five-procedure T&O release was approved and deployed on 21 July 2026, as recorded in `SPEC_TNO.md` sections 12 and 14. That historical approval does not authorise fresh clinical-content changes or another deployment: future procedure/template changes require the relevant explicit clinical review and separate release authorisation under the `SPEC_TNO.md` gates.
 
 Do not add analytics, backend storage or patient-data capture unless the safety and governance model is redesigned first.
+
+## Licence
+
+Original project code is licensed under the [MIT License](LICENSE), copyright © 2026 Sangeev Ravimohan.
+
+Third-party dependencies and bundled assets retain their own licences. Notices for the shared estate UI and bundled fonts are preserved in [`public/licenses/`](public/licenses/) and copied into the static build's `licenses/` directory alongside the project's MIT licence. The clinical safety boundaries above remain unchanged.

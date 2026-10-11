@@ -1,6 +1,7 @@
 {
   "name": "op-note-gen",
   "version": "0.1.0",
+  "license": "MIT",
   "private": true,
   "description": "Static browser-only operation-note drafting for general surgery and review-gated trauma and orthopaedics.",
   "scripts": {
