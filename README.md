@@ -151,3 +151,42 @@ Do not add analytics, backend storage or patient-data capture unless the safety 
 Original project code is licensed under the [MIT License](LICENSE), copyright © 2026 Sangeev Ravimohan.
 
 Third-party dependencies and bundled assets retain their own licences. Notices for the shared estate UI and bundled fonts are preserved in [`public/licenses/`](public/licenses/) and copied into the static build's `licenses/` directory alongside the project's MIT licence. The clinical safety boundaries above remain unchanged.
+
+## Desk landing verification
+
+The public landing uses the reviewed `ProjectPage.tsx` and `project-page.css`
+template with project-specific copy in `project.ts`. Keep the template copies
+identical to the [canonical project-page source](https://github.com/Snowslash/sangeev-me/tree/main/project-pages); the estate UI dependency
+continues to own shared chrome and tokens, not this page body. The initial HTML
+keeps the introduction, safety boundaries and real destinations available without
+JavaScript. The application source and estate archive pin are unchanged; the
+separately authorised dependency-security refresh is recorded below.
+
+Using Node 22.23+ within Node 22, install from the lockfile with `npm ci`, then run:
+
+```sh
+npm run lint
+npm run test:contract
+npm run test:domain
+npx vitest run --maxWorkers=1
+npm run build
+npm run test:dist
+npm run test:v1
+npm run build:pages
+npm run test:pages
+LANDING_BUILT=dist,docs node --test tests/landing-copy.contract.mjs tests/landing-motion.contract.mjs
+```
+
+The landing tests use Node's type stripping, not the TypeScript compiler API. They
+check literal reviewed copy, initial/emitted HTML and the actual screenshot hook's
+completion, cancellation, fallback, reduced-motion and same-print reopen lifecycle.
+They simulate DOM/time/scheduling; real focus, inertness and animation appearance
+still require browser acceptance. Run these additional contracts alongside the
+native checks above; they are not implicitly included in `npm test`.
+
+Local preparation on 15 October 2026 passed 3 scaffold contracts, 47 domain tests, 108 Vitest tests, 4 dist checks, v1 smoke/parity, 5 Pages checks and 10 landing copy/lifecycle checks.
+The expanded sequence above fulfils `check:pages` with a single Vitest worker. This is local build verification, not a new deployment claim.
+The inherited 6 audit findings (4 high, 2 moderate) were resolved by the compatible
+lockfile refresh in [RELEASE-SECURITY.md](RELEASE-SECURITY.md). Fresh locked installs
+and full/production-filtered audits report zero findings. Rendered browser and
+live deployment acceptance remain separate gates.

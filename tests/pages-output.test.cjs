@@ -29,6 +29,8 @@ function filesUnder(directory) {
 function assertNoRemoteRuntimeReference(content, relativePath) {
   // A self-canonical is metadata, not a fetched runtime asset.
   content = content.replace('<link rel="canonical" href="https://opnotes.sangeev.me/" />', "");
+  // Anchor navigation is not a runtime fetch; retain every other attribute and tag.
+  if (relativePath.endsWith(".html")) content = content.replace(/(<a\b[^>]*?)\bhref\s*=\s*(["'])https?:\/\/[^"']*\2/gi, "$1");
   assert.doesNotMatch(content, /(?:src|href)\s*=\s*["']https?:\/\//i, `Expected no remote asset reference in ${relativePath}.`);
   assert.doesNotMatch(content, /@import\s+(?:url\()?\s*["']?https?:\/\//i, `Expected no remote stylesheet in ${relativePath}.`);
   assert.doesNotMatch(content, /url\(\s*["']?https?:\/\//i, `Expected no remote CSS asset in ${relativePath}.`);

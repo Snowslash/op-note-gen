@@ -29,29 +29,31 @@ describe("shared visual language contract", () => {
     expect(existsSync(appHtmlPath)).toBe(true);
 
     const landing = readFileSync(landingPath, "utf8");
-    const landingCss = readFileSync(path.join(process.cwd(), "src/landing/styles.css"), "utf8");
+    const page = readFileSync(path.join(process.cwd(), "src/landing/ProjectPage.tsx"), "utf8");
+    const project = readFileSync(path.join(process.cwd(), "src/landing/project.ts"), "utf8");
+    const pageCss = readFileSync(path.join(process.cwd(), "src/landing/project-page.css"), "utf8");
     const landingEntry = readFileSync(landingEntryPath, "utf8");
     const rootHtml = readFileSync(path.join(process.cwd(), "index.html"), "utf8");
     const appHtml = readFileSync(appHtmlPath, "utf8");
     const vite = readFileSync(path.join(process.cwd(), "vite.config.ts"), "utf8");
 
-    expect(landing).toContain('<PublicEstateHeader current="opnotes"');
-    expect(landing).toContain('<EstateShell variant="landing">');
-    expect(landing).toContain('href="./app/"');
-    expect(landing).toContain('className="estate-primary-action estate-icon-action" href="https://github.com/Snowslash/op-note-gen" aria-label="Source on GitHub" title="Source on GitHub"><GitHubMark');
-    expect(landing).not.toContain("<Code");
-    expect(landing).toContain("Do not enter patient-identifiable information");
-    expect(landing).toContain("Review generated text carefully");
-    expect(landing).toContain("Twelve supported procedures");
-    expect(landing).toContain("Seven general-surgery procedures plus five trauma-and-orthopaedics workflows");
-    expect(landing).not.toContain("Seven common procedures");
-    expect(landing).toContain('alt="Operation Note Generator showing the procedure picker');
-    expect(landing).not.toContain("build-note");
-    expect(landing).not.toContain("<figcaption>");
-    expect(landing).not.toContain("This is the current generator with empty synthetic fields");
-    expect(landingCss).toContain("border-block-end: 1px solid var(--estate-rule)");
-    expect(landingCss).toContain(".hero::after");
-    expect(landingCss).toContain("background: var(--estate-coral)");
+    expect(landing).toContain("<ProjectPage project={project} />");
+    expect(page).toContain("<PublicEstateHeader current={project.key as EstatePage}");
+    expect(page).toContain('<EstateShell variant="landing">');
+    expect(page).toContain("Source code and notes on GitHub");
+    expect(project).toContain('key: "opnotes"');
+    expect(project).toContain('href: "./app/"');
+    expect(project).toContain('sourceHref: "https://github.com/Snowslash/op-note-gen"');
+    expect(page + project).not.toContain("<Code");
+    expect(project).toContain("anything that could identify a patient");
+    expect(project).toContain("every draft carefully before it goes into a clinical record");
+    expect(project).toContain("Draft twelve procedures");
+    expect(project).toContain("Seven general surgery operations and five trauma and orthopaedics ones");
+    expect(project).not.toContain("Seven common procedures");
+    expect(project).toContain('alt: "Operation Note Generator as it opens: a list of procedures to choose from');
+    expect(page + project).not.toContain("build-note");
+    expect(project).not.toContain("This is the current generator with empty synthetic fields");
+    expect(pageCss).toContain(".title-stop { color: var(--estate-coral); }");
     expect(landingEntry).toContain("initialiseEstateTheme()");
     expect(rootHtml).toContain('src="/src/landing/main.tsx"');
     expect(appHtml).toContain('src="/src/main.tsx"');
@@ -68,15 +70,12 @@ describe("shared visual language contract", () => {
   });
 
   it("keeps headings and landing-link hover states contrast-safe", () => {
-    const landingCss = readFileSync(path.join(process.cwd(), "src/landing/styles.css"), "utf8");
+    const landingCss = readFileSync(path.join(process.cwd(), "src/landing/project-page.css"), "utf8");
 
     expect(globals).toMatch(/h1,\s*h2,\s*h3\s*\{\s*color:\s*var\(--foreground\);/);
-    expect(landingCss).not.toContain(".back-link:hover { color: var(--accent); }");
-    expect(landingCss).not.toContain(".status-band > a:hover { color: var(--accent); }");
-    expect(landingCss).not.toContain("footer a:hover { color: var(--accent); }");
+    expect(landingCss).not.toMatch(/:hover \{[^}]*color: var\(--accent\)/);
     expect(landingCss).toContain(".back-link:hover { text-decoration-line: underline; }");
-    expect(landingCss).toContain(".status-band > a:hover { text-decoration-line: underline; }");
-    expect(landingCss).toContain("footer a:hover { text-decoration-line: underline; }");
+    expect(landingCss).toContain(".desk-footer a:hover { text-decoration-line: underline; }");
   });
 
   it("keeps square buttons and a single safety boundary", () => {

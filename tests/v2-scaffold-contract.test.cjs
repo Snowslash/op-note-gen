@@ -173,5 +173,5 @@ test('Deep Atlas boot chrome is consistent on landing and app routes', () => {
   for (const html of ['index.html', 'app/index.html']) {
     assert.match(read(html), /name="theme-color" content="#061e1d"/);
   }
-  assert.match(read('src/landing/styles.css'), /border-block-end: 1px solid var\(--estate-rule\)/);
+  assert.match(read('src/landing/project-page.css'), /\[data-theme="dark"\],\s*\.dark \{\s*--desk-ground: var\(--estate-night\);/);
 });

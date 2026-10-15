@@ -1,0 +1,20 @@
+{
+  "config": "src/landing/project.ts",
+  "html": "index.html",
+  "key": "opnotes",
+  "name": "Operation Note Generator",
+  "description": "Pick a procedure, fill in a few fields, and get a plain-text operation note to check and copy. Covers general surgery and trauma and orthopaedics.",
+  "sourceHref": "https://github.com/Snowslash/op-note-gen",
+  "limits": "It helps you write the note. It doesn’t make decisions. It won’t choose an operation, guess findings or check consent, and it doesn’t replace local policy, a senior’s review or your responsibility for the final record.",
+  "beforeYouUse": [
+    "Don’t type anything that could identify a patient.",
+    "It all runs in your browser. Nothing you type is sent anywhere, saved, or added to the page address.",
+    "Read every draft carefully before it goes into a clinical record."
+  ],
+  "actions": [
+    {
+      "label": "Open the generator",
+      "href": "./app/"
+    }
+  ]
+}

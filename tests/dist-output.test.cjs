@@ -31,12 +31,22 @@ function filesUnder(directory) {
 function assertNoRemoteRuntimeReference(content, relativePath) {
   // A self-canonical is metadata, not a fetched runtime asset.
   content = content.replace('<link rel="canonical" href="https://opnotes.sangeev.me/" />', "");
+  // Anchor navigation is not a runtime fetch; retain every other attribute and tag.
+  if (relativePath.endsWith(".html")) content = content.replace(/(<a\b[^>]*?)\bhref\s*=\s*(["'])https?:\/\/[^"']*\2/gi, "$1");
   assert.doesNotMatch(content, /(?:src|href)\s*=\s*["']https?:\/\//i, `Expected no remote asset reference in ${relativePath}.`);
   assert.doesNotMatch(content, /@import\s+(?:url\()?\s*["']?https?:\/\//i, `Expected no remote stylesheet in ${relativePath}.`);
   assert.doesNotMatch(content, /url\(\s*["']?https?:\/\//i, `Expected no remote CSS asset in ${relativePath}.`);
   assert.doesNotMatch(content, /(?:fetch|import)\(\s*["']https?:\/\//i, `Expected no remote runtime request in ${relativePath}.`);
   assert.doesNotMatch(content, /new URL\(\s*["']https?:\/\//i, `Expected no remote URL constructor in ${relativePath}.`);
 }
+
+test('remote runtime scan permits navigation but rejects fetched resources', () => {
+  assert.doesNotThrow(() => assertNoRemoteRuntimeReference('<a href="https://sangeev.me/#opnotes">All projects</a>', 'dist/index.html'));
+  for (const html of ['<script src="https://example.com/x.js"></script>', '<link rel="stylesheet" href="https://example.com/x.css">', '<a href="https://sangeev.me/"><img src="https://example.com/x.png"></a>']) {
+    assert.throws(() => assertNoRemoteRuntimeReference(html, 'dist/index.html'));
+  }
+  assert.throws(() => assertNoRemoteRuntimeReference('fetch("https://example.com/data")', 'dist/assets/app.js'));
+});
 
 test("production output retains browser-only headers and self-hosted assets", () => {
   const distDirectory = path.join(ROOT, "dist");
