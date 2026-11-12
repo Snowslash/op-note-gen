@@ -1,6 +1,6 @@
 import type { FieldValidationError, ImplantRecord, ProcedureInput } from "../domain";
 import type { ProcedureControlState } from "../app/procedure-state";
-import { PROCEDURE_FORM_DEFINITIONS, type ProcedureFieldDefinition, type SelectCustomFieldDefinition } from "../app/procedure-form-definitions";
+import { PROCEDURE_FORM_DEFINITIONS, type ClearTarget, type ProcedureFieldDefinition, type SelectCustomFieldDefinition } from "../app/procedure-form-definitions";
 import { ImplantRows } from "./ImplantRows";
 import { Checkbox } from "./ui/checkbox";
 import { Input } from "./ui/input";
@@ -11,7 +11,7 @@ interface ProcedureOperativeDetailsProps {
   values: ProcedureInput;
   controls: ProcedureControlState;
   errors?: Partial<Record<FieldValidationError["field"], string>>;
-  onValueChange: (field: string, value: string | boolean, clearFields?: string[]) => void;
+  onValueChange: (field: string, value: string | boolean, clearFields?: ClearTarget[]) => void;
   onCustomChoiceChange: (field: string, choice: string, options: readonly string[]) => void;
   onCustomValueChange: (field: string, value: string) => void;
   onAddImplant?: () => void;
@@ -79,7 +79,7 @@ interface ProcedureFieldProps {
   value: string | boolean;
   control?: { choice: string; custom: string };
   error?: string;
-  onValueChange: (field: string, value: string | boolean, clearFields?: string[]) => void;
+  onValueChange: (field: string, value: string | boolean, clearFields?: ClearTarget[]) => void;
   onCustomChoiceChange: (field: string, choice: string, options: readonly string[]) => void;
   onCustomValueChange: (field: string, value: string) => void;
 }

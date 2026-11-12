@@ -117,6 +117,10 @@ npm audit
 
 The checked-in v1 fixture set covers all seven procedures in all three output modes. Both the pure domain engine and React review stage are compared byte-for-byte against those literal outputs.
 
+Answer edits in `App.tsx` go through `applyAnswerEdit` in `src/app/procedure-state.ts`. This in-memory state update applies answers and revokes draft freshness/review together; procedure replacement instead clears the draft and restores full-note mode. Generation and clipboard effects remain separate. Navigation and reselecting the current procedure do not revoke review, and the generated preview remains read-only.
+
+`PROCEDURE_FORM_DEFINITIONS` is keyed to each procedure's input type: scalar controls and visibility dependencies exclude row arrays, while clear targets can reset strings or arrays. Keep clinical labels, options, order and existing hide-versus-clear rules unchanged during structural edits. The negative type cases in `tests/components/procedure-form-definitions.typecheck.ts` run with the normal TypeScript build; runtime workflow tests cover clearing, repeatable rows and renewed review before copy.
+
 ## Project layout
 
 - `src/app/` — React workflow state, theme boundary and procedure form definitions

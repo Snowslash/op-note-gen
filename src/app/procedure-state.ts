@@ -40,6 +40,34 @@ export interface DraftState {
   reviewed: boolean;
 }
 
+export interface NoteState {
+  values: ProcedureInput | null;
+  outputMode: OutputMode;
+  draft: DraftState;
+  feedback: string;
+}
+
+export type AnswerEdit =
+  | { kind: "input"; update: (previous: ProcedureInput | null) => ProcedureInput | null }
+  | { kind: "output-mode"; mode: OutputMode }
+  | { kind: "procedure"; input: ProcedureInput };
+
+export function applyAnswerEdit(state: NoteState, edit: AnswerEdit): NoteState {
+  if (edit.kind === "procedure") {
+    return { values: edit.input, outputMode: "full", draft: createDraftState(), feedback: "" };
+  }
+
+  const message = edit.kind === "output-mode"
+    ? "Output mode changed. Regenerate before copying."
+    : "Form details changed after generation. Regenerate before copying.";
+  return {
+    ...state,
+    ...(edit.kind === "input" ? { values: edit.update(state.values) } : { outputMode: edit.mode }),
+    draft: state.draft.text ? { ...state.draft, fresh: false, reviewed: false } : state.draft,
+    feedback: state.draft.text ? message : state.feedback,
+  };
+}
+
 export type PreloadedTeamMember = Omit<TeamMember, "id"> & { id?: string };
 export type PreloadedImplantRecord = Omit<ImplantRecord, "id"> & { id?: string };
 type WithPreloadedRows<Input extends ProcedureInput> = Input extends OrthopaedicCommonInput

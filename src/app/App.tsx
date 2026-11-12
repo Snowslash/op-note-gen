@@ -18,7 +18,9 @@ import { ReviewCopyGate } from "../components/ReviewCopyGate";
 import { WarningSummary } from "../components/WarningSummary";
 import { Alert, AlertDescription, AlertTitle } from "../components/ui/alert";
 import { Button } from "../components/ui/button";
+import type { ClearTarget } from "./procedure-form-definitions";
 import {
+  applyAnswerEdit,
   createControlState,
   createDraftState,
   createImplantRecord,
@@ -29,7 +31,8 @@ import {
   OUTPUT_MODES,
   type PreloadedProcedureInput,
   type ProcedureControlState,
-  type DraftState,
+  type AnswerEdit,
+  type NoteState,
   updateTeamMember,
   updateImplantRecord,
 } from "./procedure-state";
@@ -49,41 +52,39 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   const [procedureSearch, setProcedureSearch] = useState("");
   const [currentStage, setCurrentStage] = useState<WorkflowStage>(initialStage);
   const [furthestStageIndex, setFurthestStageIndex] = useState(() => initialInput ? stageIndex(initialStage) : 0);
-  const [values, setValues] = useState<ProcedureInput | null>(() => initialInput ? ensureTeamMemberIds(initialInput) : null);
+  const [note, setNote] = useState<NoteState>(() => ({
+    values: initialInput ? ensureTeamMemberIds(initialInput) : null,
+    outputMode: initialOutputMode,
+    draft: createDraftState(),
+    feedback: "",
+  }));
+  const { values, outputMode, draft, feedback } = note;
   const [controls, setControls] = useState<ProcedureControlState>(createControlState);
-  const [outputMode, setOutputMode] = useState<OutputMode>(initialOutputMode);
-  const [draft, setDraft] = useState<DraftState>(createDraftState);
   const [errors, setErrors] = useState<Partial<Record<FieldValidationError["field"], string>>>({});
-  const [feedback, setFeedback] = useState("");
   const { theme, toggleTheme } = useEstateTheme();
 
-  const invalidateDraft = (message = "Form details changed after generation. Regenerate before copying.") => {
-    setDraft((previous) => previous.text ? { ...previous, fresh: false, reviewed: false } : previous);
-    if (draft.text) setFeedback(message);
-  };
+  const editAnswers = (edit: AnswerEdit) => setNote((previous) => applyAnswerEdit(previous, edit));
+  const setFeedback = (feedback: string) => setNote((previous) => ({ ...previous, feedback }));
 
   const selectProcedure = (procedureId: ProcedureId) => {
     if (values?.procedureId === procedureId) return;
-    setValues(createProcedureInput(procedureId));
+    editAnswers({ kind: "procedure", input: createProcedureInput(procedureId) });
     setControls(createControlState());
-    setDraft(createDraftState());
     setErrors({});
-    setFeedback("");
-    setOutputMode("full");
     setFurthestStageIndex(0);
   };
 
-  const updateValue = (field: string, value: string | boolean, clearFields: string[] = []) => {
-    setValues((previous) => {
+  const updateValue = (field: string, value: string | boolean, clearFields: ClearTarget[] = []) => {
+    const clearCustomDrain = field === "drainStatus" && value !== "yes" && controls.drainLocationChoice === "Custom / other";
+    editAnswers({ kind: "input", update: (previous) => {
       if (!previous) return previous;
-      const updates = Object.fromEntries(clearFields.map((clearField) => [clearField, clearField === "implants" ? [] : ""]));
-      return { ...previous, [field]: value, ...updates } as ProcedureInput;
-    });
-    if (field === "drainStatus" && value !== "yes" && controls.drainLocationChoice === "Custom / other") {
+      const record = previous as unknown as Record<ClearTarget, unknown>;
+      const updates = Object.fromEntries(clearFields.map((clearField) => [clearField, Array.isArray(record[clearField]) ? [] : ""]));
+      return { ...previous, [field]: value, ...updates, ...(clearCustomDrain ? { drainLocation: "" } : {}) } as ProcedureInput;
+    } });
+    if (clearCustomDrain) {
       setControls((previous) => ({ ...previous, drainLocationCustom: "" }));
-      setValues((previous) => previous ? { ...previous, drainLocation: "" } as ProcedureInput : previous);
     }
-    invalidateDraft();
   };
 
   const updateCustomChoice = (field: string, choice: string, options: readonly string[]) => {
@@ -156,13 +157,16 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
       setCurrentStage(validation.errors.some((error) => error.field === "implantsUsed") ? "Operative details" : "Core details");
       return;
     }
-    setDraft({
-      text: generateNote(values, outputMode),
-      warnings: getAdvisoryWarnings(values),
-      fresh: true,
-      reviewed: false,
-    });
-    setFeedback("Draft generated. Review it before copying.");
+    setNote((previous) => ({
+      ...previous,
+      draft: {
+        text: generateNote(values, outputMode),
+        warnings: getAdvisoryWarnings(values),
+        fresh: true,
+        reviewed: false,
+      },
+      feedback: "Draft generated. Review it before copying.",
+    }));
   };
 
   const copyDraft = async () => {
@@ -183,41 +187,35 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
   };
 
   const changeOutputMode = (mode: OutputMode) => {
-    setOutputMode(mode);
-    invalidateDraft("Output mode changed. Regenerate before copying.");
+    editAnswers({ kind: "output-mode", mode });
   };
 
   const changeTeamMember = (index: number, changes: Partial<TeamMember>) => {
-    setValues((previous) => previous ? { ...previous, additionalTeamMembers: updateTeamMember(previous.additionalTeamMembers, index, changes) } as ProcedureInput : previous);
-    invalidateDraft();
+    editAnswers({ kind: "input", update: (previous) => previous ? { ...previous, additionalTeamMembers: updateTeamMember(previous.additionalTeamMembers, index, changes) } : previous });
   };
 
   const addImplant = () => {
-    setValues((previous) => previous && "implants" in previous
+    editAnswers({ kind: "input", update: (previous) => previous && "implants" in previous
       ? { ...previous, implants: [...previous.implants, createImplantRecord()] }
-      : previous);
-    invalidateDraft();
+      : previous });
   };
 
   const removeImplant = (id: string) => {
-    setValues((previous) => previous && "implants" in previous
+    editAnswers({ kind: "input", update: (previous) => previous && "implants" in previous
       ? { ...previous, implants: previous.implants.filter((implant) => implant.id !== id) }
-      : previous);
-    invalidateDraft();
+      : previous });
   };
 
   const changeImplant = (id: string, changes: Partial<Omit<ImplantRecord, "id">>) => {
-    setValues((previous) => previous && "implants" in previous
+    editAnswers({ kind: "input", update: (previous) => previous && "implants" in previous
       ? { ...previous, implants: updateImplantRecord(previous.implants, id, changes) }
-      : previous);
-    invalidateDraft();
+      : previous });
   };
 
   const moveImplant = (id: string, direction: "up" | "down") => {
-    setValues((previous) => previous && "implants" in previous
+    editAnswers({ kind: "input", update: (previous) => previous && "implants" in previous
       ? { ...previous, implants: moveImplantRecord(previous.implants, id, direction) }
-      : previous);
-    invalidateDraft();
+      : previous });
   };
 
   const isReviewStage = currentStage === "Review and copy";
@@ -241,7 +239,7 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
         <div className="mt-6">
           <section className="min-w-0" aria-live="polite">
             {currentStage === "Procedure" && <ProcedurePicker selected={values?.procedureId ?? null} search={procedureSearch} onSearchChange={setProcedureSearch} onSelect={selectProcedure} />}
-            {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, createTeamMember()] } as ProcedureInput : previous); invalidateDraft(); }} onRemoveTeamMember={(index) => { setValues((previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } as ProcedureInput : previous); invalidateDraft(); }} onTeamMemberChange={changeTeamMember} />}
+            {currentStage === "Core details" && values && <CoreDetails values={values} errors={errors} onValueChange={updateValue} onAddTeamMember={() => editAnswers({ kind: "input", update: (previous) => previous ? { ...previous, additionalTeamMembers: [...previous.additionalTeamMembers, createTeamMember()] } : previous })} onRemoveTeamMember={(index) => editAnswers({ kind: "input", update: (previous) => previous ? { ...previous, additionalTeamMembers: previous.additionalTeamMembers.filter((_, memberIndex) => memberIndex !== index) } : previous })} onTeamMemberChange={changeTeamMember} />}
             {currentStage === "Operative details" && values && <ProcedureOperativeDetails values={values} controls={controls} errors={errors} onValueChange={updateValue} onCustomChoiceChange={updateCustomChoice} onCustomValueChange={updateCustomValue} onAddImplant={addImplant} onRemoveImplant={removeImplant} onMoveImplant={moveImplant} onImplantChange={changeImplant} />}
             {currentStage === "Completion" && values && <CompletionDetails values={values} controls={controls} onValueChange={updateValue} onDrainChoiceChange={updateDrainChoice} onDrainCustomValueChange={updateDrainCustom} />}
             {isReviewStage && values && (
@@ -259,8 +257,11 @@ export default function App({ initialInput, initialOutputMode = "full", initialS
                   feedback={draft.fresh ? feedback : ""}
                   onReviewedChange={(reviewed) => {
                     if (!draft.text || !draft.fresh) return;
-                    setDraft((previous) => ({ ...previous, reviewed }));
-                    setFeedback(reviewed ? "Review confirmed. Copy is now available." : "Review confirmation removed. Copy is disabled.");
+                    setNote((previous) => ({
+                      ...previous,
+                      draft: { ...previous.draft, reviewed },
+                      feedback: reviewed ? "Review confirmed. Copy is now available." : "Review confirmation removed. Copy is disabled.",
+                    }));
                   }}
                   onCopy={copyDraft}
                 />

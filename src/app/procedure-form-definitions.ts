@@ -1,59 +1,71 @@
-import type { ProcedureId } from "../domain";
+import type { ProcedureId, ProcedureInput } from "../domain";
 
-export interface VisibilityCondition {
-  field: string;
-  equals: string | boolean;
+type InputFor<Id extends ProcedureId> = Extract<ProcedureInput, { procedureId: Id }>;
+type FieldOfType<Id extends ProcedureId, Value> = Id extends ProcedureId ? {
+  [Field in Exclude<keyof InputFor<Id>, "procedureId">]: InputFor<Id>[Field] extends Value ? Field : never;
+}[Exclude<keyof InputFor<Id>, "procedureId">] : never;
+
+type StringField<Id extends ProcedureId> = FieldOfType<Id, string>;
+type BooleanField<Id extends ProcedureId> = FieldOfType<Id, boolean>;
+// Arrays are reset targets only, never scalar controls or visibility dependencies.
+export type ClearTarget<Id extends ProcedureId = ProcedureId> = StringField<Id> | FieldOfType<Id, readonly unknown[]>;
+
+export type VisibilityCondition<Id extends ProcedureId = ProcedureId> =
+  | { field: StringField<Id>; equals: string }
+  | { field: BooleanField<Id>; equals: boolean };
+
+export interface ClearRule<Id extends ProcedureId = ProcedureId, Value = string | boolean> {
+  unless: Value;
+  fields: ClearTarget<Id>[];
 }
 
-export interface ClearRule {
-  unless: string | boolean;
-  fields: string[];
-}
-
-interface BaseFieldDefinition {
-  field: string;
+interface BaseFieldDefinition<Id extends ProcedureId> {
   label: string;
   wide?: boolean;
-  showWhen?: VisibilityCondition;
+  showWhen?: VisibilityCondition<Id>;
 }
 
-export interface TextFieldDefinition extends BaseFieldDefinition {
+export interface TextFieldDefinition<Id extends ProcedureId = ProcedureId> extends BaseFieldDefinition<Id> {
   kind: "text" | "textarea";
+  field: StringField<Id>;
 }
 
-export interface SelectFieldDefinition extends BaseFieldDefinition {
+export interface SelectFieldDefinition<Id extends ProcedureId = ProcedureId> extends BaseFieldDefinition<Id> {
   kind: "select" | "radio";
+  field: StringField<Id>;
   options: readonly string[];
-  clearRule?: ClearRule;
+  clearRule?: ClearRule<Id, string>;
 }
 
-export interface SelectCustomFieldDefinition extends BaseFieldDefinition {
+export interface SelectCustomFieldDefinition<Id extends ProcedureId = ProcedureId> extends BaseFieldDefinition<Id> {
   kind: "select-custom";
+  field: StringField<Id>;
   options: readonly string[];
   customLabel: string;
 }
 
-export interface CheckboxFieldDefinition extends BaseFieldDefinition {
+export interface CheckboxFieldDefinition<Id extends ProcedureId = ProcedureId> extends BaseFieldDefinition<Id> {
   kind: "checkbox";
-  clearRule?: ClearRule;
+  field: BooleanField<Id>;
+  clearRule?: ClearRule<Id, boolean>;
 }
 
-export type ProcedureFieldDefinition =
-  | TextFieldDefinition
-  | SelectFieldDefinition
-  | SelectCustomFieldDefinition
-  | CheckboxFieldDefinition;
+export type ProcedureFieldDefinition<Id extends ProcedureId = ProcedureId> = Id extends ProcedureId ?
+  | TextFieldDefinition<Id>
+  | SelectFieldDefinition<Id>
+  | SelectCustomFieldDefinition<Id>
+  | CheckboxFieldDefinition<Id> : never;
 
-export interface ProcedureFormDefinition {
+export interface ProcedureFormDefinition<Id extends ProcedureId = ProcedureId> {
   hint: string;
-  fields: readonly ProcedureFieldDefinition[];
+  fields: readonly ProcedureFieldDefinition<Id>[];
 }
 
 const YES_NO = ["yes", "no"] as const;
 const YES_NO_NOT_APPLICABLE = ["yes", "no", "not applicable"] as const;
 const ENTRY_TECHNIQUES = ["Hasson", "Veress", "Optical entry"] as const;
 
-export const PROCEDURE_FORM_DEFINITIONS: Record<ProcedureId, ProcedureFormDefinition> = {
+export const PROCEDURE_FORM_DEFINITIONS: { [Id in ProcedureId]: ProcedureFormDefinition<Id> } = {
   "lap-appendicectomy": {
     hint: "Appendicectomy-specific operative fields. Unanswered structured fields remain not specified in the draft.",
     fields: [
